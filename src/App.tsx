@@ -10,9 +10,7 @@ import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 
 
-// make them react
 // put 5 exchangers, make them spawn
-// display energy
 // design a level based on simple spawns and reactions
 // let user put spawners
 // make a level based on simple spawns and reactions
@@ -47,9 +45,7 @@ export function App() {
             position: "absolute",
             inset: 0,
             zIndex: -1,
-        }))}>
-            <Canvas><MainScene world={world} /></Canvas>
-        </div>
+        }))}><Canvas><MainScene world={world} /></Canvas></div>
         <div className={cx(css({
             position: "absolute",
             inset: 0,
@@ -58,7 +54,7 @@ export function App() {
             <div>step: {JSON.stringify(world.step)}</div>
             <div>energy: {JSON.stringify(world.energy)}</div>
             <div>particles:
-                {world.particles.map((p, i) => <div>
+                {world.particles.map((p, i) => <div key={i}>
                     = {i}: {JSON.stringify(p)}
                 </div>)}
             </div>
