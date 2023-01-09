@@ -4,17 +4,46 @@ import { css, cx } from "@emotion/css";
 import { useRef, useState } from "react";
 import { PlaybackPanel } from "./PlaybackPanel";
 import { appVersion } from "./appVersion";
-import { IntRange_0Inc_5Inc, Particle } from "./puzzle/terms";
+import { IntRange_0Inc_5Inc, Particle, Solution } from "./puzzle/terms";
 import { initialWorld, stepInPlace } from "./puzzle/stepInPlace";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 
 
-// put 5 exchangers, make them spawn
 // design a level based on simple spawns and reactions
 // let user put spawners
 // make a level based on simple spawns and reactions
 // display hex grid
+
+const solution: Solution = {
+    problem: undefined,
+    actors: [{
+        kind: "spawner",
+        direction: 0,
+        output: { content: "red" },
+        position: [3, -3],
+    }, {
+        kind: "spawner",
+        direction: 5,
+        output: { content: "green" },
+        position: [-3, 3],
+    }, {
+        kind: "spawner",
+        direction: 1,
+        output: { content: ["green", "blue"] },
+        position: [-5, 3],
+    }, {
+        kind: "spawner",
+        direction: 3,
+        output: { content: "gamma" },
+        position: [-2, 7],
+    }, {
+        kind: "spawner",
+        direction: 4,
+        output: { content: ["red", "green", "blue"] },
+        position: [5, -6],
+    }],
+}
 
 export function App() {
     const stepState = useState(0);
@@ -22,10 +51,7 @@ export function App() {
 
     const world = initialWorld();
     for (let i = 0; i < step; i++) {
-        stepInPlace({
-            problem: undefined,
-            actors: [],
-        }, world);
+        stepInPlace(solution, world);
     }
 
 
@@ -45,7 +71,7 @@ export function App() {
             position: "absolute",
             inset: 0,
             zIndex: -1,
-        }))}><Canvas><MainScene world={world} /></Canvas></div>
+        }))}><Canvas><MainScene solution={solution} world={world} /></Canvas></div>
         <div className={cx(css({
             position: "absolute",
             inset: 0,

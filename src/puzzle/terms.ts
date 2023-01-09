@@ -1,4 +1,4 @@
-import { v3 } from "../utils/v";
+import { v2, v3 } from "../utils/v";
 
 export type Problem = undefined;
 
@@ -18,7 +18,7 @@ export type Particle = {
 
 
 export type Actor = {
-    position: v3,
+    position: v2,
     direction: IntRange_0Inc_5Inc,
 } & ({
     kind: "mirror",
