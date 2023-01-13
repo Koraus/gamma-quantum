@@ -62,7 +62,6 @@ export function App() {
             position: fixed;
             inset: 0;
             overflow: auto;
-            color: white;
             font-family: monospace;
         }
         `,

@@ -9,7 +9,7 @@ export type ParticleState = Particle & {
     direction: IntRange_0Inc_5Inc,
 }
 
-const directionVector = [
+export const directionVector = [
     hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 0),
     hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 1),
     hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 2),

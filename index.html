@@ -18,6 +18,7 @@
 <body style="
 	margin: 0; 
 	background-color: #0a000d;
+	color: white;
 	touch-action: manipulation;
 ">
 	<div id="root"></div>
@@ -31,9 +32,12 @@
 		const Component =
 			import.meta.env.DEV
 				? await (async () => {
-					const name = document.location.pathname.substring(1);
+					const path = document.location.pathname;
+					if (path === "/") { return App; }
+					const name = path.substring(path.lastIndexOf("/") + 1);
+					console.log(path, name);
 					if (!name) { return App; }
-					return (await import(/* @vite-ignore */"./src/" + name))[name];
+					return (await import(/* @vite-ignore */"./src" + path))[name];
 				})()
 				: App;
 
