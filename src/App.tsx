@@ -9,7 +9,7 @@ import { initialWorld, stepInPlace } from "./puzzle/stepInPlace";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 
-
+// todo list:
 // design a level based on simple spawns and reactions
 // let user put spawners
 // make a level based on simple spawns and reactions

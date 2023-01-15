@@ -6,6 +6,7 @@ export const axialToCube = ([q, r]: v2) => [q, r, -q - r] as v3;
 export const cubeLen = ([q, r, s]: v3) => (Math.abs(q) + Math.abs(r) + Math.abs(s)) / 2;
 export const cubeFlatNorth = () => [0, 1, -1] as v3;
 export const cubeRotate60Cv = ([q, r, s]: v3) => [-r, -s, -q] as v3;
+export const cubeRotate60Ccv = ([q, r, s]: v3) => [-s, -q, -r] as v3;
 export const cubeRotate60CvTimes = (v: v3, times: number) => {
     times %= 6;
     if (times < 0) times += 6;
