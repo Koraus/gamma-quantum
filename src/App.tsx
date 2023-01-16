@@ -45,7 +45,9 @@ const solution: Solution = {
     }],
 }
 
-export function App() {
+export { App } from "./reactionSandbox/App";
+
+export function _App() {
     const stepState = useState(0);
     const [step] = stepState;
 

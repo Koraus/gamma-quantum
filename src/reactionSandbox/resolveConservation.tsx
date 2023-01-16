@@ -15,6 +15,12 @@ export function* resolveConservation1({
     const isStraight = directionOf(extraMomentum).length === 1;
     const e = extraEnergy;
     // if (len > e) { return; }
+    // if (len === 0 && e === 1) { return; }
+
+    if (len === 1 && e === 1) {
+        yield [extraMomentum];
+        return;
+    }
 
     if (len === 1 && e === 2) {
         yield [
@@ -53,6 +59,15 @@ export function* resolveConservation1({
             extraMomentum,
             extraMomentum,
         ]
+        return;
+    }
+
+    if (!isStraight && len === 2 && e === 2) {
+        const [d0, d1] = directionOf(extraMomentum);
+        yield [
+            directionVector[d0],
+            directionVector[d1],
+        ];
         return;
     }
 

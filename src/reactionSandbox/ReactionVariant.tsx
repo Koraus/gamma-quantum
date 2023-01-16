@@ -12,7 +12,12 @@ import { particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms"
 import * as hg from "../utils/hg";
 
 export function ReactionVariant({
-    reagents, resolvedProducts, reactionMomentumDirection, isReagentsMomentumAmbiguous, className, ...props
+    reagents,
+    resolvedProducts,
+    reactionMomentumDirection,
+    isReagentsMomentumAmbiguous,
+    className,
+    ...props
 }: {
     reagents: ParticleWithMomentum[];
     resolvedProducts: ParticleWithMomentum[];
@@ -36,6 +41,10 @@ export function ReactionVariant({
         .map(particleEnegry)
         .reduce((acc, v) => acc + v, 0);
 
+    const notConservative =
+        (hg.cubeLen(v3.sub(productsMomentum, reagentsMomentum)) !== 0)
+        || (productsEnergy - reagentsEnergy !== 0);
+
     return <div
         className={cx(
             css({}),
@@ -47,11 +56,14 @@ export function ReactionVariant({
             display: "flex",
             flexDirection: "row"
         })}>
-            <svg viewBox="-1.5 -1.5 3 3" width={100}>
+            <svg viewBox="-1.3 -1.3 2.6 2.6" width={70}>
                 <ArrowHeadMarker color="red" />
                 <ArrowHeadMarker color="blue" />
                 <ArrowHeadMarker color="lime" />
                 <ArrowHeadMarker color="white" />
+                <ArrowHeadMarker color="yellow" />
+                <ArrowHeadMarker color="cyan" />
+
                 {[...hgDiscDots(2)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
 
                 {reagents.map((r, i) => <ReagentParticle key={i} {...r} />)}
@@ -62,111 +74,21 @@ export function ReactionVariant({
                 border: "1px solid grey",
             })}>
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
-                <br />
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>Σp</span>
-                &nbsp;
-                {isReagentsMomentumAmbiguous ? "~" : ""}
-                {directionSymbol[reactionMomentumDirection]}
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>{JSON.stringify(reagentsMomentum)}</span>
-                &nbsp;
-                <br />
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>ΣE</span>
-                &nbsp;
-                {reagentsEnergy}
-                &nbsp;
             </div>
-            <div>&nbsp;⇒&nbsp;</div>
+            <div>
+                &nbsp;⇒&nbsp;
+                {notConservative && <>
+                    <br />&nbsp;
+                    <span className={css({ color: "yellow" })}>⚠</span>
+                    &nbsp;
+                </>}
+
+            </div>
             <div className={css({
                 border: "1px solid grey",
             })}>
                 {resolvedProducts.map((p, i) => <ParticleText key={i} particle={p} />)}
-                <br />
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>Σp</span>
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>{JSON.stringify(productsMomentum)}</span>
-                &nbsp;
-                <br />
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>ΣE</span>
-                &nbsp;
-                {productsEnergy}
-                &nbsp;
-
             </div>
-
-            <div>&nbsp;</div>
-
-            <div>
-                {(hg.cubeLen(v3.sub(productsMomentum, reagentsMomentum)) !== 0) && <span className={css({ color: "yellow" })}>⚠</span>}
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>Δp</span>
-                &nbsp;
-                {hg.cubeLen(v3.sub(productsMomentum, reagentsMomentum))}
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>{JSON.stringify(v3.sub(productsMomentum, reagentsMomentum))}</span>
-                <br />
-                {(productsEnergy - reagentsEnergy !== 0) && <span className={css({ color: "yellow" })}>⚠</span>}
-                &nbsp;
-                <span className={css({ opacity: 0.4 })}>ΔE</span>
-                &nbsp;
-                {productsEnergy - reagentsEnergy}
-                &nbsp;
-            </div>
-
-            <svg viewBox="-5 -5 10 10" width={240}>
-                <ArrowHeadMarker color="red" />
-                <ArrowHeadMarker color="blue" />
-                <ArrowHeadMarker color="lime" />
-                <ArrowHeadMarker color="white" />
-
-                {[...hgDiscDots(5)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
-
-                {reagents
-                    .map(r => ({
-                        v: v3.scale(directionVector[r.direction], (r.mass || 1) * r.velocity),
-                        particle: r,
-                    }))
-                    .map(((offset: v3) => ({ v, particle }) => {
-                        const ret = { offset, v, particle };
-                        offset = v3.add(offset, v);
-                        return ret;
-                    })(v3.zero()))
-                    .map(({ offset, v, particle }, i) => <g key={i}>
-                        <line
-                            className={cx(css`& {
-                                stroke-width: 0.1;
-                                stroke: white;
-                                marker-end: url(#arrowHeadMarker-${particle.color})
-                            }`)}
-                            {...xy1(offset)}
-                            {...xy2(v3.add(offset, v))} />
-                    </g>)}
-
-                {resolvedProducts
-                    .map(r => ({
-                        v: v3.scale(directionVector[r.direction], (r.mass || 1) * r.velocity),
-                        particle: r,
-                    }))
-                    .map(((offset: v3) => ({ v, particle }) => {
-                        const ret = { offset, v, particle };
-                        offset = v3.add(offset, v);
-                        return ret;
-                    })(v3.zero()))
-                    .map(({ offset, v, particle }, i) => <g key={i}>
-                        <line
-                            className={cx(css`& {
-                                stroke-width: 0.1;
-                                stroke: grey;
-                                marker-end: url(#arrowHeadMarker-${particle.color})
-                            }`)}
-                            {...xy1(offset)}
-                            {...xy2(v3.add(offset, v))} />
-                    </g>)}
-            </svg>
         </div>
     </div>;
 }
