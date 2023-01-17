@@ -6,7 +6,7 @@ import { DirectionId } from "../puzzle/terms";
 import { ArrowHeadMarker } from "./ArrowHeadMarker";
 import { ReagentParticle } from "./ReagentParticle";
 import { ProductParticle } from "./ProductParticle";
-import { ParticleText } from "./ParticleText";
+import { ParticleWithMomentumText } from "./ParticleWithMomentumText";
 import { cxy, directionSymbol, xy1, xy2 } from "./misc";
 import { particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms";
 import * as hg from "../utils/hg";
@@ -72,7 +72,7 @@ export function ReactionVariant({
             <div className={css({
                 border: "1px solid grey",
             })}>
-                {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {reagents.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
             </div>
             <div>
                 &nbsp;⇒&nbsp;
@@ -86,7 +86,7 @@ export function ReactionVariant({
             <div className={css({
                 border: "1px solid grey",
             })}>
-                {resolvedProducts.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {resolvedProducts.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
             </div>
         </div>
     </div>;

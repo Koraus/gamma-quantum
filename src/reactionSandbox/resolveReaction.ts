@@ -2,7 +2,7 @@ import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { DirectionId } from "../puzzle/terms";
 import { Particle, particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms";
-import { solveConservation } from "./solveConservation";
+import { solveConservation } from "../puzzle/solveConservation";
 
 export function directionOf(v: v3) {
     const [x, y] = hg.axialToFlatCart(v);
@@ -65,27 +65,19 @@ export function* resolveReaction({
         // for each option, 
         // try to compensate momentum and enegry using gamma-quants
         for (const reactionMomentumDirection of reactionMomentumDirections) {
-            for (const resolvedProducts of [
-                [{
-                    ...products[0],
-                    velocity: 1,
-                    direction: reactionMomentumDirection,
-                }],
-                [{
-                    ...products[0],
-                    velocity: 0,
-                    direction: 0,
-                }],
-                [{
-                    ...products[0],
-                    velocity: 1,
-                    direction: (reactionMomentumDirection + 3) % 6,
-                }],
-            ] as ParticleWithMomentum[][]) {
-                const productsMomentum = resolvedProducts
+            for (const resolvedProduct of ([
+                { velocity: 0, direction: 0 },
+                { velocity: 1, direction: 0 },
+                { velocity: 1, direction: 1 },
+                { velocity: 1, direction: 2 },
+                { velocity: 1, direction: 3 },
+                { velocity: 1, direction: 4 },
+                { velocity: 1, direction: 5 },
+            ] as const).map(d => ({ ...d, ...products[0] }))) {
+                const productsMomentum = [resolvedProduct]
                     .map(particleMomentum)
                     .reduce(v3.add, v3.zero());
-                const productsEnergy = resolvedProducts
+                const productsEnergy = [resolvedProduct]
                     .map(particleEnegry)
                     .reduce((acc, v) => acc + v, 0);
 
@@ -105,7 +97,7 @@ export function* resolveReaction({
 
                         products,
                         resolvedProducts: [
-                            ...resolvedProducts,
+                            resolvedProduct,
                             ...ds.map(d => ({
                                 color: "white",
                                 mass: 0,

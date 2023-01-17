@@ -26,7 +26,7 @@ export function* solveConservation({
     const E = extraEnergy;
 
     // Each unique integer non-negative solution to a following system
-    // denotes an unique group of gamma-quants that dissipate the given energy
+    // denotes an unique group of gamma-quanta that dissipate the given energy
     // preserving the given momentum:
     // (1) a*↓ + b*↙ + c*↖ + d*↑ + e*↗ + f*↘ = p
     // (2) a + b + c + d + e + f = E

@@ -2,55 +2,110 @@ import { v2 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { css } from "@emotion/css";
 import { Particle, ParticleWithMomentum } from "./terms";
-import { resolveReaction } from "./resolveConservation";
+import { resolveReaction } from "./resolveReaction";
 import { ReactionVariant } from "./ReactionVariant";
 import { useState } from "react";
 import { ReactionMomentumGraph } from "./ReactionMomentumGraph";
 import { DirectionId } from "../puzzle/terms";
+import { ParticleWithMomentumText } from "./ParticleWithMomentumText";
+import { ParticleText } from "./ParticleText";
 
 export function App({
 
 }: {
     }) {
-        const reactions = [
+    const reactions = [
 
-            // m1 + m1 = m1
-            ...[
-                { direction: 0, velocity: 0 },
-                { direction: 0, velocity: 1 },
-                { direction: 1, velocity: 1 },
-                { direction: 2, velocity: 1 },
-                { direction: 3, velocity: 1 },
-            ].map(v => ({
-                reagents: [
-                    { direction: 0, velocity: 1, color: "red", mass: 1 },
-                    { ...v, color: "blue", mass: 1 },
-                ],
-                products: [
-                    { color: "lime", mass: 1 },
-                ]
-            })),
+        // m1 + m1 = m1
+        ...[
+            { direction: 0, velocity: 0 },
+            { direction: 0, velocity: 1 },
+            { direction: 1, velocity: 1 },
+            { direction: 2, velocity: 1 },
+            { direction: 3, velocity: 1 },
+        ].map(v => ({
+            reagents: [
+                { direction: 0, velocity: 1, color: "red", mass: 1 },
+                { ...v, color: "blue", mass: 1 },
+            ],
+            products: [
+                { color: "lime", mass: 1 },
+            ]
+        })),
+        {
+            reagents: [
+                { direction: 0, velocity: 0, color: "red", mass: 1 },
+                { direction: 0, velocity: 0, color: "blue", mass: 1 },
+            ],
+            products: [
+                { color: "lime", mass: 1 },
+            ]
+        },
 
-            // m1 + m1 = m2
-            ...[
-                { direction: 0, velocity: 0 },
-                { direction: 0, velocity: 1 },
-                { direction: 1, velocity: 1 },
-                { direction: 2, velocity: 1 },
-                { direction: 3, velocity: 1 },
-            ].map(v => ({
-                reagents: [
-                    { direction: 0, velocity: 1, color: "red", mass: 1 },
-                    { ...v, color: "lime", mass: 1 },
-                ],
-                products: [
-                    { color: "yellow", mass: 2 },
-                ]
-            })),
-        ] as Array<{
-            reagents: ParticleWithMomentum[];
-            products: Particle[];
-        }>;
+        // m1 + m1 = m2
+        ...[
+            { direction: 0, velocity: 0 },
+            { direction: 0, velocity: 1 },
+            { direction: 1, velocity: 1 },
+            { direction: 2, velocity: 1 },
+            { direction: 3, velocity: 1 },
+        ].map(v => ({
+            reagents: [
+                { direction: 0, velocity: 1, color: "red", mass: 1 },
+                { ...v, color: "lime", mass: 1 },
+            ],
+            products: [
+                { color: "yellow", mass: 2 },
+            ]
+        })),
+        {
+            reagents: [
+                { direction: 0, velocity: 0, color: "red", mass: 1 },
+                { direction: 0, velocity: 0, color: "lime", mass: 1 },
+            ],
+            products: [
+                { color: "yellow", mass: 2 },
+            ]
+        },
+
+        // m2 + m1 = m3
+        ...[
+            { direction: 0, velocity: 0 },
+            { direction: 0, velocity: 1 },
+            { direction: 1, velocity: 1 },
+            { direction: 2, velocity: 1 },
+            { direction: 3, velocity: 1 },
+        ].map(v => ({
+            reagents: [
+                { direction: 0, velocity: 1, color: "red", mass: 2 },
+                { ...v, color: "yellow", mass: 1 },
+            ],
+            products: [
+                { color: "purple", mass: 2 },
+            ]
+        })),
+        {
+            reagents: [
+                { direction: 0, velocity: 0, color: "red", mass: 2 },
+                { direction: 0, velocity: 1, color: "yellow", mass: 1 },
+            ],
+            products: [
+                { color: "purple", mass: 2 },
+            ]
+        },
+        {
+            reagents: [
+                { direction: 0, velocity: 0, color: "red", mass: 2 },
+                { direction: 0, velocity: 0, color: "yellow", mass: 1 },
+            ],
+            products: [
+                { color: "purple", mass: 2 },
+            ]
+        },
+    ] as Array<{
+        reagents: ParticleWithMomentum[];
+        products: Particle[];
+    }>;
 
     const [selectedReaction, setSelectedReaction] = useState<{
         reagents: ParticleWithMomentum[];
@@ -76,6 +131,14 @@ export function App({
                 height: "100%",
             })}>
                 {reactions.map((reaction, i) => <div key={i}>
+                    <br />
+                    <div className={css({ display: "flex", flexDirection: "row" })}>
+                        ##
+                        {reaction.reagents.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
+                        ⇒
+                        {reaction.products.map((p, i) => <ParticleText key={i} particle={p} />)}
+                    </div>
+                    <br />
                     {[...resolveReaction({
                         reagents: reaction.reagents,
                         products: reaction.products,
@@ -107,7 +170,7 @@ export function App({
                                 })}
                             >&gt;</button>
                         </div>)}
-                    =============
+                    <br />
                 </div>)}
             </div>
             {selectedReaction &&

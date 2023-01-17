@@ -6,7 +6,7 @@ import { ArrowHeadMarker } from "./ArrowHeadMarker";
 import { cxy, directionSymbol, xy1, xy2 } from "./misc";
 import { particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms";
 import { DirectionId } from "../puzzle/terms";
-import { ParticleText } from "./ParticleText";
+import { ParticleWithMomentumText } from "./ParticleWithMomentumText";
 import * as hg from "../utils/hg";
 import { ReagentParticle } from "./ReagentParticle";
 import { ProductParticle } from "./ProductParticle";
@@ -63,7 +63,7 @@ export function ReactionMomentumGraph({
             <div className={css({
                 border: "1px solid grey",
             })}>
-                {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {reagents.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
                 <br />
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Σp</span>
@@ -84,7 +84,7 @@ export function ReactionMomentumGraph({
             <div className={css({
                 border: "1px solid grey",
             })}>
-                {products.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {products.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
                 <br />
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Σp</span>
