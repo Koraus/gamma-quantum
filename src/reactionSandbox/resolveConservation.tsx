@@ -2,95 +2,7 @@ import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { DirectionId } from "../puzzle/terms";
 import { Particle, particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms";
-import { directionVector } from "../puzzle/stepInPlace";
-
-export function* resolveConservation1({
-    extraMomentum,
-    extraEnergy,
-}: {
-    extraMomentum: v3,
-    extraEnergy: number,
-}) {
-    const len = hg.cubeLen(extraMomentum);
-    const isStraight = directionOf(extraMomentum).length === 1;
-    const e = extraEnergy;
-    // if (len > e) { return; }
-    // if (len === 0 && e === 1) { return; }
-
-    if (len === 1 && e === 1) {
-        yield [extraMomentum];
-        return;
-    }
-
-    if (len === 1 && e === 2) {
-        yield [
-            hg.cubeRotate60Cv(extraMomentum),
-            hg.cubeRotate60Ccv(extraMomentum),
-        ]
-        return;
-    }
-
-    if (isStraight && len === 2 && e === 3) {
-        yield [
-            hg.cubeRotate60Cv(extraMomentum),
-            extraMomentum,
-            hg.cubeRotate60Ccv(extraMomentum),
-        ]
-        return;
-    }
-
-    if (!isStraight && len === 2 && e === 3) {
-        const [d0, d1] = directionOf(extraMomentum);
-        yield [
-            directionVector[d0],
-            directionVector[d0],
-            v3.sub(extraMomentum, v3.add(directionVector[d0], directionVector[d0]))
-        ];
-        yield [
-            directionVector[d1],
-            directionVector[d1],
-            v3.sub(extraMomentum, v3.add(directionVector[d1], directionVector[d1]))
-        ];
-        return;
-    }
-
-    if (isStraight && len === 2 && e === 2) {
-        yield [
-            extraMomentum,
-            extraMomentum,
-        ]
-        return;
-    }
-
-    if (!isStraight && len === 2 && e === 2) {
-        const [d0, d1] = directionOf(extraMomentum);
-        yield [
-            directionVector[d0],
-            directionVector[d1],
-        ];
-        return;
-    }
-
-
-    if (len === 0 && e === 2) {
-        yield [directionVector[0], directionVector[3]];
-        yield [directionVector[1], directionVector[4]];
-        yield [directionVector[2], directionVector[5]];
-        return;
-    }
-
-
-    if (len === 1 && e === 3) {
-        yield [extraMomentum, directionVector[0], directionVector[3]];
-        yield [extraMomentum, directionVector[1], directionVector[4]];
-        yield [extraMomentum, directionVector[2], directionVector[5]];
-        return;
-    }
-
-
-    // could not compensate
-    yield [] as v3[];
-}
+import { solveConservation } from "./solveConservation";
 
 export function directionOf(v: v3) {
     const [x, y] = hg.axialToFlatCart(v);
@@ -104,12 +16,12 @@ export function directionOf(v: v3) {
     )(v);
 
     return (isAmbiguous
-        ? [Math.floor(d), Math.ceil(d)]
-        : [Math.round(d)]
+        ? [Math.floor(d), Math.ceil(d) % 6]
+        : [Math.round(d) % 6]
     ) as DirectionId[];
 }
 
-export function* resolveConservation({
+export function* resolveReaction({
     reagents, products, helperDiraction,
 }: {
     reagents: ParticleWithMomentum[];
@@ -132,8 +44,8 @@ export function* resolveConservation({
         )(v);
 
         return (isReagentsMomentumAmbiguous
-            ? [Math.floor(d), Math.ceil(d)]
-            : [Math.round(d)]
+            ? [Math.floor(d), Math.ceil(d) % 6]
+            : [Math.round(d) % 6]
         ) as DirectionId[];
     })(reagentsMomentum);
 
@@ -180,7 +92,7 @@ export function* resolveConservation({
                 const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
                 const deltaEnergy = productsEnergy - reagentsEnergy;
 
-                for (const ds of resolveConservation1({
+                for (const ds of solveConservation({
                     extraMomentum: v3.negate(deltaMomentum),
                     extraEnergy: -deltaEnergy,
                 })) {

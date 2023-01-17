@@ -24,6 +24,10 @@ export function ReactionVariant({
     reactionMomentumDirection: DirectionId;
     isReagentsMomentumAmbiguous: boolean;
 } & JSX.IntrinsicElements["div"]) {
+    const colors = [
+        ...reagents.map(p => p.color),
+        ...resolvedProducts.map(p => p.color),
+    ];
 
     const reagentsMomentum = reagents
         .map(particleMomentum)
@@ -57,12 +61,7 @@ export function ReactionVariant({
             flexDirection: "row"
         })}>
             <svg viewBox="-1.3 -1.3 2.6 2.6" width={70}>
-                <ArrowHeadMarker color="red" />
-                <ArrowHeadMarker color="blue" />
-                <ArrowHeadMarker color="lime" />
-                <ArrowHeadMarker color="white" />
-                <ArrowHeadMarker color="yellow" />
-                <ArrowHeadMarker color="cyan" />
+                {colors.map((color, i) => <ArrowHeadMarker key={i} color={color} />)}
 
                 {[...hgDiscDots(2)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
 

@@ -13,6 +13,12 @@ export const cubeRotate60CvTimes = (v: v3, times: number) => {
     for (let i = 0; i < times; i++) v = cubeRotate60Cv(v);
     return v;
 };
+export const cubeRotate60CcvTimes = (v: v3, times: number) => {
+    times %= 6;
+    if (times < 0) times += 6;
+    for (let i = 0; i < times; i++) v = cubeRotate60Ccv(v);
+    return v;
+};
 export const cubeRound = (v: v3) => {
     const { round, abs } = Math;
     const [q, r, s] = v.map(round);
