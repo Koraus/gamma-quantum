@@ -1,22 +1,26 @@
-import { v2 } from "../utils/v";
-import * as hg from "../utils/hg";
+import { v2, v3 } from "../utils/v";
 import { css } from "@emotion/css";
 import { Particle, ParticleWithMomentum } from "./terms";
-import { resolveReaction } from "./resolveReaction";
-import { ReactionVariant } from "./ReactionVariant";
 import { useState } from "react";
 import { ReactionMomentumGraph } from "./ReactionMomentumGraph";
-import { DirectionId } from "../puzzle/terms";
-import { ParticleWithMomentumText } from "./ParticleWithMomentumText";
-import { ParticleText } from "./ParticleText";
+import { ReactionForDirections } from "./ReactionForDirections";
 
 export function App({
 
 }: {
     }) {
+    const particles = {
+        q: { color: "red", mass: 1 }, // 1 quark
+        q2: { color: "blue", mass: 1 }, // 1 quark
+        qq: { color: "lime", mass: 1 }, // 2 quarks
+        qq2: { color: "orange", mass: 1 }, // 2 quarks
+        qqq: { color: "yellow", mass: 2 }, // 3 quarks
+        qqqq: { color: "purple", mass: 4 }, // 4 quarks
+
+    } as const;
+
     const reactions = [
-
-        // m1 + m1 = m1
+        // q-m1 + q-m1 => qq-m1
         ...[
             { direction: 0, velocity: 0 },
             { direction: 0, velocity: 1 },
@@ -25,24 +29,20 @@ export function App({
             { direction: 3, velocity: 1 },
         ].map(v => ({
             reagents: [
-                { direction: 0, velocity: 1, color: "red", mass: 1 },
-                { ...v, color: "blue", mass: 1 },
+                { direction: 0, velocity: 1, ...particles.q },
+                { ...v, ...particles.q2 },
             ],
-            products: [
-                { color: "lime", mass: 1 },
-            ]
+            products: [particles.qq],
         })),
         {
             reagents: [
-                { direction: 0, velocity: 0, color: "red", mass: 1 },
-                { direction: 0, velocity: 0, color: "blue", mass: 1 },
+                { direction: 0, velocity: 0, ...particles.q },
+                { direction: 0, velocity: 0, ...particles.q2 },
             ],
-            products: [
-                { color: "lime", mass: 1 },
-            ]
+            products: [particles.qq],
         },
 
-        // m1 + m1 = m2
+        // qq-m1 + q-m1 = qqq-m2
         ...[
             { direction: 0, velocity: 0 },
             { direction: 0, velocity: 1 },
@@ -51,24 +51,20 @@ export function App({
             { direction: 3, velocity: 1 },
         ].map(v => ({
             reagents: [
-                { direction: 0, velocity: 1, color: "red", mass: 1 },
-                { ...v, color: "lime", mass: 1 },
+                { direction: 0, velocity: 1, ...particles.q },
+                { ...v, ...particles.qq },
             ],
-            products: [
-                { color: "yellow", mass: 2 },
-            ]
+            products: [particles.qqq],
         })),
         {
             reagents: [
-                { direction: 0, velocity: 0, color: "red", mass: 1 },
-                { direction: 0, velocity: 0, color: "lime", mass: 1 },
+                { direction: 0, velocity: 0, ...particles.q },
+                { direction: 0, velocity: 0, ...particles.qq },
             ],
-            products: [
-                { color: "yellow", mass: 2 },
-            ]
+            products: [particles.qqq],
         },
 
-        // m2 + m1 = m3
+        // qqq-m2 + q-m1 = qqqq-m4
         ...[
             { direction: 0, velocity: 0 },
             { direction: 0, velocity: 1 },
@@ -77,30 +73,46 @@ export function App({
             { direction: 3, velocity: 1 },
         ].map(v => ({
             reagents: [
-                { direction: 0, velocity: 1, color: "red", mass: 2 },
-                { ...v, color: "yellow", mass: 1 },
+                { direction: 0, velocity: 1, ...particles.qqq },
+                { ...v, ...particles.q },
             ],
-            products: [
-                { color: "purple", mass: 2 },
-            ]
+            products: [particles.qqqq],
         })),
         {
             reagents: [
-                { direction: 0, velocity: 0, color: "red", mass: 2 },
-                { direction: 0, velocity: 1, color: "yellow", mass: 1 },
+                { direction: 0, velocity: 0, ...particles.qqq },
+                { direction: 0, velocity: 1, ...particles.q },
             ],
-            products: [
-                { color: "purple", mass: 2 },
-            ]
+            products: [particles.qqqq],
         },
         {
             reagents: [
-                { direction: 0, velocity: 0, color: "red", mass: 2 },
-                { direction: 0, velocity: 0, color: "yellow", mass: 1 },
+                { direction: 0, velocity: 0, ...particles.qqq },
+                { direction: 0, velocity: 0, ...particles.q },
             ],
-            products: [
-                { color: "purple", mass: 2 },
-            ]
+            products: [particles.qqqq],
+        },
+
+        // qq-m1 + qq-m1 = qqqq-m4
+        ...[
+            { direction: 0, velocity: 0 },
+            { direction: 0, velocity: 1 },
+            { direction: 1, velocity: 1 },
+            { direction: 2, velocity: 1 },
+            { direction: 3, velocity: 1 },
+        ].map(v => ({
+            reagents: [
+                { direction: 0, velocity: 1, ...particles.qq },
+                { ...v, ...particles.qq2 },
+            ],
+            products: [particles.qqqq],
+        })),
+        {
+            reagents: [
+                { direction: 0, velocity: 0, ...particles.qq },
+                { direction: 0, velocity: 0, ...particles.qq2 },
+            ],
+            products: [particles.qqqq],
         },
     ] as Array<{
         reagents: ParticleWithMomentum[];
@@ -110,8 +122,8 @@ export function App({
     const [selectedReaction, setSelectedReaction] = useState<{
         reagents: ParticleWithMomentum[];
         products: ParticleWithMomentum[];
-        reactionMomentumDirection: DirectionId;
-        isReagentsMomentumAmbiguous: boolean;
+        deltaMomentum: v3;
+        deltaEnergy: number;
     }>();
 
     return <div className={css({
@@ -127,51 +139,15 @@ export function App({
         })}>
             <div className={css({
                 overflow: "scroll",
+                paddingRight: 20,
                 flexShrink: 0,
                 height: "100%",
             })}>
-                {reactions.map((reaction, i) => <div key={i}>
-                    <br />
-                    <div className={css({ display: "flex", flexDirection: "row" })}>
-                        ##
-                        {reaction.reagents.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
-                        ⇒
-                        {reaction.products.map((p, i) => <ParticleText key={i} particle={p} />)}
-                    </div>
-                    <br />
-                    {[...resolveReaction({
-                        reagents: reaction.reagents,
-                        products: reaction.products,
-                        helperDiraction: hg.axialToCube(v2.zero())
-                    })].map(({
-                        reactionMomentumDirection,
-                        isReagentsMomentumAmbiguous,
-                        resolvedProducts,
-                    }, i) => <div
-                        key={i}
-                        className={css({
-                            display: "flex",
-                            flexDirection: "row",
-                        })}
-                    >
-                            <ReactionVariant
-                                className={css({ border: "1px solid #ffffff30" })}
-                                reagents={reaction.reagents}
-                                resolvedProducts={resolvedProducts}
-                                isReagentsMomentumAmbiguous={isReagentsMomentumAmbiguous}
-                                reactionMomentumDirection={reactionMomentumDirection}
-                            />
-                            <button
-                                onClick={() => setSelectedReaction({
-                                    reagents: reaction.reagents,
-                                    products: resolvedProducts,
-                                    isReagentsMomentumAmbiguous,
-                                    reactionMomentumDirection,
-                                })}
-                            >&gt;</button>
-                        </div>)}
-                    <br />
-                </div>)}
+                {reactions.map((reaction, i) => <ReactionForDirections
+                    key={i}
+                    {...reaction}
+                    setSelectedReactionVariant={setSelectedReaction}
+                />)}
             </div>
             {selectedReaction &&
                 <ReactionMomentumGraph
@@ -180,8 +156,8 @@ export function App({
                     })}
                     reagents={selectedReaction.reagents}
                     products={selectedReaction.products}
-                    isReagentsMomentumAmbiguous={selectedReaction.isReagentsMomentumAmbiguous}
-                    reactionMomentumDirection={selectedReaction.reactionMomentumDirection}
+                    deltaEnergy={selectedReaction.deltaEnergy}
+                    deltaMomentum={selectedReaction.deltaMomentum}
                 />}
         </div>
     </div >

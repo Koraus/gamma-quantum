@@ -1,33 +1,23 @@
-import { hgDiscDots } from "../MainScene";
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
-import { directionVector } from "../puzzle/stepInPlace";
-import { DirectionId } from "../puzzle/terms";
-import { ArrowHeadMarker } from "./ArrowHeadMarker";
-import { ReagentParticle } from "./ReagentParticle";
-import { ProductParticle } from "./ProductParticle";
 import { ParticleWithMomentumText } from "./ParticleWithMomentumText";
-import { cxy, directionSymbol, xy1, xy2 } from "./misc";
 import { particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms";
 import * as hg from "../utils/hg";
+import { ReactionIcon } from "./ReactionIcon";
 
 export function ReactionVariant({
     reagents,
     resolvedProducts,
-    reactionMomentumDirection,
-    isReagentsMomentumAmbiguous,
+    deltaMomentum,
+    deltaEnergy,
     className,
     ...props
 }: {
     reagents: ParticleWithMomentum[];
     resolvedProducts: ParticleWithMomentum[];
-    reactionMomentumDirection: DirectionId;
-    isReagentsMomentumAmbiguous: boolean;
+    deltaMomentum: v3;
+    deltaEnergy: number;
 } & JSX.IntrinsicElements["div"]) {
-    const colors = [
-        ...reagents.map(p => p.color),
-        ...resolvedProducts.map(p => p.color),
-    ];
 
     const reagentsMomentum = reagents
         .map(particleMomentum)
@@ -60,14 +50,9 @@ export function ReactionVariant({
             display: "flex",
             flexDirection: "row"
         })}>
-            <svg viewBox="-1.3 -1.3 2.6 2.6" width={70}>
-                {colors.map((color, i) => <ArrowHeadMarker key={i} color={color} />)}
-
-                {[...hgDiscDots(2)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
-
-                {reagents.map((r, i) => <ReagentParticle key={i} {...r} />)}
-                {resolvedProducts.map((r, i) => <ProductParticle key={i} {...r} />)}
-            </svg>
+            <ReactionIcon 
+                reagents={reagents}
+                products={resolvedProducts} />
 
             <div className={css({
                 border: "1px solid grey",
@@ -87,6 +72,12 @@ export function ReactionVariant({
                 border: "1px solid grey",
             })}>
                 {resolvedProducts.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
+            </div>
+            &nbsp;
+            <div>
+                ~p {JSON.stringify(deltaMomentum)}<br />
+                ~p_len {hg.cubeLen(deltaMomentum)}<br />
+                ~E {deltaEnergy}
             </div>
         </div>
     </div>;

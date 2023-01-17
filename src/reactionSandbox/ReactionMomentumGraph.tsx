@@ -8,21 +8,21 @@ import { particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms"
 import { DirectionId } from "../puzzle/terms";
 import { ParticleWithMomentumText } from "./ParticleWithMomentumText";
 import * as hg from "../utils/hg";
-import { ReagentParticle } from "./ReagentParticle";
-import { ProductParticle } from "./ProductParticle";
+import { directionOf } from "./resolveReaction";
+import { ReactionIcon } from "./ReactionIcon";
 
 
 export function ReactionMomentumGraph({
     reagents,
     products,
-    reactionMomentumDirection,
-    isReagentsMomentumAmbiguous,
+    deltaMomentum,
+    deltaEnergy,
     ...props
 }: {
     reagents: ParticleWithMomentum[];
     products: ParticleWithMomentum[];
-    reactionMomentumDirection: DirectionId;
-    isReagentsMomentumAmbiguous: boolean;
+    deltaMomentum: v3;
+    deltaEnergy: number;
 } & JSX.IntrinsicElements["div"]) {
     const colors = [
         ...reagents.map(p => p.color),
@@ -51,14 +51,7 @@ export function ReactionMomentumGraph({
             display: "flex",
             flexDirection: "row"
         })}>
-            <svg viewBox="-1.3 -1.3 2.6 2.6" width={70}>
-                {colors.map((color, i) => <ArrowHeadMarker key={i} color={color} />)}
-
-                {[...hgDiscDots(2)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
-
-                {reagents.map((r, i) => <ReagentParticle key={i} {...r} />)}
-                {products.map((r, i) => <ProductParticle key={i} {...r} />)}
-            </svg>
+            <ReactionIcon reagents={reagents} products={products} />
 
             <div className={css({
                 border: "1px solid grey",
@@ -68,8 +61,7 @@ export function ReactionMomentumGraph({
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Σp</span>
                 &nbsp;
-                {isReagentsMomentumAmbiguous ? "~" : ""}
-                {directionSymbol[reactionMomentumDirection]}
+                {directionOf(productsMomentum).map((d, i) => <span key={i}>{directionSymbol[d]}</span>)}
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>{JSON.stringify(reagentsMomentum)}</span>
                 &nbsp;
