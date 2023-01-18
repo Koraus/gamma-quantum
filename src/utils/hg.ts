@@ -1,4 +1,5 @@
-import { v2, v3 } from "./v";
+type v2 = [number, number];
+type v3 = [number, number, number];
 
 export const SQRT3 = Math.sqrt(3);
 export const axialToFlatCart = ([q, r]: v2 | v3) => [(SQRT3 / 2) * q, (1 / 2) * q + r] as v2;
@@ -19,7 +20,7 @@ export const cubeRotate60CcvTimes = (v: v3, times: number) => {
     for (let i = 0; i < times; i++) v = cubeRotate60Ccv(v);
     return v;
 };
-export const cubeRound = (v: v3) => {
+export const cubeRound = (v: v3): v3 => {
     const { round, abs } = Math;
     const [q, r, s] = v.map(round);
 
@@ -27,7 +28,7 @@ export const cubeRound = (v: v3) => {
     const r_diff = abs(r - v[1]);
     const s_diff = abs(s - v[2]);
 
-    if (q_diff > r_diff && q_diff > s_diff) return [-r - s, r, s] as v3;
-    if (r_diff > s_diff) return [q, -q - s, s] as v3;
-    return [q, r, -q - r] as v3;
+    if (q_diff > r_diff && q_diff > s_diff) return [-r - s, r, s];
+    if (r_diff > s_diff) return [q, -q - s, s];
+    return [q, r, -q - r];
 };

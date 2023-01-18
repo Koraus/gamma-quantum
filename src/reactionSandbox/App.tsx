@@ -4,6 +4,8 @@ import { Particle, ParticleWithMomentum } from "./terms";
 import { useState } from "react";
 import { ReactionMomentumGraph } from "./ReactionMomentumGraph";
 import { ReactionForDirections } from "./ReactionForDirections";
+import { directionVector } from "../puzzle/stepInPlace";
+import { tuple } from "../utils/tuple";
 
 export function App({
 
@@ -22,98 +24,70 @@ export function App({
     const reactions = [
         // q-m1 + q-m1 => qq-m1
         ...[
-            { direction: 0, velocity: 0 },
-            { direction: 0, velocity: 1 },
-            { direction: 1, velocity: 1 },
-            { direction: 2, velocity: 1 },
-            { direction: 3, velocity: 1 },
-        ].map(v => ({
+            [v3.zero(), v3.zero()],
+            [directionVector[0], v3.zero()],
+            [directionVector[0], directionVector[0]],
+            [directionVector[0], directionVector[1]],
+            [directionVector[0], directionVector[2]],
+            [directionVector[0], directionVector[3]],
+        ].map(([v1, v2]) => ({
             reagents: [
-                { direction: 0, velocity: 1, ...particles.q },
-                { ...v, ...particles.q2 },
+                { velocity: v1, ...particles.q },
+                { velocity: v2, ...particles.q2 },
             ],
             products: [particles.qq],
         })),
-        {
-            reagents: [
-                { direction: 0, velocity: 0, ...particles.q },
-                { direction: 0, velocity: 0, ...particles.q2 },
-            ],
-            products: [particles.qq],
-        },
 
         // qq-m1 + q-m1 = qqq-m2
         ...[
-            { direction: 0, velocity: 0 },
-            { direction: 0, velocity: 1 },
-            { direction: 1, velocity: 1 },
-            { direction: 2, velocity: 1 },
-            { direction: 3, velocity: 1 },
-        ].map(v => ({
+            [v3.zero(), v3.zero()],
+            [v3.zero(), directionVector[0]],
+            [directionVector[0], v3.zero()],
+            [directionVector[0], directionVector[0]],
+            [directionVector[0], directionVector[1]],
+            [directionVector[0], directionVector[2]],
+            [directionVector[0], directionVector[3]],
+        ].map(([v1, v2]) => ({
             reagents: [
-                { direction: 0, velocity: 1, ...particles.q },
-                { ...v, ...particles.qq },
+                { velocity: v1, ...particles.qq },
+                { velocity: v2, ...particles.q },
             ],
             products: [particles.qqq],
         })),
-        {
-            reagents: [
-                { direction: 0, velocity: 0, ...particles.q },
-                { direction: 0, velocity: 0, ...particles.qq },
-            ],
-            products: [particles.qqq],
-        },
 
         // qqq-m2 + q-m1 = qqqq-m4
         ...[
-            { direction: 0, velocity: 0 },
-            { direction: 0, velocity: 1 },
-            { direction: 1, velocity: 1 },
-            { direction: 2, velocity: 1 },
-            { direction: 3, velocity: 1 },
-        ].map(v => ({
+            [v3.zero(), v3.zero()],
+            [v3.zero(), directionVector[0]],
+            [directionVector[0], v3.zero()],
+            [directionVector[0], directionVector[0]],
+            [directionVector[0], directionVector[1]],
+            [directionVector[0], directionVector[2]],
+            [directionVector[0], directionVector[3]],
+        ].map(([v1, v2]) => ({
             reagents: [
-                { direction: 0, velocity: 1, ...particles.qqq },
-                { ...v, ...particles.q },
+                { velocity: v1, ...particles.qqq },
+                { velocity: v2, ...particles.q },
             ],
             products: [particles.qqqq],
         })),
-        {
-            reagents: [
-                { direction: 0, velocity: 0, ...particles.qqq },
-                { direction: 0, velocity: 1, ...particles.q },
-            ],
-            products: [particles.qqqq],
-        },
-        {
-            reagents: [
-                { direction: 0, velocity: 0, ...particles.qqq },
-                { direction: 0, velocity: 0, ...particles.q },
-            ],
-            products: [particles.qqqq],
-        },
+
 
         // qq-m1 + qq-m1 = qqqq-m4
         ...[
-            { direction: 0, velocity: 0 },
-            { direction: 0, velocity: 1 },
-            { direction: 1, velocity: 1 },
-            { direction: 2, velocity: 1 },
-            { direction: 3, velocity: 1 },
-        ].map(v => ({
+            [v3.zero(), v3.zero()],
+            [directionVector[0], v3.zero()],
+            [directionVector[0], directionVector[0]],
+            [directionVector[0], directionVector[1]],
+            [directionVector[0], directionVector[2]],
+            [directionVector[0], directionVector[3]],
+        ].map(([v1, v2]) => ({
             reagents: [
-                { direction: 0, velocity: 1, ...particles.qq },
-                { ...v, ...particles.qq2 },
+                { velocity: v1, ...particles.qq },
+                { velocity: v2, ...particles.qq2 },
             ],
             products: [particles.qqqq],
         })),
-        {
-            reagents: [
-                { direction: 0, velocity: 0, ...particles.qq },
-                { direction: 0, velocity: 0, ...particles.qq2 },
-            ],
-            products: [particles.qqqq],
-        },
     ] as Array<{
         reagents: ParticleWithMomentum[];
         products: Particle[];
@@ -124,6 +98,7 @@ export function App({
         products: ParticleWithMomentum[];
         deltaMomentum: v3;
         deltaEnergy: number;
+        twins: Array<{ reagents: ParticleWithMomentum[]; resolvedProducts: ParticleWithMomentum[]; }>
     }>();
 
     return <div className={css({
@@ -154,10 +129,7 @@ export function App({
                     className={css({
                         flex: 1,
                     })}
-                    reagents={selectedReaction.reagents}
-                    products={selectedReaction.products}
-                    deltaEnergy={selectedReaction.deltaEnergy}
-                    deltaMomentum={selectedReaction.deltaMomentum}
+                    {...selectedReaction}
                 />}
         </div>
     </div >

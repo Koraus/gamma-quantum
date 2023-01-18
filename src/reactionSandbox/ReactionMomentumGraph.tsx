@@ -6,7 +6,7 @@ import { ArrowHeadMarker } from "./ArrowHeadMarker";
 import { cxy, directionSymbol, xy1, xy2 } from "./misc";
 import { particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms";
 import { DirectionId } from "../puzzle/terms";
-import { ParticleWithMomentumText } from "./ParticleWithMomentumText";
+import { ParticleText } from "./ParticleText";
 import * as hg from "../utils/hg";
 import { directionOf } from "./resolveReaction";
 import { ReactionIcon } from "./ReactionIcon";
@@ -17,12 +17,14 @@ export function ReactionMomentumGraph({
     products,
     deltaMomentum,
     deltaEnergy,
+    twins,
     ...props
 }: {
     reagents: ParticleWithMomentum[];
     products: ParticleWithMomentum[];
     deltaMomentum: v3;
     deltaEnergy: number;
+    twins: Array<{ reagents: ParticleWithMomentum[]; resolvedProducts: ParticleWithMomentum[]; }>
 } & JSX.IntrinsicElements["div"]) {
     const colors = [
         ...reagents.map(p => p.color),
@@ -56,7 +58,7 @@ export function ReactionMomentumGraph({
             <div className={css({
                 border: "1px solid grey",
             })}>
-                {reagents.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
+                {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
                 <br />
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Σp</span>
@@ -76,7 +78,7 @@ export function ReactionMomentumGraph({
             <div className={css({
                 border: "1px solid grey",
             })}>
-                {products.map((p, i) => <ParticleWithMomentumText key={i} particle={p} />)}
+                {products.map((p, i) => <ParticleText key={i} particle={p} />)}
                 <br />
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Σp</span>
@@ -113,17 +115,24 @@ export function ReactionMomentumGraph({
 
         </div>
 
+        {twins.length > 0 && <div>
+            Twins:
+            {twins.map((t, i) => <ReactionIcon
+                key={i}
+                reagents={t.reagents}
+                products={t.resolvedProducts}
+            />)}
+        </div>
+        }
+
         <svg viewBox="-5 -5 10 10">
             {colors.map((color, i) => <ArrowHeadMarker key={i} color={color} />)}
 
             {[...hgDiscDots(5)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
 
             {reagents
-                .map(r => ({
-                    v: v3.scale(directionVector[r.direction], (r.mass || 1) * r.velocity),
-                    particle: r,
-                }))
-                .map(((offset: v3) => ({ v, particle }) => {
+                .map(((offset: v3) => particle => {
+                    const v = particleMomentum(particle);
                     const ret = { offset, v, particle };
                     offset = v3.add(offset, v);
                     return ret;
@@ -140,11 +149,8 @@ export function ReactionMomentumGraph({
                 </g>)}
 
             {products
-                .map(r => ({
-                    v: v3.scale(directionVector[r.direction], (r.mass || 1) * r.velocity),
-                    particle: r,
-                }))
-                .map(((offset: v3) => ({ v, particle }) => {
+                .map(((offset: v3) => particle => {
+                    const v = particleMomentum(particle);
                     const ret = { offset, v, particle };
                     offset = v3.add(offset, v);
                     return ret;

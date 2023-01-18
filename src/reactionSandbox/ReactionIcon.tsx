@@ -3,20 +3,18 @@ import { ArrowHeadMarker } from "./ArrowHeadMarker";
 import { ParticleWithMomentum } from "./terms";
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
-import { directionVector } from "../puzzle/stepInPlace";
-import { IntRange_0Inc_5Inc } from "../puzzle/terms";
 import { cxy, xy1, xy2 } from "./misc";
+import * as hg from "../utils/hg";
 
 const circleRadius = 0.2;
 
 function ReagentParticle({
-    direction, color, velocity,
+    color, velocity,
 }: {
-    direction: IntRange_0Inc_5Inc;
     color: string;
-    velocity: 0 | 1;
+    velocity: v3;
 }) {
-    if (velocity === 0) {
+    if (hg.cubeLen(velocity) === 0) {
         return <g>
             <circle
                 {...cxy(v3.zero())}
@@ -31,31 +29,30 @@ function ReagentParticle({
     return <g>
         <line
             className={cx(css`& {
-            stroke-width: 0.15;
-            stroke: ${color};
-            marker-end: url(#arrowHeadMarker-${color})
-        }`)}
-            {...xy1(v3.negate(directionVector[direction]))}
+                stroke-width: 0.15;
+                stroke: ${color};
+                marker-end: url(#arrowHeadMarker-${color})
+            }`)}
+            {...xy1(v3.negate(velocity))}
             {...xy2(v3.zero())} />
         <circle
-            {...cxy(v3.negate(directionVector[direction]))}
+            {...cxy(v3.negate(velocity))}
             r={circleRadius * 1.3}
             fill="white" />
         <circle
-            {...cxy(v3.negate(directionVector[direction]))}
+            {...cxy(v3.negate(velocity))}
             r={circleRadius}
             fill={color} />
     </g>;
 }
 
 function ProductParticle({
-    direction, color, velocity,
+    color, velocity,
 }: {
-    direction: IntRange_0Inc_5Inc;
     color: string;
-    velocity: 0 | 1;
+    velocity: v3;
 }) {
-    if (velocity === 0) {
+    if (hg.cubeLen(velocity) === 0) {
         return <g>
             <circle
                 {...cxy(v3.zero())}
@@ -70,18 +67,18 @@ function ProductParticle({
     return <g>
         <line
             className={cx(css`& {
-            stroke-width: 0.15;
-            stroke: ${color};
-            marker-end: url(#arrowHeadMarker-${color})
-        }`)}
+                stroke-width: 0.15;
+                stroke: ${color};
+                marker-end: url(#arrowHeadMarker-${color})
+            }`)}
             {...xy1(v3.zero())}
-            {...xy2(directionVector[direction])} />
+            {...xy2(velocity)} />
         <circle
-            {...cxy(directionVector[direction])}
+            {...cxy(velocity)}
             r={circleRadius * 1.3}
             fill="white" />
         <circle
-            {...cxy(directionVector[direction])}
+            {...cxy(velocity)}
             r={circleRadius}
             fill={color} />
     </g>;
