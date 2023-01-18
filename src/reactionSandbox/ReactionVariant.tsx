@@ -1,13 +1,13 @@
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
 import { ParticleText } from "./ParticleText";
-import { particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms";
+import { ParticleWithMomentum } from "./terms";
 import * as hg from "../utils/hg";
 import { ReactionIcon } from "./ReactionIcon";
 
 export function ReactionVariant({
     reagents,
-    resolvedProducts,
+    products,
     deltaMomentum,
     deltaEnergy,
     className,
@@ -15,10 +15,10 @@ export function ReactionVariant({
     ...props
 }: {
     reagents: ParticleWithMomentum[];
-    resolvedProducts: ParticleWithMomentum[];
+    products: ParticleWithMomentum[];
     deltaMomentum: v3;
     deltaEnergy: number;
-    twins: Array<{ reagents: ParticleWithMomentum[]; resolvedProducts: ParticleWithMomentum[]; }>
+    twins: Array<{ reagents: ParticleWithMomentum[]; products: ParticleWithMomentum[]; }>
 } & JSX.IntrinsicElements["div"]) {
     return <div
         className={cx(
@@ -33,14 +33,14 @@ export function ReactionVariant({
         })}>
             <ReactionIcon 
                 reagents={reagents}
-                products={resolvedProducts} />
+                products={products} />
 
             <div>
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
             </div>
             <div>&nbsp;⇒&nbsp;</div>
             <div>
-                {resolvedProducts.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {products.map((p, i) => <ParticleText key={i} particle={p} />)}
             </div>
             &nbsp;
             <div>

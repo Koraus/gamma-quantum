@@ -58,14 +58,10 @@ export function* resolveReaction({
                 reagentsMomentum,
                 reagentsEnergy,
 
-                products,
-                resolvedProducts: [
+                reauestedProducts: products,
+                products: [
                     resolvedProduct,
-                    ...ds.map(d => ({
-                        color: "white",
-                        mass: 0,
-                        velocity: d,
-                    }))
+                    ...ds.map(d => ({ color: "white", mass: 0, velocity: d }))
                 ],
 
                 deltaMomentum,

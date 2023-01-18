@@ -8,28 +8,11 @@ import { ParticleText } from "./ParticleText";
 import _ from "lodash";
 import { useState } from "react";
 import { tuple } from "../utils/tuple";
+import { groupReactionVariantsBySymmetries } from "./groupReactionVariantsBySymmetries";
 
-const ms = tuple(
-    ([q, r, s]: v3) => [-q, -s, -r] as v3,
-    ([q, r, s]: v3) => [s, r, q] as v3,
-    ([q, r, s]: v3) => [-s, -r, -q] as v3,
-    ([q, r, s]: v3) => [r, q, s] as v3,
-    ([q, r, s]: v3) => [-r, -q, -s] as v3,
-    ([q, r, s]: v3) => [q, s, r] as v3,
-);
-
-const areInvariant = (
-    variant1: ParticleWithMomentum[],
-    variant2: ParticleWithMomentum[],
-) => {
-    const pt = (p: ParticleWithMomentum) =>
-        JSON.stringify({ mass: p.mass, velocity: p.velocity });
-    return JSON.stringify(variant1.map(pt).sort())
-        === JSON.stringify(variant2.map(pt).sort());
-}
 
 export function ReactionForDirections({
-    reagents, products, setSelectedReactionVariant,
+    reagents, products: requestedProducts, setSelectedReactionVariant,
 }: {
     reagents: ParticleWithMomentum[];
     products: Particle[];
@@ -38,45 +21,26 @@ export function ReactionForDirections({
         products: ParticleWithMomentum[];
         deltaMomentum: v3;
         deltaEnergy: number;
-        twins: Array<{ reagents: ParticleWithMomentum[]; resolvedProducts: ParticleWithMomentum[]; }>
+        twins: Array<{ reagents: ParticleWithMomentum[]; products: ParticleWithMomentum[]; }>
     }) => void;
 }) {
 
-    const variants = [...resolveReaction({ reagents, products })];
+    const variants = [...resolveReaction({ reagents, products: requestedProducts })];
 
-    const variants1 = variants.map(variant => {
-        const twins = ms.flatMap(m => {
-            const mirroredVariant = {
-                reagents: variant.reagents.map(p => ({ ...p, velocity: m(p.velocity) })),
-                resolvedProducts: variant.resolvedProducts.map(p => ({ ...p, velocity: m(p.velocity) })),
-            }
-            return variants.filter(var2 => {
-                if (var2 === variant) { return false; }
-                return areInvariant(mirroredVariant.reagents, var2.reagents)
-                    && areInvariant(mirroredVariant.resolvedProducts, var2.resolvedProducts);
-            })
-        });
-        return ({
-            ...variant,
-            twins,
-        });
-    })
+    const allGrouppedVariants = Object.entries(_.groupBy(variants, vr => -100 * vr.deltaEnergy + hg.cubeLen(vr.deltaMomentum)))
+        .map(([k, v]) => tuple(k, groupReactionVariantsBySymmetries(v)));
 
-    const grouppedVariants = Object.entries(_.groupBy(variants1, vr => -100 * vr.deltaEnergy
-        + hg.cubeLen(vr.deltaMomentum)));
-    grouppedVariants.sort((g1, g2) => +g1[0] - +g2[0]);
+    allGrouppedVariants.sort((g1, g2) => +g1[0] - +g2[0]);
 
-    const variants2 = variants1.filter(v => v.twins.length === 0);
+    const filteredGrouppedVariants = allGrouppedVariants
+        .map(([k, v]) => tuple(k, v.filter(v => v.length === 1)))
+        .filter(([, v]) => v.length > 0);
 
-    const grouppedVariants2 = Object.entries(_.groupBy(variants2, vr => -100 * vr.deltaEnergy
-        + hg.cubeLen(vr.deltaMomentum)));
-    grouppedVariants2.sort((g1, g2) => +g1[0] - +g2[0]);
-
-    const selectedVariant = grouppedVariants2[0]?.[1].length === 1
-        ? grouppedVariants2[0][1][0]
+    const selectedVariant = filteredGrouppedVariants[0]?.[1].length === 1
+        ? filteredGrouppedVariants[0][1][0][0]
         : undefined;
 
-    const noVariants = (variants2.length === 0);
+    const noVariants = filteredGrouppedVariants.length === 0;
 
     const isResolved = noVariants || !!selectedVariant;
 
@@ -87,7 +51,7 @@ export function ReactionForDirections({
             return <>
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
                 &nbsp;⇒&nbsp;
-                {selectedVariant.resolvedProducts.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {selectedVariant.products.map((p, i) => <ParticleText key={i} particle={p} />)}
             </>
         }
 
@@ -95,7 +59,7 @@ export function ReactionForDirections({
             return <>
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
                 &nbsp;<span className={css({ color: "crimson" })}>⇏</span>&nbsp;
-                {products.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {requestedProducts.map((p, i) => <ParticleText key={i} particle={p} />)}
             </>
         }
 
@@ -103,7 +67,7 @@ export function ReactionForDirections({
             <span className={css({ color: "yellow" })}>⚠&nbsp;</span>
             {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
             &nbsp;⇒&nbsp;
-            {products.map((p, i) => <ParticleText key={i} particle={p} />)}
+            {requestedProducts.map((p, i) => <ParticleText key={i} particle={p} />)}
         </>
     })();
 
@@ -119,43 +83,47 @@ export function ReactionForDirections({
         </div>
         {!isCollapsed && <>
             <br />
-            {grouppedVariants.map(([key, variants], i) => <div key={i}>
-                ~-E ~p_len= {key}
-                {variants.map((variant, i) => {
-                    const {
-                        resolvedProducts, deltaEnergy, deltaMomentum, twins
-                    } = variant;
-                    return <div
-                        key={i}
-                        className={css({
-                            display: "flex",
-                            flexDirection: "row",
-                        })}
-                    >
-                        <ReactionVariant
+            {allGrouppedVariants.map(([key, variants], i) => <div key={i}>
+                # priority group ~-E ~p_len= {key}
+                {variants.map((symGroup, i) => <div key={i}>
+                    ## sym group, size {symGroup.length}
+                    {symGroup.map((variant, i) => {
+                        const {
+                            products, deltaEnergy, deltaMomentum
+                        } = variant;
+                        const twins = symGroup.filter(v => v !== variant);
+                        return <div
+                            key={i}
                             className={css({
-                                border: "1px solid",
-                                borderColor:
-                                    variant === selectedVariant
-                                        ? "#ffffff"
-                                        : "#ffffff30",
+                                display: "flex",
+                                flexDirection: "row",
                             })}
-                            reagents={reagents}
-                            resolvedProducts={resolvedProducts}
-                            deltaEnergy={deltaEnergy}
-                            deltaMomentum={deltaMomentum}
-                            twins={twins} />
-                        <button
-                            onClick={() => setSelectedReactionVariant({
-                                reagents: reagents,
-                                products: resolvedProducts,
-                                deltaEnergy,
-                                deltaMomentum,
-                                twins,
-                            })}
-                        >&gt;</button>
-                    </div>;
-                })}
+                        >
+                            <ReactionVariant
+                                className={css({
+                                    border: "1px solid",
+                                    borderColor:
+                                        variant === selectedVariant
+                                            ? "#ffffff"
+                                            : "#ffffff30",
+                                })}
+                                reagents={reagents}
+                                products={products}
+                                deltaEnergy={deltaEnergy}
+                                deltaMomentum={deltaMomentum}
+                                twins={twins} />
+                            <button
+                                onClick={() => setSelectedReactionVariant({
+                                    reagents: reagents,
+                                    products: products,
+                                    deltaEnergy,
+                                    deltaMomentum,
+                                    twins,
+                                })}
+                            >&gt;</button>
+                        </div>;
+                    })}
+                </div>)}
             </div>)}
 
             <br />

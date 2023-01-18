@@ -24,7 +24,7 @@ export function ReactionMomentumGraph({
     products: ParticleWithMomentum[];
     deltaMomentum: v3;
     deltaEnergy: number;
-    twins: Array<{ reagents: ParticleWithMomentum[]; resolvedProducts: ParticleWithMomentum[]; }>
+    twins: Array<{ reagents: ParticleWithMomentum[]; products: ParticleWithMomentum[]; }>
 } & JSX.IntrinsicElements["div"]) {
     const colors = [
         ...reagents.map(p => p.color),
@@ -120,7 +120,7 @@ export function ReactionMomentumGraph({
             {twins.map((t, i) => <ReactionIcon
                 key={i}
                 reagents={t.reagents}
-                products={t.resolvedProducts}
+                products={t.products}
             />)}
         </div>
         }
