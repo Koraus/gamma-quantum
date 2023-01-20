@@ -42,6 +42,33 @@ export function* resolveReaction({
     const reagentsMomentum = reagents.map(particleMomentum).reduce(v3.add, v3.zero());
     const reagentsEnergy = reagents.map(particleEnegry).reduce((acc, v) => acc + v, 0);
 
+    if (products.length === 0) {
+        const productsMomentum = [].map(particleMomentum).reduce(v3.add, v3.zero());
+        const productsEnergy = [].map(particleEnegry).reduce((acc, v) => acc + v, 0);
+
+        const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
+        const deltaEnergy = productsEnergy - reagentsEnergy;
+
+        yield* [...solveConservation({
+            extraMomentum: v3.negate(deltaMomentum),
+            extraEnergy: -deltaEnergy,
+        })].map(ds => ({
+            reagents,
+            reagentsMomentum,
+            reagentsEnergy,
+
+            reauestedProducts: products,
+            products: [
+                ...ds.map(d => ({ color: "white", mass: 0, velocity: d }))
+            ],
+
+            deltaMomentum,
+            deltaEnergy,
+        }));
+        
+        return;
+    }
+
     if (products.length === 1) {
         for (const resolvedProduct of velocityVariants.map(d => ({ velocity: d, ...products[0] }))) {
             const productsMomentum = [resolvedProduct].map(particleMomentum).reduce(v3.add, v3.zero());

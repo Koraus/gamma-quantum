@@ -59,7 +59,10 @@ export function ReactionForDirections({
             return <>
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
                 &nbsp;<span className={css({ color: "crimson" })}>⇏</span>&nbsp;
-                {requestedProducts.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {requestedProducts.length > 0
+                    ? requestedProducts.map((p, i) => <ParticleText key={i} particle={p} />)
+                    : <ParticleText particle={{color: "white", mass: 0}} />
+                }
             </>
         }
 
@@ -67,7 +70,10 @@ export function ReactionForDirections({
             <span className={css({ color: "yellow" })}>⚠&nbsp;</span>
             {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
             &nbsp;⇒&nbsp;
-            {requestedProducts.map((p, i) => <ParticleText key={i} particle={p} />)}
+            {requestedProducts.length > 0
+                ? requestedProducts.map((p, i) => <ParticleText key={i} particle={p} />)
+                : <ParticleText particle={{color: "white", mass: 0}} />
+            }
         </>
     })();
 
