@@ -8,6 +8,7 @@ import { IntRange_0Inc_5Inc, Particle, Solution } from "./puzzle/terms";
 import { initialWorld, stepInPlace } from "./puzzle/stepInPlace";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
+import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 
 // todo list:
 // design a level based on simple spawns and reactions
@@ -45,9 +46,7 @@ const solution: Solution = {
     }],
 }
 
-export { App } from "./reactionSandbox/App";
-
-export function _App() {
+export function App() {
     const stepState = useState(0);
     const [step] = stepState;
 
@@ -85,6 +84,11 @@ export function _App() {
                     = {i}: {JSON.stringify(p)}
                 </div>)}
             </div>
+            <ReactionSandboxPanel
+                className={cx(css({
+                    pointerEvents: "all",
+                }))}
+            />
             <PlaybackPanel
                 className={cx(css({
                     pointerEvents: "all",

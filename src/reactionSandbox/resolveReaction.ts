@@ -23,15 +23,12 @@ export function directionOf(v: v3) {
     ) as DirectionId[];
 }
 
-const velocityVariants = [
-    [0, 0, 0] as v3,
-    directionVector[0],
-    directionVector[1],
-    directionVector[2],
-    directionVector[3],
-    directionVector[4],
-    directionVector[5],
-];
+export const velocityVariants = [v3.zero(), ...directionVector];
+export const velocityVariants1 = velocityVariants.map(vel => tuple(vel));
+export const velocityVariants2 = velocityVariants.flatMap(vel1 => velocityVariants.map(vel => tuple(vel1, vel)));
+export const velocityVariants3 = velocityVariants2.flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
+export const velocityVariants4 = velocityVariants3.flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
+export const velocityVariantsArr = [[], velocityVariants1, velocityVariants2, velocityVariants3, velocityVariants4] as const;
 
 export function* resolveReaction({
     reagents, products,
@@ -65,14 +62,21 @@ export function* resolveReaction({
             deltaMomentum,
             deltaEnergy,
         }));
-        
+
         return;
     }
 
-    if (products.length === 1) {
-        for (const resolvedProduct of velocityVariants.map(d => ({ velocity: d, ...products[0] }))) {
-            const productsMomentum = [resolvedProduct].map(particleMomentum).reduce(v3.add, v3.zero());
-            const productsEnergy = [resolvedProduct].map(particleEnegry).reduce((acc, v) => acc + v, 0);
+    if (products.length <= velocityVariantsArr.length) {
+        const resolvedReactions = velocityVariantsArr[products.length].map((vels) => ({
+            reagents,
+            products: products
+                .map((p, i) => ({ velocity: vels[i], ...p }))
+                .filter(p => p.mass > 0 || hg.cubeLen(p.velocity) > 0),
+        }));
+
+        for (const resolvedReaction of resolvedReactions) {
+            const productsMomentum = resolvedReaction.products.map(particleMomentum).reduce(v3.add, v3.zero());
+            const productsEnergy = resolvedReaction.products.map(particleEnegry).reduce((acc, v) => acc + v, 0);
 
             const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
             const deltaEnergy = productsEnergy - reagentsEnergy;
@@ -87,7 +91,7 @@ export function* resolveReaction({
 
                 reauestedProducts: products,
                 products: [
-                    resolvedProduct,
+                    ...resolvedReaction.products,
                     ...ds.map(d => ({ color: "white", mass: 0, velocity: d }))
                 ],
 

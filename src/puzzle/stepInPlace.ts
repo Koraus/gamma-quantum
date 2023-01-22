@@ -16,7 +16,7 @@ export const directionVector = [
     hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 3),
     hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 4),
     hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 5),
-] as Record<IntRange_0Inc_5Inc, v3>;
+] as const;
 
 export function initialWorld(): Parameters<typeof stepInPlace>[1] {
     return {

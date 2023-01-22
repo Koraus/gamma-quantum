@@ -125,7 +125,7 @@ export function ReactionMomentumGraph({
         </div>
         }
 
-        <svg viewBox="-5 -5 10 10">
+        <svg viewBox="-5 -5 10 10" width={300}>
             {colors.map((color, i) => <ArrowHeadMarker key={i} color={color} />)}
 
             {[...hgDiscDots(5)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
