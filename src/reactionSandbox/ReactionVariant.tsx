@@ -1,9 +1,9 @@
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
 import { ParticleText } from "./ParticleText";
-import { ParticleWithMomentum } from "./terms";
 import * as hg from "../utils/hg";
 import { ReactionIcon } from "./ReactionIcon";
+import { Particle } from "../puzzle/terms";
 
 export function ReactionVariant({
     reagents,
@@ -14,11 +14,11 @@ export function ReactionVariant({
     twins,
     ...props
 }: {
-    reagents: ParticleWithMomentum[];
-    products: ParticleWithMomentum[];
+    reagents: Particle[];
+    products: Particle[];
     deltaMomentum: v3;
     deltaEnergy: number;
-    twins: Array<{ reagents: ParticleWithMomentum[]; products: ParticleWithMomentum[]; }>
+    twins: Array<{ reagents: Particle[]; products: Particle[]; }>
 } & JSX.IntrinsicElements["div"]) {
     return <div
         className={cx(

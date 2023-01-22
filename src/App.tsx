@@ -1,10 +1,10 @@
 import "./initAnalytics";
 
 import { css, cx } from "@emotion/css";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { PlaybackPanel } from "./PlaybackPanel";
 import { appVersion } from "./appVersion";
-import { IntRange_0Inc_5Inc, Particle, Solution } from "./puzzle/terms";
+import { Solution } from "./puzzle/terms";
 import { initialWorld, stepInPlace } from "./puzzle/stepInPlace";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";

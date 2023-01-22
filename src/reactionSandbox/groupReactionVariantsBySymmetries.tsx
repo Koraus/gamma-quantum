@@ -1,6 +1,6 @@
 import { v3 } from "../utils/v";
-import { ParticleWithMomentum } from "./terms";
 import { tuple } from "../utils/tuple";
+import { Particle } from "../puzzle/terms";
 
 export const mirrorTransforms = tuple(
     ([q, r, s]: v3) => [-q, -s, -r] as v3,
@@ -11,20 +11,22 @@ export const mirrorTransforms = tuple(
     ([q, r, s]: v3) => [q, s, r] as v3
 );
 
-const getParticleKey = ({ mass, velocity }: ParticleWithMomentum) => 
-    JSON.stringify({ mass, velocity });
+const getParticleKey = ({ content, velocity }: Particle) => 
+    JSON.stringify({ 
+        content: Array.isArray(content) ? [...content].sort() : content, 
+        velocity });
 
 const getVariantKey = (v: {
-    reagents: ParticleWithMomentum[];
-    products: ParticleWithMomentum[];
+    reagents: Particle[];
+    products: Particle[];
 }) => JSON.stringify({
     reagents: v.reagents.map(getParticleKey).sort(),
     products: v.products.map(getParticleKey).sort(),
 });
 
 export function groupReactionVariantsBySymmetries<T extends {
-    reagents: ParticleWithMomentum[];
-    products: ParticleWithMomentum[];
+    reagents: Particle[];
+    products: Particle[];
 }>(variants: T[]) {
     const groups = {} as Record<string, Set<T>>;
     const keysProcessed = new Set<string>();
@@ -52,5 +54,5 @@ export function groupReactionVariantsBySymmetries<T extends {
         }
     }
 
-    return [...new Set([...Object.values(groups)])].map(g => [...g]);
+    return [...new Set(Object.values(groups))].map(g => [...g]);
 }

@@ -1,6 +1,6 @@
 import { v3 } from "../utils/v";
 import { css } from "@emotion/css";
-import { ParticleWithMomentum } from "./terms";
+import { Particle } from "../puzzle/terms";
 import { useState } from "react";
 import { ReactionMomentumGraph } from "./ReactionMomentumGraph";
 import { ReactionVariants } from "./ReactionVariants";
@@ -15,20 +15,20 @@ export function ReactionSandbox({
     const reactions = [{
         title: "Annihilation (q-m1 + q-m1 => g-m0)",
         reaction: {
-            reagents: [particles.q, particles.q2],
+            reagents: [particles.q, particles.q],
             products: [particles.g],
         }
     }, {
         title: "Shift (q-m1 + q-m1 => q-m1), Fusion (... => qq-m1)",
         reaction: {
-            reagents: [particles.q, particles.q2],
+            reagents: [particles.q, particles.q],
             products: [particles.qq],
         }
     }, {
         title: "Shift (q-m1 => q-m1 + q-m1), Fusion (qq-m1 => ...)",
         reaction: {
             reagents: [particles.qq],
-            products: [particles.q, particles.q2],
+            products: [particles.q, particles.q],
         }
     }, {
         title: "Oscillation (qq-m1 + q-m1 => qqq-m2)",
@@ -57,23 +57,23 @@ export function ReactionSandbox({
     }, {
         title: "Fission-22 (qq-m1 + qq-m1 => qqqq-m4)",
         reaction: {
-            reagents: [particles.qq, particles.qq2],
+            reagents: [particles.qq, particles.qq],
             products: [particles.qqqq],
         }
     }, {
         title: "Fission-22 (qqqq-m4 => qq-m1 + qq-m1)",
         reaction: {
             reagents: [particles.qqqq],
-            products: [particles.qq, particles.qq2],
+            products: [particles.qq, particles.qq],
         }
     }];
 
     const [selectedReaction, setSelectedReaction] = useState<{
-        reagents: ParticleWithMomentum[];
-        products: ParticleWithMomentum[];
+        reagents: Particle[];
+        products: Particle[];
         deltaMomentum: v3;
         deltaEnergy: number;
-        twins: Array<{ reagents: ParticleWithMomentum[]; products: ParticleWithMomentum[]; }>
+        twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }>();
 
     return <div className={css({

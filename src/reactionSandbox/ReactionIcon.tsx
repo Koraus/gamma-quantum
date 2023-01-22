@@ -1,10 +1,11 @@
 import { hgDiscDots } from "../MainScene";
 import { ArrowHeadMarker } from "./ArrowHeadMarker";
-import { ParticleWithMomentum } from "./terms";
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
 import { cxy, xy1, xy2 } from "./misc";
 import * as hg from "../utils/hg";
+import { particleColor } from "./ParticleText";
+import { Particle } from "../puzzle/terms";
 
 
 const circleRadius = 0.2;
@@ -54,12 +55,12 @@ function ProductParticle({
 export function ReactionIcon({
     reagents, products,
 }: {
-    reagents: ParticleWithMomentum[];
-    products: ParticleWithMomentum[];
+    reagents: Particle[];
+    products: Particle[];
 }) {
     const colors = [
-        ...reagents.map(p => p.color),
-        ...products.map(p => p.color),
+        ...reagents.map(particleColor),
+        ...products.map(particleColor),
     ];
 
     return <svg viewBox="-1.4 -1.4 2.8 2.8" width={60}>
@@ -67,7 +68,7 @@ export function ReactionIcon({
 
         {[...hgDiscDots(2)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".05" fill="white" />)}
 
-        {reagents.map((r, i) => <ReagentParticle key={i} {...r} />)}
-        {products.map((r, i) => <ProductParticle key={i} {...r} />)}
+        {reagents.map((r, i) => <ReagentParticle key={i} {...r} color={particleColor(r)} />)}
+        {products.map((r, i) => <ProductParticle key={i} {...r} color={particleColor(r)} />)}
     </svg>;
 }

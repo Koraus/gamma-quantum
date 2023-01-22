@@ -1,14 +1,11 @@
 import { hgDiscDots } from "../MainScene";
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
-import { directionVector } from "../puzzle/stepInPlace";
 import { ArrowHeadMarker } from "./ArrowHeadMarker";
-import { cxy, directionSymbol, xy1, xy2 } from "./misc";
-import { particleEnegry, particleMomentum, ParticleWithMomentum } from "./terms";
-import { DirectionId } from "../puzzle/terms";
-import { ParticleText } from "./ParticleText";
+import { cxy, xy1, xy2 } from "./misc";
+import { particleEnegry, particleMomentum, Particle } from "../puzzle/terms";
+import { directionOf, directionSymbol, particleColor, ParticleText } from "./ParticleText";
 import * as hg from "../utils/hg";
-import { directionOf } from "./resolveReaction";
 import { ReactionIcon } from "./ReactionIcon";
 
 
@@ -20,15 +17,15 @@ export function ReactionMomentumGraph({
     twins,
     ...props
 }: {
-    reagents: ParticleWithMomentum[];
-    products: ParticleWithMomentum[];
+    reagents: Particle[];
+    products: Particle[];
     deltaMomentum: v3;
     deltaEnergy: number;
-    twins: Array<{ reagents: ParticleWithMomentum[]; products: ParticleWithMomentum[]; }>
+    twins: Array<{ reagents: Particle[]; products: Particle[]; }>
 } & JSX.IntrinsicElements["div"]) {
     const colors = [
-        ...reagents.map(p => p.color),
-        ...products.map(p => p.color),
+        ...reagents.map(particleColor),
+        ...products.map(particleColor),
     ];
 
     const reagentsMomentum = reagents
@@ -142,7 +139,7 @@ export function ReactionMomentumGraph({
                         className={cx(css`& {
                         stroke-width: 0.1;
                         stroke: white;
-                        marker-end: url(#arrowHeadMarker-${particle.color})
+                        marker-end: url(#arrowHeadMarker-${particleColor(particle)})
                     }`)}
                         {...xy1(offset)}
                         {...xy2(v3.add(offset, v))} />
@@ -160,7 +157,7 @@ export function ReactionMomentumGraph({
                         className={cx(css`& {
                         stroke-width: 0.1;
                         stroke: grey;
-                        marker-end: url(#arrowHeadMarker-${particle.color})
+                        marker-end: url(#arrowHeadMarker-${particleColor(particle)})
                     }`)}
                         {...xy1(offset)}
                         {...xy2(v3.add(offset, v))} />

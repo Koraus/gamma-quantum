@@ -1,21 +1,21 @@
 import { v3 } from "../utils/v";
 import { css } from "@emotion/css";
-import { Particle, ParticleWithMomentum } from "./terms";
 import { useState } from "react";
 import { ReactionForDirections } from "./ReactionForDirections";
 import { groupReactionVariantsBySymmetries } from "./groupReactionVariantsBySymmetries";
 import * as hg from "../utils/hg";
 import { particles } from "./particles";
 import { velocityVariants4 } from "./resolveReaction";
+import { ParticleKind, particleMass, Particle } from "../puzzle/terms";
 
 
 const prepareReactionRequests = ({ reagents, products }: {
-    reagents: Particle[];
-    products: Particle[];
+    reagents: ParticleKind[];
+    products: ParticleKind[];
 }) => groupReactionVariantsBySymmetries(velocityVariants4.map((vels) => ({
     reagents: [...reagents, particles.g].slice(0, 4)
         .map((p, i) => ({ velocity: vels[i], ...p }))
-        .filter(p => p.mass > 0 || hg.cubeLen(p.velocity) > 0),
+        .filter(p => particleMass(p) > 0 || hg.cubeLen(p.velocity) > 0),
     products: [],
 }))).map(vars => ({
     ...vars[0],
@@ -27,14 +27,14 @@ export function ReactionVariants({
 }: {
     title: string;
     reaction: {
-        reagents: Particle[]; products: Particle[];
+        reagents: ParticleKind[]; products: ParticleKind[];
     };
     setSelectedReactionVariant: (x: {
-        reagents: ParticleWithMomentum[];
-        products: ParticleWithMomentum[];
+        reagents: Particle[];
+        products: Particle[];
         deltaMomentum: v3;
         deltaEnergy: number;
-        twins: Array<{ reagents: ParticleWithMomentum[]; products: ParticleWithMomentum[]; }>;
+        twins: Array<{ reagents: Particle[]; products: Particle[]; }>;
     }) => void;
 }) {
     const [isCollapsed, setIsCollapsed] = useState(true);

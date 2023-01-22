@@ -1,10 +1,10 @@
 import { v3 } from "../utils/v";
-import { IntRange_0Inc_5Inc, Particle, Solution } from "./terms";
+import { IntRange_0Inc_5Inc, ParticleKind, Solution } from "./terms";
 import * as hg from "../utils/hg";
 import { tuple } from "../utils/tuple";
 import { applyReactionsInPlace } from "./reactions";
 
-export type ParticleState = Particle & {
+export type ParticleState = ParticleKind & {
     position: v3,
     direction: IntRange_0Inc_5Inc,
 }
