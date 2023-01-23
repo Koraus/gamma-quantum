@@ -1,6 +1,6 @@
 import { v3 } from "../utils/v";
 import { tuple } from "../utils/tuple";
-import { Particle } from "../puzzle/terms";
+import { Particle } from "./terms";
 
 export const mirrorTransforms = tuple(
     ([q, r, s]: v3) => [-q, -s, -r] as v3,

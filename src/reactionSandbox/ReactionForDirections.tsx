@@ -1,11 +1,11 @@
 import { v3 } from "../utils/v";
 import { css } from "@emotion/css";
-import { generateReactionVeriants } from "./resolveReaction";
+import { generateReactionVeriants } from "../puzzle/resolveReaction";
 import { ReactionVariant } from "./ReactionVariant";
 import { ParticleText } from "./ParticleText";
 import { useState } from "react";
 import { ParticleKind, Particle, particleMomentum, particleEnegry } from "../puzzle/terms";
-import { selectReactionVariant } from "./selectReactionVariant";
+import { selectReactionVariant } from "../puzzle/selectReactionVariant";
 
 export function ReactionForDirections({
     reagents, products, setSelectedReactionVariant,

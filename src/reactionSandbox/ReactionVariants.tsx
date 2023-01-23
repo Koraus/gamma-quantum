@@ -2,10 +2,10 @@ import { v3 } from "../utils/v";
 import { css } from "@emotion/css";
 import { useState } from "react";
 import { ReactionForDirections } from "./ReactionForDirections";
-import { groupReactionVariantsBySymmetries } from "./groupReactionVariantsBySymmetries";
+import { groupReactionVariantsBySymmetries } from "../puzzle/groupReactionVariantsBySymmetries";
 import * as hg from "../utils/hg";
 import { particles } from "./particles";
-import { velocityVariants4 } from "./resolveReaction";
+import { velocityVariants4 } from "../puzzle/resolveReaction";
 import { ParticleKind, particleMass, Particle } from "../puzzle/terms";
 
 
