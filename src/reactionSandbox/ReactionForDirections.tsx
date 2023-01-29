@@ -1,6 +1,6 @@
 import { v3 } from "../utils/v";
 import { css } from "@emotion/css";
-import { generateReactionVeriants } from "../puzzle/resolveReaction";
+import { generateReactionVariants } from "../puzzle/generateReactionVariants";
 import { ReactionVariant } from "./ReactionVariant";
 import { ParticleText } from "./ParticleText";
 import { useState } from "react";
@@ -23,7 +23,7 @@ export function ReactionForDirections({
     const reagentsMomentum = reagents.map(particleMomentum).reduce(v3.add, v3.zero());
     const reagentsEnergy = reagents.map(particleEnegry).reduce((acc, v) => acc + v, 0);
 
-    const variants = [...generateReactionVeriants({ reagents, products })];
+    const variants = [...generateReactionVariants({ reagents, products })];
 
     const {
         allGrouppedVariants,

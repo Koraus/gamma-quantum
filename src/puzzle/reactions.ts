@@ -1,17 +1,19 @@
 import { v3 } from "../utils/v";
+import { generateReactionVariants } from "./generateReactionVariants";
+import { selectReactionVariant } from "./selectReactionVariant";
 import { ParticleState } from "./stepInPlace";
-import { IntRange_0Inc_5Inc } from "./terms";
+import { IntRange_0Inc_5Inc, ParticleKind } from "./terms";
 
 type Reaction =
     (p1: ParticleState) => (
         undefined
-        | ParticleState[]
+        | ParticleKind[]
         | ((p2: ParticleState) => (
             undefined
-            | ParticleState[]
+            | ParticleKind[]
             | ((p3: ParticleState) => (
                 undefined
-                | ParticleState[]
+                | ParticleKind[]
                 | never
             ))
         ))
@@ -20,49 +22,15 @@ type Reaction =
 const reactions: Reaction[] = [
     p1 => {
         const c1 = p1.content;
-        if (c1 !== "red") { return; }
+        if (c1 === "gamma") { return; }
+        if (Array.isArray(c1)) { return; }
         return p2 => {
-            if (p2.content !== "green") { return; }
+            const c2 = p2.content;
+            if (c2 === "gamma") { return; }
+            if (Array.isArray(c2)) { return; }
+
             return [{
-                position: p1.position,
-                direction: p1.direction,
-                content: [c1, p2.content],
-            }, {
-                position: p1.position,
-                direction: ((3 + p1.direction) % 6) as IntRange_0Inc_5Inc,
-                content: "gamma",
-            }];
-        }
-    },
-    p1 => {
-        const c1 = p1.content;
-        if (c1 !== "red") { return; }
-        return p2 => {
-            if (p2.content !== "blue") { return; }
-            return [{
-                position: p1.position,
-                direction: p1.direction,
-                content: [c1, p2.content],
-            }, {
-                position: p1.position,
-                direction: ((3 + p1.direction) % 6) as IntRange_0Inc_5Inc,
-                content: "gamma",
-            }];
-        }
-    },
-    p1 => {
-        const c1 = p1.content;
-        if (c1 !== "green") { return; }
-        return p2 => {
-            if (p2.content !== "blue") { return; }
-            return [{
-                position: p1.position,
-                direction: p1.direction,
-                content: [c1, p2.content],
-            }, {
-                position: p1.position,
-                direction: ((3 + p1.direction) % 6) as IntRange_0Inc_5Inc,
-                content: "gamma",
+                content: [c1, c2]
             }];
         }
     },
@@ -99,9 +67,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                                     continue;
                                 }
 
-                                particles.splice(particles.indexOf(p1), 1);
-                                particles.splice(particles.indexOf(p2), 1);
-                                newParticles.push(...r3);
+                                throw "not implemented";
 
                                 return true;
                             }
@@ -113,15 +79,34 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
 
                         particles.splice(particles.indexOf(p1), 1);
                         particles.splice(particles.indexOf(p2), 1);
-                        newParticles.push(...r2);
 
-                        return true;
+                        const requestedReaction = {
+                            reagents: [p1, p2],
+                            products: r2,
+                        };
+                        const variants = generateReactionVariants(requestedReaction);
+                        const {
+                            selectedVariant
+                        } = selectReactionVariant({
+                            requestedReaction,
+                            variants,
+                        });
+                        if (selectedVariant) {
+                            particles.splice(particles.indexOf(p1), 1);
+                            particles.splice(particles.indexOf(p2), 1);
+                            newParticles.push(...selectedVariant.products.map(p => ({
+                                ...p,
+                                position: p1.position,
+                            })));
+
+                            return true;
+                        }
+
                     }
                     continue;
                 }
 
-                particles.splice(particles.indexOf(p1), 1);
-                newParticles.push(...r1);
+                throw "not implemented";
 
                 return true;
             }

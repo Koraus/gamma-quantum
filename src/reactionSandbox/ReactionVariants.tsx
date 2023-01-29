@@ -5,7 +5,7 @@ import { ReactionForDirections } from "./ReactionForDirections";
 import { groupReactionVariantsBySymmetries } from "../puzzle/groupReactionVariantsBySymmetries";
 import * as hg from "../utils/hg";
 import { particles } from "./particles";
-import { velocityVariants4 } from "../puzzle/resolveReaction";
+import { velocityVariants4 } from "../puzzle/generateReactionVariants";
 import { ParticleKind, particleMass, Particle } from "../puzzle/terms";
 
 

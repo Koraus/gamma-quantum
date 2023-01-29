@@ -1,6 +1,6 @@
 import { v3 } from "../utils/v";
 import { tuple } from "../utils/tuple";
-import { Particle } from "./terms";
+import { Particle, particleMass } from "./terms";
 
 export const mirrorTransforms = tuple(
     ([q, r, s]: v3) => [-q, -s, -r] as v3,
@@ -11,10 +11,11 @@ export const mirrorTransforms = tuple(
     ([q, r, s]: v3) => [q, s, r] as v3
 );
 
-const getParticleKey = ({ content, velocity }: Particle) => 
+const getParticleKey = (p: Particle) => 
     JSON.stringify({ 
-        content: Array.isArray(content) ? [...content].sort() : content, 
-        velocity });
+        mass: particleMass(p),
+        velocity: p.velocity,
+     });
 
 const getVariantKey = (v: {
     reagents: Particle[];

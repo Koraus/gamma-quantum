@@ -20,29 +20,14 @@ const solution: Solution = {
     problem: undefined,
     actors: [{
         kind: "spawner",
-        direction: 0,
-        output: { content: "red" },
-        position: [3, -3],
-    }, {
-        kind: "spawner",
         direction: 5,
-        output: { content: "green" },
-        position: [-3, 3],
+        output: { content: "red" },
+        position: [-2, 2],
     }, {
         kind: "spawner",
         direction: 1,
-        output: { content: ["green", "blue"] },
-        position: [-5, 3],
-    }, {
-        kind: "spawner",
-        direction: 3,
-        output: { content: "gamma" },
-        position: [-2, 7],
-    }, {
-        kind: "spawner",
-        direction: 4,
-        output: { content: ["red", "green", "blue"] },
-        position: [5, -6],
+        output: { content: "red" },
+        position: [8, -3],
     }],
 }
 

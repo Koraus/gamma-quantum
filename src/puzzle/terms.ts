@@ -6,6 +6,15 @@ export type Problem = undefined;
 export type IntRange_0Inc_5Inc = 0 | 1 | 2 | 3 | 4 | 5;
 export type DirectionId = IntRange_0Inc_5Inc;
 
+export const directionVector = [
+    hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 0),
+    hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 1),
+    hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 2),
+    hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 3),
+    hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 4),
+    hg.cubeRotate60CvTimes(hg.cubeFlatNorth(), 5),
+] as const;
+
 export type ParticleKind = {
     content:
         "gamma" 
