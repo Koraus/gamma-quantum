@@ -76,10 +76,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
 
                             continue;
                         }
-
-                        particles.splice(particles.indexOf(p1), 1);
-                        particles.splice(particles.indexOf(p2), 1);
-
+                        
                         const requestedReaction = {
                             reagents: [p1, p2],
                             products: r2,
