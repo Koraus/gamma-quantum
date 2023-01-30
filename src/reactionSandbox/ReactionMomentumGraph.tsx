@@ -1,4 +1,4 @@
-import { hgDiscDots } from "../MainScene";
+import { hgDiscDots } from "./ReactionIcon";
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
 import { ArrowHeadMarker } from "./ArrowHeadMarker";

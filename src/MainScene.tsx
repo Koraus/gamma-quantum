@@ -1,12 +1,13 @@
 import { initialWorld } from "./puzzle/stepInPlace";
 import { v2, v3 } from "./utils/v";
-import { Box, GizmoHelper, GizmoViewport, Grid, OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { Cylinder, GizmoHelper, GizmoViewport, OrbitControls, PerspectiveCamera, Sphere } from "@react-three/drei";
 import { axialToFlatCart } from "./utils/hg";
 import * as hg from "./utils/hg";
 import { Solution } from "./puzzle/terms";
 import { tuple } from "./utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
+import { HexGrid } from "./HexGrid";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -26,14 +27,7 @@ export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     }
 }
 
-export function* hgDiscDots(radius: number, center: v3 = [0, 0, 0]) {
-    for (let i = 0; i < radius; i++) {
-        yield* hgCircleDots(i, center);
-    }
-}
-
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
-
 
 export function MainScene({
     solution,
@@ -56,29 +50,20 @@ export function MainScene({
             position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)} />
 
         <OrbitControls enableDamping={false} />
-        <Box><meshPhongMaterial wireframe /></Box>
+        <HexGrid />
         <GizmoHelper
             alignment="bottom-right"
             margin={[80, 80]}
         >
             <GizmoViewport />
         </GizmoHelper>
-        <Grid
-            cellColor={"blue"}
-            cellSize={1}
-            sectionSize={10}
-            infiniteGrid />
+
 
         <directionalLight intensity={0.6} position={[-10, 30, 45]} />
         <ambientLight intensity={0.3} />
-
-        {[...hgDiscDots(10)].map((d, i) => {
-            return <group key={i} position={axialToFlatCartXz(d)}>
-                <mesh>
-                    <sphereGeometry args={[0.05]} />
-                </mesh>
-            </group>
-        })}
+        <Cylinder args={[0.01, 0.01, 3]}>
+            <meshBasicMaterial color={"lime"} />
+        </ Cylinder>
 
         {Object.values(_.groupBy(world.particles, p => JSON.stringify(p.position)))
             .flatMap((ps, j) => ps.map((p, i) => <group

@@ -1,4 +1,4 @@
-import { hgDiscDots } from "../MainScene";
+import { hgCircleDots } from "../MainScene";
 import { ArrowHeadMarker } from "./ArrowHeadMarker";
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
@@ -7,6 +7,12 @@ import * as hg from "../utils/hg";
 import { particleColor } from "./ParticleText";
 import { Particle } from "../puzzle/terms";
 
+
+export function* hgDiscDots(radius: number, center: v3 = [0, 0, 0]) {
+    for (let i = 0; i < radius; i++) {
+        yield* hgCircleDots(i, center);
+    }
+}
 
 const circleRadius = 0.2;
 
