@@ -94,6 +94,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                             newParticles.push(...selectedVariant.products.map(p => ({
                                 ...p,
                                 position: p1.position,
+                                step: 0,
                             })));
 
                             return true;

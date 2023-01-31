@@ -7,6 +7,7 @@ import _ from "lodash";
 
 export type ParticleState = Particle & {
     position: v3,
+    step: number,
 }
 
 export function initialWorld(): Parameters<typeof stepInPlace>[1] {
@@ -40,10 +41,21 @@ export function stepInPlace(
                     ...a.output,
                     position: v3.from(...hg.axialToCube(a.position)),
                     velocity: directionVector[a.direction],
+                    step: 0,
                 });
             }
         }
     }
 
     world.step++;
+    for (const p of world.particles) {
+        p.step++;
+    }
+    for (let i = world.particles.length - 1; i >= 0; i--) {
+        const p = world.particles[i];
+        if ((p.content === "gamma") && (p.step > 2)) {
+            world.particles.splice(i, 1);
+            world.energy++;
+        }
+    }
 }
