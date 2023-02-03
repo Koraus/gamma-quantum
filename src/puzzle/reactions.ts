@@ -34,6 +34,37 @@ const reactions: Reaction[] = [
             }];
         }
     },
+    p1 => {
+        const c1 = p1.content;
+        if (c1 === "gamma") { return; }
+        if (Array.isArray(c1)) { return; }
+        return p2 => {
+            const c2 = p2.content;
+            if (c2 === "gamma") { return; }
+            if (!Array.isArray(c2)) { return; }
+            if (c2.length >= 4) { return; }
+
+            return [{
+                content: [c1, ...c2]
+            }];
+        }
+    },
+    p1 => {
+        const c1 = p1.content;
+        if (c1 === "gamma") { return; }
+        if (!Array.isArray(c1)) { return; }
+        if (c1.length >= 4) { return; }
+        return p2 => {
+            const c2 = p2.content;
+            if (c2 === "gamma") { return; }
+            if (!Array.isArray(c2)) { return; }
+            if (c1.length + c2.length > 4) { return; }
+
+            return [{
+                content: [...c1, ...c2]
+            }];
+        }
+    },
 ];
 
 export function applyReactionsInPlace(particles: ParticleState[]) {

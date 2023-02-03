@@ -28,6 +28,21 @@ const solution: Solution = {
         direction: 1,
         output: { content: "red" },
         position: [8, -3],
+    }, {
+        kind: "spawner",
+        direction: 4,
+        output: { content: "red" },
+        position: [-2, 13],
+    }, {
+        kind: "spawner",
+        direction: 2,
+        output: { content: "red" },
+        position: [8, 8],
+    }, {
+        kind: "consumer",
+        direction: 2,
+        input: { content: ["red", "red", "red", "red"] },
+        position: [3, 5],
     }],
 }
 
@@ -64,6 +79,9 @@ export function App() {
         }))}>
             <div>step: {JSON.stringify(world.step)}</div>
             <div>energy: {JSON.stringify(world.energy)}</div>
+            <div>consumed: {Object.entries(world.consumed).map(([k, v], i) => {
+                return <div key={i}>= {v} x {k}</div>;
+            })}</div>
             <div>particles:
                 {world.particles.map((p, i) => <div key={i}>
                     = {i}: {JSON.stringify(p)}

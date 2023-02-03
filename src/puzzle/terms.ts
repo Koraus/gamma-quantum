@@ -53,6 +53,9 @@ export type Actor = {
 } | {
     kind: "reactor",
 } | {
+    kind: "consumer",
+    input: ParticleKind,
+} | {
     kind: "spawner",
     output: ParticleKind,
 });
@@ -60,4 +63,13 @@ export type Actor = {
 export type Solution = {
     problem: Problem,
     actors: Actor[],
+}
+
+export function getParticleKindKey(p: ParticleKind) {
+    if (!Array.isArray(p.content)) { return p.content; }
+    return JSON.stringify([...p.content].sort());
+}
+
+export function areParticleKindsEqual(p1: ParticleKind, p2: ParticleKind) {
+    return getParticleKindKey(p1) == getParticleKindKey(p2);
 }

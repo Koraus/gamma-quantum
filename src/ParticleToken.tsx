@@ -1,5 +1,6 @@
 import { ParticleState } from "./puzzle/stepInPlace";
 import { directionOf } from "./reactionSandbox/ParticleText";
+import * as hg from "./utils/hg";
 
 
 
@@ -46,11 +47,11 @@ export function ParticleToken({
                         <sphereGeometry args={[0.1]} />
                         <meshPhongMaterial color={colors[0]} />
                     </mesh>
-                    <mesh position={[-0.02, 0.05, 0]}>
+                    <mesh position={[-0.02, 0, 0.05]}>
                         <sphereGeometry args={[0.1]} />
                         <meshPhongMaterial color={colors[0]} />
                     </mesh>
-                    <mesh position={[-0.02, -0.05, 0]}>
+                    <mesh position={[-0.02, 0, -0.05]}>
                         <sphereGeometry args={[0.1]} />
                         <meshPhongMaterial color={colors[1]} />
                     </mesh>
@@ -64,11 +65,11 @@ export function ParticleToken({
                         <sphereGeometry args={[0.1]} />
                         <meshPhongMaterial color={colors[1]} />
                     </mesh>
-                    <mesh position={[0, 0.07, 0]}>
+                    <mesh position={[0, 0, 0.07]}>
                         <sphereGeometry args={[0.1]} />
                         <meshPhongMaterial color={colors[0]} />
                     </mesh>
-                    <mesh position={[0, -0.07, 0]}>
+                    <mesh position={[0, 0, -0.07]}>
                         <sphereGeometry args={[0.1]} />
                         <meshPhongMaterial color={colors[1]} />
                     </mesh>
@@ -79,16 +80,17 @@ export function ParticleToken({
         <group
             rotation={[0, -Math.PI / 3 * directionOf(p.velocity)[0], 0]}
         >
-            <mesh
-                position={[0, 0, 0.55]}
-                rotation={[Math.PI / 2, 0, 0]}
-            >
-                <cylinderGeometry args={[0.02, 0.02, 0.3]} />
-                <meshPhongMaterial
-                    color={"white"}
-                    transparent
-                    opacity={0.2} />
-            </mesh>
+            {hg.cubeLen(p.velocity) > 0 &&
+                <mesh
+                    position={[0, 0, 0.55]}
+                    rotation={[Math.PI / 2, 0, 0]}
+                >
+                    <cylinderGeometry args={[0.02, 0.02, 0.3]} />
+                    <meshPhongMaterial
+                        color={"white"}
+                        transparent
+                        opacity={0.2} />
+                </mesh>}
         </group>
     </group>;
 }

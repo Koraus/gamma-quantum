@@ -74,36 +74,45 @@ export function MainScene({
             </group>))
         }
         {solution.actors.map((a, i) => {
-            if (a.kind !== "spawner") { return null; }
-            const p = a.output;
-            const color = (() => {
-                if (p.content[0] === "red" && p.content[1] === "green" && p.content[2] === "blue") { return "white"; }
-                if (p.content[0] === "green" && p.content[1] === "blue") { return "cyan"; }
-                if (p.content[0] === "red" && p.content[1] === "blue") { return "magenta"; }
-                if (p.content[0] === "red" && p.content[1] === "green") { return "yellow"; }
-                if (p.content === "red") { return "red"; }
-                if (p.content === "blue") { return "blue"; }
-                if (p.content === "green") { return "green"; }
-                if (p.content === "gamma") { return "orange"; }
-                throw "not supproted";
-            })();
-            return <group key={i} position={axialToFlatCartXz(a.position)}>
-                <mesh rotation={[Math.PI / 2, 0, 0]}>
-                    <torusGeometry args={[0.5, 0.1]} />
-                    <meshPhongMaterial color={color} />
-                </mesh>
-                <group
-                    rotation={[0, -Math.PI / 3 * a.direction, 0]}
-                >
-                    <mesh
-                        position={[0, 0, 0.5]}
-                        rotation={[Math.PI / 2, 0, 0]}
-                    >
-                        <cylinderGeometry args={[0.05, 0.05, 1]} />
+            if (a.kind === "spawner") {
+                const p = a.output;
+                const color = (() => {
+                    if (p.content[0] === "red" && p.content[1] === "green" && p.content[2] === "blue") { return "white"; }
+                    if (p.content[0] === "green" && p.content[1] === "blue") { return "cyan"; }
+                    if (p.content[0] === "red" && p.content[1] === "blue") { return "magenta"; }
+                    if (p.content[0] === "red" && p.content[1] === "green") { return "yellow"; }
+                    if (p.content === "red") { return "red"; }
+                    if (p.content === "blue") { return "blue"; }
+                    if (p.content === "green") { return "green"; }
+                    if (p.content === "gamma") { return "orange"; }
+                    throw "not supproted";
+                })();
+                return <group key={i} position={axialToFlatCartXz(a.position)}>
+                    <mesh rotation={[Math.PI / 2, 0, 0]}>
+                        <torusGeometry args={[0.5, 0.05]} />
                         <meshPhongMaterial color={color} />
                     </mesh>
+                    <group
+                        rotation={[0, -Math.PI / 3 * a.direction, 0]}
+                    >
+                        <mesh
+                            position={[0, 0, 0.5]}
+                            rotation={[Math.PI / 2, 0, 0]}
+                        >
+                            <cylinderGeometry args={[0.05, 0.05, 0.6]} />
+                            <meshPhongMaterial color={color} />
+                        </mesh>
+                    </group>
                 </group>
+            }
+            if (a.kind === "consumer") {
+                return <group key={i} position={axialToFlatCartXz(a.position)}>
+                <mesh rotation={[Math.PI / 2, 0, 0]}>
+                    <torusGeometry args={[0.5, 0.05]} />
+                    <meshPhongMaterial color={"grey"} />
+                </mesh>
             </group>
+            }
         })}
     </>;
 }
