@@ -1,20 +1,19 @@
 import "./initAnalytics";
 
 import { css, cx } from "@emotion/css";
-import { useState } from "react";
-import { PlaybackPanel } from "./PlaybackPanel";
+import { useEffect, useState } from "react";
+import { nowPlaytime, PlaybackPanel } from "./PlaybackPanel";
 import { appVersion } from "./appVersion";
 import { Solution } from "./puzzle/terms";
-import { initialWorld, stepInPlace } from "./puzzle/stepInPlace";
+import { init as _init, step as _step } from "./puzzle/step";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
+import { getWorldAtPlaytime } from "./simulator";
 
 // todo list:
-// design a level based on simple spawns and reactions
 // let user put spawners
 // make a level based on simple spawns and reactions
-// display hex grid
 
 const solution: Solution = {
     problem: undefined,
@@ -48,13 +47,23 @@ const solution: Solution = {
 
 export function App() {
     const stepState = useState(0);
-    const [step] = stepState;
+    const [step, setStep] = stepState;
+    const world = getWorldAtPlaytime(solution, step);
 
-    const world = initialWorld();
-    for (let i = 0; i < step; i++) {
-        stepInPlace(solution, world);
-    }
+    const playActionState = useState({
+        startRealtime: 0,
+        startPlaytime: 0,
+        playtimeSpeed: 0,
+    });
 
+    useEffect(() => {
+        const handler = setInterval(() => {
+            const stepNow = Math.floor(nowPlaytime(playActionState[0]));
+            if (stepNow === step) { return; }
+            setStep(stepNow);
+        }, 10);
+        return () => clearInterval(handler);
+    }, [playActionState[0]]);
 
 
     return <div className={cx(
@@ -71,7 +80,15 @@ export function App() {
             position: "absolute",
             inset: 0,
             zIndex: -1,
-        }))}><Canvas><MainScene solution={solution} world={world} /></Canvas></div>
+        }))}>
+            <Canvas>
+                <MainScene
+                    solution={solution}
+                    world={world}
+                    playAction={playActionState[0]}
+                />
+            </Canvas>
+        </div>
         <div className={cx(css({
             position: "absolute",
             inset: 0,
@@ -80,12 +97,15 @@ export function App() {
             <div>step: {JSON.stringify(world.step)}</div>
             <div>energy: {JSON.stringify(world.energy)}</div>
             <div>consumed: {Object.entries(world.consumed).map(([k, v], i) => {
-                return <div key={i}>= {v} x {k}</div>;
+                return <div key={i}><>= {v} x {k}</></div>;
             })}</div>
             <div>particles:
-                {world.particles.map((p, i) => <div key={i}>
-                    = {i}: {JSON.stringify(p)}
-                </div>)}
+                {world.particles.map((p, i) => {
+                    if (p.isRemoved) { return null; }
+                    return <div key={i}>
+                        = #{i}: {JSON.stringify(p)}
+                    </div>;
+                })}
             </div>
             <ReactionSandboxPanel
                 className={cx(css({
@@ -98,7 +118,8 @@ export function App() {
                     position: "absolute",
                     bottom: 0,
                 }))}
-                stepState={stepState}
+                playActionState={playActionState}
+                defalutPlaytimeSpeed={2}
             />
             <div
                 className={cx(css({

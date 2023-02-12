@@ -1,19 +1,42 @@
-import { ParticleState } from "./puzzle/stepInPlace";
+import { useFrame } from "@react-three/fiber";
+import { PlayAction } from "./PlaybackPanel";
+import { ParticleState } from "./puzzle/step";
+import { ParticleKind } from "./puzzle/terms";
 import { directionOf } from "./reactionSandbox/ParticleText";
 import * as hg from "./utils/hg";
 
-
-
-export function ParticleToken({
-    particle: p,
-}: {
-    particle: ParticleState;
-}) {
-    const colors = (() => {
+const getColors = (p: ParticleKind) =>
+    (() => {
         if (Array.isArray(p.content)) { return p.content; }
         return [p.content];
     })().map(c => c === "gamma" ? "white" : c);
 
+export function ParticleToken({
+    particle: p,
+    move,
+
+    playAction,
+}: {
+    particle: ParticleState;
+    move?: {
+        prev: ParticleState,
+        next: ParticleState,
+    },
+
+    playAction: PlayAction,
+}) {
+    const colors = getColors(p);
+
+    // const transition = getTransition(playAction.startPlaytime);
+
+    const timeStartReal = performance.now();
+    useFrame(() => {
+        // const transitionCurrent = getTransition(nowPlaytime(playAction), transition);
+
+        // if (transitionCurrent === transition) { return; }
+
+        // todo: trigger render here
+    })
 
 
     return <group>

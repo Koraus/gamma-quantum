@@ -1,0 +1,115 @@
+import { v3 } from "../utils/v";
+import { areParticleKindsEqual, directionVector, getParticleKindKey, Particle, Solution } from "./terms";
+import * as hg from "../utils/hg";
+import { applyReactionsInPlace } from "./reactions";
+import _ from "lodash";
+import update from "immutability-helper";
+import * as u from "../utils/u";
+
+export type ParticleState = Particle & {
+    position: v3,
+    step: number,
+    isRemoved: boolean,
+}
+
+function move(world: World) {
+    return update(world, {
+        particles: Object.fromEntries(world.particles.map((p, i) => [i, {
+            position: u.v3_add(p.velocity),
+        }]))
+    });
+}
+
+function react(world: World) {
+    const reactedWorld = {
+        ...world,
+        consumed: { ...world.consumed },
+        particles: [...world.particles],
+    }
+
+
+    applyReactionsInPlace(reactedWorld.particles);
+
+    for (const a of world.actors) {
+        if (a.kind === "spawner") {
+            if (reactedWorld.step % 12 === 1) {
+                reactedWorld.energy -= 1;
+                // register world mass, energy and momentum change
+                reactedWorld.particles.push({
+                    ...a.output,
+                    position: v3.from(...hg.axialToCube(a.position)),
+                    velocity: directionVector[a.direction],
+                    step: 0,
+                    isRemoved: false,
+                });
+            }
+        }
+        if (a.kind === "consumer") {
+            for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
+                const p = reactedWorld.particles[i];
+                if (areParticleKindsEqual(p, a.input)) {
+                    reactedWorld.particles.splice(i, 1);
+                    reactedWorld.consumed[getParticleKindKey(p)] =
+                        (reactedWorld.consumed[getParticleKindKey(p)] ?? 0) + 1;
+                    // register world mass, energy and momentum change
+                }
+            }
+        }
+    }
+
+    for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
+        const p = reactedWorld.particles[i];
+        reactedWorld.particles[i] = update(p, { step: { $set: p.step + 1, } })
+    }
+    for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
+        const p = reactedWorld.particles[i];
+        if ((p.content === "gamma") && (p.step > 2)) {
+            reactedWorld.particles[i] = update(p, {
+                isRemoved: { $set: true, }
+            });
+            reactedWorld.energy++;
+        }
+    }
+
+    return reactedWorld;
+}
+
+export type World = Solution & ({
+    init: Solution;
+    action: "init";
+    step: 0;
+} | {
+    prev: World;
+    action: "move" | "react";
+    step: number;
+}) & {
+    energy: number;
+    consumed: Record<string, number>;
+    particles: ParticleState[];
+};
+
+export const init = (solution: Solution): World => ({
+    ...solution,
+    init: solution,
+    action: "init",
+    step: 0,
+    energy: 0,
+    consumed: {},
+    particles: [],
+});
+
+const actions = { move, react }
+const transitionTable = {
+    init: "move",
+    move: "react",
+    react: "move",
+} as const;
+
+export function step(state: World) {
+    const action = transitionTable[state["action"]];
+    return update(actions[action](state), {
+        prev: { $set: state },
+        action: { $set: action },
+        step: u.inc,
+    });
+}

@@ -1,8 +1,9 @@
 import { v3 } from "../utils/v";
 import { generateReactionVariants } from "./generateReactionVariants";
 import { selectReactionVariant } from "./selectReactionVariant";
-import { ParticleState } from "./stepInPlace";
-import { IntRange_0Inc_5Inc, ParticleKind } from "./terms";
+import { ParticleState } from "./step";
+import { ParticleKind } from "./terms";
+import update from "immutability-helper";
 
 type Reaction =
     (p1: ParticleState) => (
@@ -73,10 +74,12 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
     for (const reaction of reactions) {
         while ((() => {
             for (const p1 of particles) {
+                if (p1.isRemoved) { continue; }
                 const r1 = reaction(p1);
                 if (!r1) { continue; }
                 if (typeof r1 === "function") {
                     for (const p2 of particles) {
+                        if (p2.isRemoved) { continue; }
                         if (p1 === p2) { continue; }
                         if (!v3.eqStrict(p1.position, p2.position)) { continue; }
 
@@ -84,6 +87,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                         if (!r2) { continue; }
                         if (typeof r2 === "function") {
                             for (const p3 of particles) {
+                                if (p3.isRemoved) { continue; }
                                 if (p1 === p3) { continue; }
                                 if (p2 === p3) { continue; }
                                 if (!v3.eqStrict(p1.position, p3.position)) { continue; }
@@ -120,12 +124,17 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                             variants,
                         });
                         if (selectedVariant) {
-                            particles.splice(particles.indexOf(p1), 1);
-                            particles.splice(particles.indexOf(p2), 1);
+                            particles[particles.indexOf(p1)] = update(p1, {
+                                isRemoved: { $set: true, }
+                            });
+                            particles[particles.indexOf(p2)] = update(p2, {
+                                isRemoved: { $set: true, }
+                            });
                             newParticles.push(...selectedVariant.products.map(p => ({
                                 ...p,
                                 position: p1.position,
                                 step: 0,
+                                isRemoved: false,
                             })));
 
                             return true;
