@@ -8,7 +8,6 @@ import * as u from "../utils/u";
 
 export type ParticleState = Particle & {
     position: v3,
-    step: number,
     isRemoved: boolean,
 }
 
@@ -33,13 +32,12 @@ function react(world: World) {
     for (const a of world.actors) {
         if (a.kind === "spawner") {
             if (reactedWorld.step % 12 === 1) {
-                reactedWorld.energy -= 1;
+                reactedWorld.energy -= 2;
                 // register world mass, energy and momentum change
                 reactedWorld.particles.push({
                     ...a.output,
                     position: v3.from(...hg.axialToCube(a.position)),
                     velocity: directionVector[a.direction],
-                    step: 0,
                     isRemoved: false,
                 });
             }
@@ -59,11 +57,7 @@ function react(world: World) {
 
     for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
         const p = reactedWorld.particles[i];
-        reactedWorld.particles[i] = update(p, { step: { $set: p.step + 1, } })
-    }
-    for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
-        const p = reactedWorld.particles[i];
-        if ((p.content === "gamma") && (p.step > 2)) {
+        if ((p.content === "gamma") && (world.particles[i])) {
             reactedWorld.particles[i] = update(p, {
                 isRemoved: { $set: true, }
             });
@@ -76,6 +70,7 @@ function react(world: World) {
 
 export type World = Solution & ({
     init: Solution;
+    prev?: never;
     action: "init";
     step: 0;
 } | {

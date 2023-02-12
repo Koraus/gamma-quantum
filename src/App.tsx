@@ -119,7 +119,7 @@ export function App() {
                     bottom: 0,
                 }))}
                 playActionState={playActionState}
-                defalutPlaytimeSpeed={2}
+                defalutPlaytimeSpeed={3}
             />
             <div
                 className={cx(css({

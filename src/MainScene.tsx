@@ -11,8 +11,7 @@ import { HexGrid } from "./HexGrid";
 import { nowPlaytime, PlayAction } from "./PlaybackPanel";
 import { Vector3 } from "three";
 import { GroupSync } from "./utils/GroupSync";
-import { getKeyPlaytime } from "./simulator";
-import { easeSinInOut } from "d3-ease";
+import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -50,6 +49,13 @@ export function MainScene({
     world: World;
     playAction: PlayAction;
 }) {
+    const particles = world.particles.map((p, i) => {
+        const prev = world.prev?.particles[i];
+        if (prev && prev.isRemoved) { return; }
+        if (!prev && p.isRemoved) { return; }
+        return { i, prev, p };
+    }).filter(<T,>(x: T): x is NonNullable<T> => !!x);
+
     return <>
         <PerspectiveCamera
             makeDefault
@@ -74,32 +80,39 @@ export function MainScene({
             <meshBasicMaterial color={"lime"} />
         </ Cylinder>
 
-        {Object.values(_.groupBy(world.particles, p => JSON.stringify(p.position)))
-            .flatMap((ps, j) => ps.map((p, i) => {
-                if (!p || p.isRemoved) { return null; }
-
-
-                const prevP = ("prev" in world)
-                    ? (world.prev.particles[world.particles.indexOf(p)] ?? p)
-                    : p;
-
+        {Object.values(_.groupBy(particles, p => JSON.stringify(p.p.position)))
+            .flatMap((ps) => ps.map(({ p, prev, i }, j) => {
                 return <GroupSync
-                    key={`${j}_${i}`}
+                    key={`${i}`}
                     onFrame={g => {
-                        const t = nowPlaytime(playAction) - (world.step - 1 - 1);
-                        g.position.set(...x0y(axialToFlatCart(prevP.position)));
-                        g.position.lerp(
-                            new Vector3(...x0y(axialToFlatCart(p.position))),
-                            easeSinInOut(t));
-                        g.position.y = i * 0.2;
+                        const t = nowPlaytime(playAction) - world.step;
+
+                        if (!prev) {
+                            // appear
+                            g.scale.setScalar(easeBackOut(t));
+                            g.position.set(...x0y(axialToFlatCart(p.position)));
+                        } else if (p.isRemoved) {
+                            // disappear
+                            g.scale.setScalar(1 - easeBackIn(t));
+                            g.position.set(...x0y(axialToFlatCart(p.position)));
+                        } else {
+                            // move
+                            g.scale.setScalar(1);
+                            g.position.set(...x0y(axialToFlatCart(prev.position)));
+                            g.position.lerp(
+                                new Vector3(...x0y(axialToFlatCart(p.position))),
+                                easeSinInOut(t));
+                            g.position.y = j * 0.2;
+                        }
+
                     }}
-                    position={v3.add(x0y(axialToFlatCart(p.position)), [0, i * 0.2, 0])}
+                    position={v3.add(x0y(axialToFlatCart((prev ?? p).position)), [0, j * 0.2, 0])}
                 >
                     <ParticleToken
                         particle={p}
                         move={{
                             next: p,
-                            prev: prevP,
+                            prev: prev ?? p,
                         }}
                         playAction={playAction}
                     />
