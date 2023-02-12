@@ -1,4 +1,4 @@
-# gamma-quantum
+# <img src="./favicon.svg" alt="favicon" width="16" /> gamma-quantum
 
 ![Game screenhot](./cover.png "Cover")
 
