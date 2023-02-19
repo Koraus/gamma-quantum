@@ -4,46 +4,18 @@ import { css, cx } from "@emotion/css";
 import { useEffect, useState } from "react";
 import { nowPlaytime, PlaybackPanel } from "./PlaybackPanel";
 import { appVersion } from "./appVersion";
-import { Solution } from "./puzzle/terms";
 import { init as _init, step as _step } from "./puzzle/step";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { getWorldAtPlaytime } from "./simulator";
+import { solution3 as solution } from "./hardcodedSoultions";
 
 // todo list:
 // let user put spawners
 // make a level based on simple spawns and reactions
 
-const solution: Solution = {
-    problem: undefined,
-    actors: [{
-        kind: "spawner",
-        direction: 5,
-        output: { content: "red" },
-        position: [-2, 2],
-    }, {
-        kind: "spawner",
-        direction: 1,
-        output: { content: "red" },
-        position: [8, -3],
-    }, {
-        kind: "spawner",
-        direction: 4,
-        output: { content: "red" },
-        position: [-2, 13],
-    }, {
-        kind: "spawner",
-        direction: 2,
-        output: { content: "red" },
-        position: [8, 8],
-    }, {
-        kind: "consumer",
-        direction: 2,
-        input: { content: ["red", "red", "red", "red"] },
-        position: [3, 5],
-    }],
-}
+
 
 export function App() {
     const stepState = useState(0);
