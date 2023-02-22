@@ -33,6 +33,7 @@ export function App() {
         startPlaytime: 0,
         playtimeSpeed: 0,
     });
+    const [playAction, setPlayAction] = playActionState;
 
     useEffect(() => {
         const handler = setInterval(() => {
@@ -54,7 +55,7 @@ export function App() {
         }
         `,
     )}>
-        <SolutionsList changeSolution={setSolution} solution={solution}/>
+
 
         <div className={cx(css({
             position: "absolute",
@@ -92,6 +93,22 @@ export function App() {
                     pointerEvents: "all",
                 }))}
             />
+            <SolutionsList
+                className={cx(css({
+                    pointerEvents: "all",
+                    width: 'fit-content',
+                    marginTop: '5px',
+
+                }))}
+                solutionState={[solution, (nextSolution) => {
+                    setSolution(nextSolution);
+                    setPlayAction({
+                        playtimeSpeed: 0,
+                        startPlaytime: 0,
+                        startRealtime: performance.now(),
+                    });
+                }]} />
+
             <PlaybackPanel
                 className={cx(css({
                     pointerEvents: "all",
