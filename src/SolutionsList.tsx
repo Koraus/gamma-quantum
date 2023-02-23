@@ -2,7 +2,7 @@ import { css, cx } from "@emotion/css";
 import { solution1, solution2, solution3 } from './hardcodedSoultions'
 import { useState } from "react";
 import { Solution } from "./puzzle/terms";
-import { StateProp } from "./PlaybackPanel";
+import { StateProp } from "./utils/StateProp";
 
 
 export function SolutionsList({

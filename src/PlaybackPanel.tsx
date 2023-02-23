@@ -5,8 +5,7 @@ import { PlayFill } from "@emotion-icons/bootstrap/PlayFill";
 import { PauseFill } from "@emotion-icons/bootstrap/PauseFill";
 import { SkipEndFill } from "@emotion-icons/bootstrap/SkipEndFill";
 import { SkipStartFill } from "@emotion-icons/bootstrap/SkipStartFill";
-
-export type StateProp<T> = [T, React.Dispatch<React.SetStateAction<T>>];
+import { StateProp } from "./utils/StateProp";
 
 export type PlayAction = {
     startRealtime: number;

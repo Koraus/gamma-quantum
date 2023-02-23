@@ -11,6 +11,7 @@ import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { getWorldAtPlaytime } from "./simulator";
 import { solution3 } from "./hardcodedSoultions";
 import { SolutionsList } from "./SolutionsList"
+import { Solution } from "./puzzle/terms";
 
 
 // todo list:
@@ -34,6 +35,15 @@ export function App() {
         playtimeSpeed: 0,
     });
     const [playAction, setPlayAction] = playActionState;
+
+    const setSolutionAndResetPlayback = (nextSolution: Solution | ((prevSolution: Solution) => Solution)) => {
+        setSolution(nextSolution);
+        setPlayAction({
+            playtimeSpeed: 0,
+            startPlaytime: 0,
+            startRealtime: performance.now(),
+        });
+    }
 
     useEffect(() => {
         const handler = setInterval(() => {
@@ -64,7 +74,7 @@ export function App() {
         }))}>
             <Canvas>
                 <MainScene
-                    solution={solution}
+                    solutionState={[solution, setSolutionAndResetPlayback]}
                     world={world}
                     playAction={playActionState[0]}
                 />
@@ -98,16 +108,8 @@ export function App() {
                     pointerEvents: "all",
                     width: 'fit-content',
                     marginTop: '5px',
-
                 }))}
-                solutionState={[solution, (nextSolution) => {
-                    setSolution(nextSolution);
-                    setPlayAction({
-                        playtimeSpeed: 0,
-                        startPlaytime: 0,
-                        startRealtime: performance.now(),
-                    });
-                }]} />
+                solutionState={[solution, setSolutionAndResetPlayback]} />
 
             <PlaybackPanel
                 className={cx(css({

@@ -9,11 +9,13 @@ import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
 import { HexGrid } from "./HexGrid";
 import { nowPlaytime, PlayAction } from "./PlaybackPanel";
+import { StateProp } from "./utils/StateProp";
 import { Mesh, Vector3 } from "three";
 import { GroupSync } from "./utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
 import { useRef } from "react";
 import { apipe } from "./utils/apipe";
+import update from "immutability-helper";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -43,11 +45,11 @@ export const axialToFlatCartXz = (...args: Parameters<typeof axialToFlatCart>) =
 
 
 export function MainScene({
-    solution,
+    solutionState: [solution, setSolution],
     world,
     playAction,
 }: {
-    solution: Solution,
+    solutionState: StateProp<Solution>,
     world: World;
     playAction: PlayAction;
 }) {
@@ -85,10 +87,42 @@ export function MainScene({
                         ([x, y]) => new Vector3(x, 0, y),
                     ));
                     // cursorEl.scale.setScalar(ev.distance * 0.02);
+                }}
+                onPointerUp={ev => {
+                    const hPos = apipe(
+                        ev.unprojectedPoint
+                            .clone()
+                            .addScaledVector(ev.ray.direction, ev.distance),
+                        ({ x, z }) => [x * hg.SQRT3, z * hg.SQRT3] as v2,
+                        hg.flatCartToAxial,
+                        hg.axialToCube,
+                        hg.cubeRound,
+                        ([x, y]) => [x, y] as v2,
+                    );
+                    setSolution(update(solution, (() => {
+                        const i = solution.actors.findIndex(a =>
+                            v2.eq(a.position, hPos));
+                        if (i >= 0) {
+                            return {
+                                actors: { $splice: [[i, 1]] }
+                            }
+                        } else {
+                            return {
+                                actors: {
+                                    $push: [{
+                                        direction: 0,
+                                        kind: "spawner",
+                                        output: { content: "red" },
+                                        position: hPos
+                                    }]
+                                }
+                            };
+                        }
+                    })()));
                 }} />
             <mesh ref={cursorRef}>
                 <sphereGeometry args={[0.3]} />
-                <meshPhongMaterial 
+                <meshPhongMaterial
                     transparent
                     opacity={0.5}
                 />
