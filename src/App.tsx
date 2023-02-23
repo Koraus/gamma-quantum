@@ -9,7 +9,9 @@ import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { getWorldAtPlaytime } from "./simulator";
-import { solution3 as solution } from "./hardcodedSoultions";
+import { solution3 } from "./hardcodedSoultions";
+import { SolutionsList } from "./SolutionsList"
+
 
 // todo list:
 // let user put spawners
@@ -18,9 +20,13 @@ import { solution3 as solution } from "./hardcodedSoultions";
 
 
 export function App() {
+
+    const [solution, setSolution] = useState(solution3);
+
     const stepState = useState(0);
     const [step, setStep] = stepState;
     const world = getWorldAtPlaytime(solution, step);
+
 
     const playActionState = useState({
         startRealtime: 0,
@@ -48,6 +54,8 @@ export function App() {
         }
         `,
     )}>
+        <SolutionsList changeSolution={setSolution} solution={solution}/>
+
         <div className={cx(css({
             position: "absolute",
             inset: 0,
