@@ -39,6 +39,7 @@ export function PlaybackPanel({
     const rangeRef = useRef<HTMLInputElement>(null);
     const rangeFullRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
+        if (playAction.playtimeSpeed === 0) { return; }
         const stepEl = stepRef.current!;
         const rangeEl = rangeRef.current!;
         const rangeFullEl = rangeFullRef.current!;
@@ -50,7 +51,7 @@ export function PlaybackPanel({
             handler = requestAnimationFrame(render);
         }
         let handler = requestAnimationFrame(render);
-        return () => clearInterval(handler);
+        return () => cancelAnimationFrame(handler);
     }, [playAction, stepRef.current, rangeRef.current, rangeFullRef]);
 
 
@@ -117,12 +118,12 @@ export function PlaybackPanel({
                 startRealtime: performance.now() / 1000,
             })}
         >{playAction.playtimeSpeed === 0 ? <PlayFill /> : <PauseFill />}</button>
-        
+
         <input
             ref={rangeRef}
             type="range"
-            min={0} 
-            max={0.9999} 
+            min={0}
+            max={0.9999}
             step={0.001}
             value={nowPlaytime(playAction) - Math.floor(nowPlaytime(playAction))}
             onChange={ev => setPlayAction({
@@ -137,8 +138,8 @@ export function PlaybackPanel({
         <input
             ref={rangeFullRef}
             type="range"
-            min={0} 
-            max={Math.max(30, Math.ceil(nowPlaytime(playAction) / 10 + 1) * 10)} 
+            min={0}
+            max={Math.max(30, Math.ceil(nowPlaytime(playAction) / 10 + 1) * 10)}
             step={0.001}
             value={nowPlaytime(playAction)}
             onChange={ev => setPlayAction({
