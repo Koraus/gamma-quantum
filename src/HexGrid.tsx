@@ -1,9 +1,13 @@
 import { Plane } from "@react-three/drei";
+import { ThreeElements } from "@react-three/fiber";
 
-export function HexGrid() {
+export function HexGrid({
+    ...props
+}: Parameters<typeof Plane>[0]) {
     return <Plane
         scale={[100, 100, 1]}
         rotation={[-Math.PI / 2, 0, 0]}
+        {...props   }
     >
         <shaderMaterial
             transparent

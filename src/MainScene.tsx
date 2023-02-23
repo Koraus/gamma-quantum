@@ -9,9 +9,11 @@ import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
 import { HexGrid } from "./HexGrid";
 import { nowPlaytime, PlayAction } from "./PlaybackPanel";
-import { Vector3 } from "three";
+import { Mesh, Vector3 } from "three";
 import { GroupSync } from "./utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
+import { useRef } from "react";
+import { apipe } from "./utils/apipe";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -56,6 +58,8 @@ export function MainScene({
         return { i, prev, p };
     }).filter(<T,>(x: T): x is NonNullable<T> => !!x);
 
+    const cursorRef = useRef<Mesh>(null);
+
     return <>
         <PerspectiveCamera
             makeDefault
@@ -65,7 +69,31 @@ export function MainScene({
             position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)} />
 
         <OrbitControls enableDamping={false} />
-        <HexGrid />
+        <group>
+            <HexGrid
+                onPointerMove={ev => {
+                    const cursorEl = cursorRef.current;
+                    if (!cursorEl) { return; }
+                    cursorEl.position.copy(ev.unprojectedPoint);
+                    cursorEl.position.addScaledVector(ev.ray.direction, ev.distance);
+                    cursorEl.position.copy(apipe(
+                        [cursorEl.position.x * hg.SQRT3, cursorEl.position.z * hg.SQRT3],
+                        hg.flatCartToAxial,
+                        hg.axialToCube,
+                        hg.cubeRound,
+                        hg.axialToFlatCart,
+                        ([x, y]) => new Vector3(x, 0, y),
+                    ));
+                    // cursorEl.scale.setScalar(ev.distance * 0.02);
+                }} />
+            <mesh ref={cursorRef}>
+                <sphereGeometry args={[0.3]} />
+                <meshPhongMaterial 
+                    transparent
+                    opacity={0.5}
+                />
+            </mesh>
+        </group>
         <GizmoHelper
             alignment="bottom-right"
             margin={[80, 80]}
