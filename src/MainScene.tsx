@@ -3,7 +3,7 @@ import { v2, v3 } from "./utils/v";
 import { Cylinder, GizmoHelper, GizmoViewport, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { axialToFlatCart } from "./utils/hg";
 import * as hg from "./utils/hg";
-import { Solution } from "./puzzle/terms";
+import { DirectionId, Solution } from "./puzzle/terms";
 import { tuple } from "./utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
@@ -13,7 +13,7 @@ import { StateProp } from "./utils/StateProp";
 import { Mesh, Vector3 } from "three";
 import { GroupSync } from "./utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { apipe } from "./utils/apipe";
 import update from "immutability-helper";
 
@@ -63,6 +63,7 @@ export function MainScene({
     }).filter(<T,>(x: T): x is NonNullable<T> => !!x);
 
     const cursorRef = useRef<Mesh>(null);
+    const [cursorDirection, setCursorDirection] = useState(0 as DirectionId);
 
     return <>
         <PerspectiveCamera
@@ -91,67 +92,80 @@ export function MainScene({
                     // cursorEl.scale.setScalar(ev.distance * 0.02);
                 }}
                 onPointerUp={ev => {
-                    const hPos = apipe(
-                        ev.unprojectedPoint
-                            .clone()
-                            .addScaledVector(ev.ray.direction, ev.distance),
-                        ({ x, z }) => [x * hg.SQRT3, z * hg.SQRT3] as v2,
-                        hg.flatCartToAxial,
-                        hg.axialToCube,
-                        hg.cubeRound,
-                        ([x, y]) => [x, y] as v2,
-                    );
+                    if (ev.button === 2) {
+                        setCursorDirection((cursorDirection + 1) % 6 as DirectionId);
+                    }
+                    if (ev.button === 0) {
+                        const hPos = apipe(
+                            ev.unprojectedPoint
+                                .clone()
+                                .addScaledVector(ev.ray.direction, ev.distance),
+                            ({ x, z }) => [x * hg.SQRT3, z * hg.SQRT3] as v2,
+                            hg.flatCartToAxial,
+                            hg.axialToCube,
+                            hg.cubeRound,
+                            ([x, y]) => [x, y] as v2,
+                        );
 
-                    const i = solution.actors.findIndex(a =>
-                        v2.eq(a.position, hPos));
+                        const i = solution.actors.findIndex(a =>
+                            v2.eq(a.position, hPos));
 
-                    switch (cursor) {
-                        case "none": break;
-                        case "spawner": {
-                            if (i >= 0) { break; }
-                            setSolution(update(solution, {
-                                actors: {
-                                    $push: [{
-                                        direction: 0,
-                                        kind: "spawner",
-                                        output: { content: "red" },
-                                        position: hPos
-                                    }]
-                                }
-                            }));
-                            break;
-                        }
-                        case "consumer": {
-                            if (i >= 0) { break; }
-                            setSolution(update(solution, {
-                                actors: {
-                                    $push: [{
-                                        direction: 0,
-                                        kind: "consumer",
-                                        input: { content: ["red", "red", "red", "red"] },
-                                        position: hPos
-                                    }]
-                                }
-                            }));
-                            break;
-                        }
-                        case "remove": {
-                            if (i < 0) { break; }
-                            setSolution(update(solution, {
-                                actors: { $splice: [[i, 1]] }
-                            }));
-                            break;
+                        switch (cursor) {
+                            case "none": break;
+                            case "spawner": {
+                                if (i >= 0) { break; }
+                                setSolution(update(solution, {
+                                    actors: {
+                                        $push: [{
+                                            direction: cursorDirection,
+                                            kind: "spawner",
+                                            output: { content: "red" },
+                                            position: hPos
+                                        }]
+                                    }
+                                }));
+                                break;
+                            }
+                            case "consumer": {
+                                if (i >= 0) { break; }
+                                setSolution(update(solution, {
+                                    actors: {
+                                        $push: [{
+                                            direction: cursorDirection,
+                                            kind: "consumer",
+                                            input: { content: ["red", "red", "red", "red"] },
+                                            position: hPos
+                                        }]
+                                    }
+                                }));
+                                break;
+                            }
+                            case "remove": {
+                                if (i < 0) { break; }
+                                setSolution(update(solution, {
+                                    actors: { $splice: [[i, 1]] }
+                                }));
+                                break;
+                            }
                         }
                     }
                 }} />
             {cursor !== "none" &&
-                <mesh ref={cursorRef}>
+                <mesh ref={cursorRef} rotation={[0, -Math.PI / 3 * cursorDirection, 0]}>
                     <sphereGeometry args={[0.3]} />
                     <meshPhongMaterial
                         transparent
                         opacity={0.5}
                         color={cursor === "remove" ? "red" : "white"}
                     />
+                    <mesh position={[0, 0, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
+                        <cylinderGeometry args={[0.05, 0.05, 0.3]} />
+                        <meshPhongMaterial
+                            transparent
+                            opacity={0.5}
+                            color={cursor === "remove" ? "red" : "white"}
+                        />
+                    </mesh>
                 </mesh>}
         </group>
         <GizmoHelper
