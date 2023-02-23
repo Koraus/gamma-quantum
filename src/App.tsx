@@ -28,6 +28,9 @@ export function App() {
     const [step, setStep] = stepState;
     const world = getWorldAtPlaytime(solution, step);
 
+    const [cursor, setCursor] = useState(
+        "none" as "none" | "spawner" | "consumer" | "remove");
+
 
     const playActionState = useState({
         startRealtime: 0,
@@ -74,6 +77,7 @@ export function App() {
         }))}>
             <Canvas>
                 <MainScene
+                    cursor={cursor}
                     solutionState={[solution, setSolutionAndResetPlayback]}
                     world={world}
                     playAction={playActionState[0]}
@@ -111,6 +115,54 @@ export function App() {
                 }))}
                 solutionState={[solution, setSolutionAndResetPlayback]} />
 
+            <div
+                className={cx(css({
+                    pointerEvents: "all",
+                    position: "absolute",
+                    bottom: "12vmin",
+                    left: "1vmin",
+                }))}
+            >
+                <label>
+                    <input
+                        type="radio"
+                        radioGroup="cursor"
+                        value="none"
+                        checked={cursor === "none"}
+                        onChange={() => setCursor("none")} />
+                    none
+                </label>
+                <br />
+                <label>
+                    <input
+                        type="radio"
+                        radioGroup="cursor"
+                        value="spawner"
+                        checked={cursor === "spawner"}
+                        onChange={() => setCursor("spawner")} />
+                    spawner
+                </label>
+                <br />
+                <label>
+                    <input
+                        type="radio"
+                        radioGroup="cursor"
+                        value="consumer"
+                        checked={cursor === "consumer"}
+                        onChange={() => setCursor("consumer")} />
+                    consumer
+                </label>
+                <br />
+                <label>
+                    <input
+                        type="radio"
+                        radioGroup="cursor"
+                        value="remove"
+                        checked={cursor === "remove"}
+                        onChange={() => setCursor("remove")} />
+                    remove
+                </label>
+            </div>
             <PlaybackPanel
                 className={cx(css({
                     pointerEvents: "all",

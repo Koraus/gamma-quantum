@@ -45,10 +45,12 @@ export const axialToFlatCartXz = (...args: Parameters<typeof axialToFlatCart>) =
 
 
 export function MainScene({
+    cursor,
     solutionState: [solution, setSolution],
     world,
     playAction,
 }: {
+    cursor: "none" | "spawner" | "consumer" | "remove",
     solutionState: StateProp<Solution>,
     world: World;
     playAction: PlayAction;
@@ -99,15 +101,15 @@ export function MainScene({
                         hg.cubeRound,
                         ([x, y]) => [x, y] as v2,
                     );
-                    setSolution(update(solution, (() => {
-                        const i = solution.actors.findIndex(a =>
-                            v2.eq(a.position, hPos));
-                        if (i >= 0) {
-                            return {
-                                actors: { $splice: [[i, 1]] }
-                            }
-                        } else {
-                            return {
+
+                    const i = solution.actors.findIndex(a =>
+                        v2.eq(a.position, hPos));
+
+                    switch (cursor) {
+                        case "none": break;
+                        case "spawner": {
+                            if (i >= 0) { break; }
+                            setSolution(update(solution, {
                                 actors: {
                                     $push: [{
                                         direction: 0,
@@ -116,17 +118,41 @@ export function MainScene({
                                         position: hPos
                                     }]
                                 }
-                            };
+                            }));
+                            break;
                         }
-                    })()));
+                        case "consumer": {
+                            if (i >= 0) { break; }
+                            setSolution(update(solution, {
+                                actors: {
+                                    $push: [{
+                                        direction: 0,
+                                        kind: "consumer",
+                                        input: { content: ["red", "red", "red", "red"] },
+                                        position: hPos
+                                    }]
+                                }
+                            }));
+                            break;
+                        }
+                        case "remove": {
+                            if (i < 0) { break; }
+                            setSolution(update(solution, {
+                                actors: { $splice: [[i, 1]] }
+                            }));
+                            break;
+                        }
+                    }
                 }} />
-            <mesh ref={cursorRef}>
-                <sphereGeometry args={[0.3]} />
-                <meshPhongMaterial
-                    transparent
-                    opacity={0.5}
-                />
-            </mesh>
+            {cursor !== "none" &&
+                <mesh ref={cursorRef}>
+                    <sphereGeometry args={[0.3]} />
+                    <meshPhongMaterial
+                        transparent
+                        opacity={0.5}
+                        color={cursor === "remove" ? "red" : "white"}
+                    />
+                </mesh>}
         </group>
         <GizmoHelper
             alignment="bottom-right"
