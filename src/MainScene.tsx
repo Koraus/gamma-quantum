@@ -16,6 +16,7 @@ import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
 import { useRef, useState } from "react";
 import { apipe } from "./utils/apipe";
 import update from "immutability-helper";
+import { CursorTool } from "./CursorToolSelectorPanel";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -45,12 +46,12 @@ export const axialToFlatCartXz = (...args: Parameters<typeof axialToFlatCart>) =
 
 
 export function MainScene({
-    cursor,
+    cursorTool,
     solutionState: [solution, setSolution],
     world,
     playAction,
 }: {
-    cursor: "none" | "spawner" | "consumer" | "remove",
+    cursorTool: CursorTool,
     solutionState: StateProp<Solution>,
     world: World;
     playAction: PlayAction;
@@ -110,7 +111,7 @@ export function MainScene({
                         const i = solution.actors.findIndex(a =>
                             v2.eq(a.position, hPos));
 
-                        switch (cursor) {
+                        switch (cursorTool) {
                             case "none": break;
                             case "spawner": {
                                 if (i >= 0) { break; }
@@ -150,20 +151,20 @@ export function MainScene({
                         }
                     }
                 }} />
-            {cursor !== "none" &&
+            {cursorTool !== "none" &&
                 <mesh ref={cursorRef} rotation={[0, -Math.PI / 3 * cursorDirection, 0]}>
                     <sphereGeometry args={[0.3]} />
                     <meshPhongMaterial
                         transparent
                         opacity={0.5}
-                        color={cursor === "remove" ? "red" : "white"}
+                        color={cursorTool === "remove" ? "red" : "white"}
                     />
                     <mesh position={[0, 0, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
                         <cylinderGeometry args={[0.05, 0.05, 0.3]} />
                         <meshPhongMaterial
                             transparent
                             opacity={0.5}
-                            color={cursor === "remove" ? "red" : "white"}
+                            color={cursorTool === "remove" ? "red" : "white"}
                         />
                     </mesh>
                 </mesh>}

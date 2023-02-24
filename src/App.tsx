@@ -12,12 +12,11 @@ import { getWorldAtPlaytime } from "./simulator";
 import { solution3 } from "./hardcodedSoultions";
 import { SolutionsList } from "./SolutionsList"
 import { Solution } from "./puzzle/terms";
+import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 
 
 // todo list:
-// let user put spawners
 // make a level based on simple spawns and reactions
-
 
 
 export function App() {
@@ -28,8 +27,7 @@ export function App() {
     const [step, setStep] = stepState;
     const world = getWorldAtPlaytime(solution, step);
 
-    const [cursor, setCursor] = useState(
-        "none" as "none" | "spawner" | "consumer" | "remove");
+    const cursorToolState = useState("none" as CursorTool);
 
 
     const playActionState = useState({
@@ -77,7 +75,7 @@ export function App() {
         }))}>
             <Canvas>
                 <MainScene
-                    cursor={cursor}
+                    cursorTool={cursorToolState[0]}
                     solutionState={[solution, setSolutionAndResetPlayback]}
                     world={world}
                     playAction={playActionState[0]}
@@ -115,54 +113,15 @@ export function App() {
                 }))}
                 solutionState={[solution, setSolutionAndResetPlayback]} />
 
-            <div
+            <CursorToolSelectorPanel
                 className={cx(css({
                     pointerEvents: "all",
                     position: "absolute",
                     bottom: "12vmin",
                     left: "1vmin",
                 }))}
-            >
-                <label>
-                    <input
-                        type="radio"
-                        radioGroup="cursor"
-                        value="none"
-                        checked={cursor === "none"}
-                        onChange={() => setCursor("none")} />
-                    none
-                </label>
-                <br />
-                <label>
-                    <input
-                        type="radio"
-                        radioGroup="cursor"
-                        value="spawner"
-                        checked={cursor === "spawner"}
-                        onChange={() => setCursor("spawner")} />
-                    spawner
-                </label>
-                <br />
-                <label>
-                    <input
-                        type="radio"
-                        radioGroup="cursor"
-                        value="consumer"
-                        checked={cursor === "consumer"}
-                        onChange={() => setCursor("consumer")} />
-                    consumer
-                </label>
-                <br />
-                <label>
-                    <input
-                        type="radio"
-                        radioGroup="cursor"
-                        value="remove"
-                        checked={cursor === "remove"}
-                        onChange={() => setCursor("remove")} />
-                    remove
-                </label>
-            </div>
+                cursorToolState={cursorToolState}
+            />
             <PlaybackPanel
                 className={cx(css({
                     pointerEvents: "all",
