@@ -27,7 +27,7 @@ export function App() {
     const [step, setStep] = stepState;
     const world = getWorldAtPlaytime(solution, step);
 
-    const cursorToolState = useState("none" as CursorTool);
+    const cursorToolState = useState({ kind: "none" } as CursorTool);
 
 
     const playActionState = useState({
@@ -44,6 +44,7 @@ export function App() {
             startPlaytime: 0,
             startRealtime: performance.now(),
         });
+        cursorToolState[1]({ kind: "none" });
     }
 
     useEffect(() => {
@@ -122,6 +123,7 @@ export function App() {
                 }))}
             >
                 <CursorToolSelectorPanel
+                    solution={solution}
                     cursorToolState={cursorToolState}
                 />
                 <button
