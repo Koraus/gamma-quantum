@@ -166,6 +166,18 @@ export function MainScene({
                     </mesh>
                 </group>
             }
+            if (a.kind === "mirror") {
+                return <group
+                    key={i}
+                    rotation={[0, -Math.PI / 3 * a.direction, 0]}
+                    position={axialToFlatCartXz(a.position)}
+                >
+                    <mesh rotation={[0, 0, 0]}>
+                        <boxGeometry args={[1, 0.5, 0.05]} />
+                        <meshPhongMaterial color={"grey"} />
+                    </mesh>
+                </group>
+            }
         })}
     </>;
 }
