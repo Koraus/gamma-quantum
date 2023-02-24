@@ -53,6 +53,27 @@ function react(world: World) {
                 }
             }
         }
+        if (a.kind === "mirror") {
+            for (let i = 0; i < reactedWorld.particles.length; i++) {
+                const p = reactedWorld.particles[i];
+                if (!p || p.isRemoved) { continue; }
+                if (!v3.eq(hg.axialToCube(a.position), p.position)) { continue; }
+
+                // todo: simplify & optimize
+                const mirrorNormal = directionVector[a.direction];
+                const mirrorNormalNeg = v3.negate(mirrorNormal);
+                if (v3.eq(p.velocity, mirrorNormal) || v3.eq(p.velocity, mirrorNormalNeg)) {
+                    p.velocity = v3.negate(p.velocity);
+                } else {
+                    const v1 = hg.cubeRotate60Ccv(p.velocity);
+                    if (v3.eq(v1, mirrorNormal) || v3.eq(v1, mirrorNormalNeg)) {
+                        p.velocity = hg.cubeRotate60Cv(p.velocity);
+                    } else {
+                        p.velocity = v1;
+                    }
+                }
+            }
+        }
     }
 
     for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {

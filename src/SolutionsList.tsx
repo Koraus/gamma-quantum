@@ -1,9 +1,8 @@
 import { css, cx } from "@emotion/css";
-import { solution1, solution2, solution3 } from './hardcodedSoultions'
+import * as solutions from './hardcodedSoultions';
 import { useState } from "react";
 import { Solution } from "./puzzle/terms";
 import { StateProp } from "./utils/StateProp";
-
 
 export function SolutionsList({
     solutionState: [solution, setSolution],
@@ -14,24 +13,25 @@ export function SolutionsList({
 } & JSX.IntrinsicElements['div']) {
 
     const [isShown, setIsShown] = useState(false);
-    const solutions = [solution1, solution2, solution3];
 
-    const listItems = solutions.map((solutionN, index) => {
+    const listItems = Object.entries(solutions).map(([key, s]) => {
         return <li
             className={cx(
                 css({
                     color: "white",
-                    background: solution === solutionN ? "#f34494" : "#a3119F",
+                    background: solution === s ? "#f34494" : "#a3119F",
                     margin: "0 0 10px 0",
                     cursor: 'pointer',
                     width: 'fit-content'
                 }),
             )}
-            onClick={(e) => setSolution(solutionN)}
-            key={index}
-        > {`Solution ${index + 1}`} </li>
-    }
-    );
+            onClick={(e) => setSolution(s)}
+            key={key}
+        > {key} </li>
+    });
+
+    const currentSolutionKey = Object.entries(solutions)
+        .find(([key, s]) => s === solution)?.[0];
 
     return <div
         className={cx(
@@ -58,8 +58,9 @@ export function SolutionsList({
             onClick={(e) => {
                 setIsShown(!isShown)
             }}
-        >
-            <span>Solutions </span>  <span
+        >  
+            <span> Solutions: {currentSolutionKey ?? "*" } </span>
+            <span
                 className={cx(
                     css({
                         transform: isShown ? 'rotate(-90deg)' : 'rotate(90deg)',

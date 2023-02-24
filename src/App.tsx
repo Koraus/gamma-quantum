@@ -9,7 +9,7 @@ import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { getWorldAtPlaytime } from "./simulator";
-import { solution3 } from "./hardcodedSoultions";
+import { fourSpawnersParallel as defaultSolution } from "./hardcodedSoultions";
 import { SolutionsList } from "./SolutionsList"
 import { Solution } from "./puzzle/terms";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
@@ -21,7 +21,7 @@ import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 
 export function App() {
 
-    const [solution, setSolution] = useState(solution3);
+    const [solution, setSolution] = useState(defaultSolution);
 
     const stepState = useState(0);
     const [step, setStep] = stepState;
@@ -113,15 +113,26 @@ export function App() {
                 }))}
                 solutionState={[solution, setSolutionAndResetPlayback]} />
 
-            <CursorToolSelectorPanel
+            <div
                 className={cx(css({
                     pointerEvents: "all",
                     position: "absolute",
                     bottom: "12vmin",
                     left: "1vmin",
                 }))}
-                cursorToolState={cursorToolState}
-            />
+            >
+                <CursorToolSelectorPanel
+                    cursorToolState={cursorToolState}
+                />
+                <button
+                    onClick={() => {
+                        console.log(solution);
+                        navigator.clipboard.writeText(JSON.stringify(solution, undefined, 4));
+                    }}
+                >
+                    copy current solution into clipboard
+                </button>
+            </div>
             <PlaybackPanel
                 className={cx(css({
                     pointerEvents: "all",
