@@ -1,7 +1,22 @@
-import { Solution } from "./puzzle/terms";
+import { Problem, Solution } from "./puzzle/terms";
+
+const problem1: Problem = {
+    spawners: [
+        { content: "red" },
+        { content: "red" },
+        { content: "red" },
+        { content: "red" },
+    ],
+    consumers: [
+        { content: ["red", "red", "red", "red"] }
+    ],
+    demand: [
+        [{ content: ["red", "red", "red", "red"] }, 10]
+    ],
+};
 
 export const fourSpawnersParallel: Solution = {
-    problem: undefined,
+    problem: problem1,
     actors: [{
         kind: "spawner",
         direction: 5,
@@ -33,7 +48,7 @@ export const fourSpawnersParallel: Solution = {
 
 
 export const fillerSolution1: Solution = {
-    problem: undefined,
+    problem: problem1,
     actors: [{
         kind: "spawner",
         direction: 5,
@@ -55,7 +70,7 @@ export const fillerSolution1: Solution = {
 
 
 export const fillerSolution2: Solution = {
-    problem: undefined,
+    problem: problem1,
     actors: [{
         kind: "spawner",
         direction: 4,
@@ -76,7 +91,7 @@ export const fillerSolution2: Solution = {
 
 
 export const oneSpawnerSequential: Solution = {
-    problem: undefined,
+    problem: problem1,
     actors: [{
         direction: 0,
         kind: "mirror",

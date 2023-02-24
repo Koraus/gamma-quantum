@@ -104,15 +104,21 @@ export type World = Solution & ({
     particles: ParticleState[];
 };
 
-export const init = (solution: Solution): World => ({
-    ...solution,
-    init: solution,
-    action: "init",
-    step: 0,
-    energy: 0,
-    consumed: {},
-    particles: [],
-});
+export const init = (solution: Solution): World => {
+    // todo: ensure solution is valid:
+    //  * all the actors have unique spots
+    //  * spawners and consumers match the promblem list
+    //--* +anything else?
+    return ({
+        ...solution,
+        init: solution,
+        action: "init",
+        step: 0,
+        energy: 0,
+        consumed: {},
+        particles: [],
+    });
+};
 
 const actions = { move, react }
 const transitionTable = {
