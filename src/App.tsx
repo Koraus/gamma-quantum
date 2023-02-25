@@ -13,11 +13,8 @@ import { fourSpawnersParallel as defaultSolution } from "./hardcodedSoultions";
 import { SolutionsList } from "./SolutionsList"
 import { Solution } from "./puzzle/terms";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
+import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
-
-
-// todo list:
-// make a level based on simple spawns and reactions
 
 function isWin(world: World): Boolean {
     const key = Object.keys(world.consumed)[0];
@@ -28,9 +25,6 @@ function isWin(world: World): Boolean {
     }
     return false;
 }
- 
-
-
 export function App() {
 
     const [solution, setSolution] = useState(defaultSolution);
@@ -39,7 +33,7 @@ export function App() {
     const [step, setStep] = stepState;
     const world = getWorldAtPlaytime(solution, step);
 
-    const cursorToolState = useState("none" as CursorTool);
+    const cursorToolState = useState({ kind: "none" } as CursorTool);
 
 
     const playActionState = useState({
@@ -59,6 +53,7 @@ export function App() {
             startRealtime: performance.now(),
         });
         setWin(false);
+        cursorToolState[1]({ kind: "none" });
     }
 
     useEffect(() => {
@@ -66,8 +61,8 @@ export function App() {
             const stepNow = Math.floor(nowPlaytime(playActionState[0]));
             if (stepNow === step) { return; }
             setStep(stepNow);
-            isWin( getWorldAtPlaytime(solution, stepNow) ) ?  setWin(true) : '' ;
-     
+            isWin(getWorldAtPlaytime(solution, stepNow)) ? setWin(true) : '';
+
         }, 10);
         return () => clearInterval(handler);
     }, [playActionState[0]]);
@@ -105,24 +100,15 @@ export function App() {
             pointerEvents: "none",
         }))}>
             <WinPanel win={win} />
-            <div>step: {JSON.stringify(world.step)}</div>
-            <div>energy: {JSON.stringify(world.energy)}</div>
-            <div>consumed: {Object.entries(world.consumed).map(([k, v], i) => {
-                return <div key={i}><>= {v} x {k}</></div>;
-            })}</div>
-            <div>particles:
-                {world.particles.map((p, i) => {
-                    if (p.isRemoved) { return null; }
-                    return <div key={i}>
-                        = #{i}: {JSON.stringify(p)}
-                    </div>;
-                })}
-            </div>
-            <ReactionSandboxPanel
+            <WorldInfoPanel
                 className={cx(css({
                     pointerEvents: "all",
                 }))}
-            />
+                world={world} />
+            <ReactionSandboxPanel
+                className={cx(css({
+                    pointerEvents: "all",
+                }))} />
             <SolutionsList
                 className={cx(css({
                     pointerEvents: "all",
@@ -140,6 +126,7 @@ export function App() {
                 }))}
             >
                 <CursorToolSelectorPanel
+                    solution={solution}
                     cursorToolState={cursorToolState}
                 />
                 <button
