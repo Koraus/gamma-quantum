@@ -4,7 +4,7 @@ import { css, cx } from "@emotion/css";
 import { useEffect, useState } from "react";
 import { nowPlaytime, PlaybackPanel } from "./PlaybackPanel";
 import { appVersion } from "./appVersion";
-import { init as _init, step as _step } from "./puzzle/step";
+import { init as _init, step as _step, World } from "./puzzle/step";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
@@ -13,6 +13,7 @@ import { fourSpawnersParallel as defaultSolution } from "./hardcodedSoultions";
 import { SolutionsList } from "./SolutionsList"
 import { Solution } from "./puzzle/terms";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
+import { WinPanel } from "./WinPanel";
 
 
 // todo list:
@@ -37,6 +38,20 @@ export function App() {
     });
     const [playAction, setPlayAction] = playActionState;
 
+    const [win, setWin] = useState(false);
+
+    function isWin(world: World) {
+        const key = Object.keys(world.consumed)[0];
+        if (Object.keys(world.consumed).length > 0) {
+            if (world.consumed[key] > 10) {
+                if (!win){ setWin(true) }
+            }
+        }
+    }
+    function setWinIfNotWin() {
+        if (win) { setWin(false); console.log('Notwin') }
+    }
+
     const setSolutionAndResetPlayback = (nextSolution: Solution | ((prevSolution: Solution) => Solution)) => {
         setSolution(nextSolution);
         setPlayAction({
@@ -44,6 +59,7 @@ export function App() {
             startPlaytime: 0,
             startRealtime: performance.now(),
         });
+        setWinIfNotWin();
     }
 
     useEffect(() => {
@@ -51,6 +67,7 @@ export function App() {
             const stepNow = Math.floor(nowPlaytime(playActionState[0]));
             if (stepNow === step) { return; }
             setStep(stepNow);
+            isWin(getWorldAtPlaytime(solution, stepNow));
         }, 10);
         return () => clearInterval(handler);
     }, [playActionState[0]]);
@@ -87,6 +104,7 @@ export function App() {
             inset: 0,
             pointerEvents: "none",
         }))}>
+            <WinPanel win={win} />
             <div>step: {JSON.stringify(world.step)}</div>
             <div>energy: {JSON.stringify(world.energy)}</div>
             <div>consumed: {Object.entries(world.consumed).map(([k, v], i) => {
