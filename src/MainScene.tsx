@@ -14,6 +14,7 @@ import { GroupSync } from "./utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
 import { CursorTool } from "./CursorToolSelectorPanel";
 import { InteractiveBoard } from "./InteractiveBoard";
+import { SpawnerToken } from "./SpawnerToken";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -128,35 +129,11 @@ export function MainScene({
         }
         {solution.actors.map((a, i) => {
             if (a.kind === "spawner") {
-                const p = a.output;
-                const color = (() => {
-                    if (p.content[0] === "red" && p.content[1] === "green" && p.content[2] === "blue") { return "white"; }
-                    if (p.content[0] === "green" && p.content[1] === "blue") { return "cyan"; }
-                    if (p.content[0] === "red" && p.content[1] === "blue") { return "magenta"; }
-                    if (p.content[0] === "red" && p.content[1] === "green") { return "yellow"; }
-                    if (p.content === "red") { return "red"; }
-                    if (p.content === "blue") { return "blue"; }
-                    if (p.content === "green") { return "green"; }
-                    if (p.content === "gamma") { return "orange"; }
-                    throw "not supproted";
-                })();
-                return <group key={i} position={axialToFlatCartXz(a.position)}>
-                    <mesh rotation={[Math.PI / 2, 0, 0]}>
-                        <torusGeometry args={[0.5, 0.05]} />
-                        <meshPhongMaterial color={color} />
-                    </mesh>
-                    <group
-                        rotation={[0, -Math.PI / 3 * a.direction, 0]}
-                    >
-                        <mesh
-                            position={[0, 0, 0.5]}
-                            rotation={[Math.PI / 2, 0, 0]}
-                        >
-                            <cylinderGeometry args={[0.05, 0.05, 0.6]} />
-                            <meshPhongMaterial color={color} />
-                        </mesh>
-                    </group>
-                </group>
+                return <SpawnerToken
+                    actor={a}
+                    key={i}
+                    position={axialToFlatCartXz(a.position)}
+                />
             }
             if (a.kind === "consumer") {
                 return <group key={i} position={axialToFlatCartXz(a.position)}>
@@ -174,6 +151,21 @@ export function MainScene({
                 >
                     <mesh rotation={[0, 0, 0]}>
                         <boxGeometry args={[1, 0.5, 0.05]} />
+                        <meshPhongMaterial color={"grey"} />
+                    </mesh>
+                </group>
+            }
+            if (a.kind === "trap") {
+                return <group
+                    key={i}
+                    position={axialToFlatCartXz(a.position)}
+                >
+                <mesh rotation={[0, Math.PI / 4, 0]}>
+                    <boxGeometry args={[0.5, 0.01, 0.1]} />
+                    <meshPhongMaterial color={"grey"} />
+                </mesh>
+                    <mesh rotation={[0, -Math.PI / 4, 0]}>
+                        <boxGeometry args={[0.5, 0.01, 0.1]} />
                         <meshPhongMaterial color={"grey"} />
                     </mesh>
                 </group>

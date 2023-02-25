@@ -1,5 +1,5 @@
 import { v3 } from "../utils/v";
-import { areParticleKindsEqual, directionVector, getParticleKindKey, Particle, Solution } from "./terms";
+import { areParticleKindsEqual, directionVector, getParticleKindKey, Particle, particleMass, Solution } from "./terms";
 import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
 import _ from "lodash";
@@ -15,6 +15,9 @@ function move(world: World) {
     return update(world, {
         particles: Object.fromEntries(world.particles.map((p, i) => [i, {
             position: u.v3_add(p.velocity),
+            ...(world.actors.some(a => a.kind === "trap" && v3.eq(hg.axialToCube(a.position), p.position))
+                ? { velocity: { $set: v3.zero() } }
+                : {})
         }]))
     });
 }
@@ -45,8 +48,11 @@ function react(world: World) {
         if (a.kind === "consumer") {
             for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
                 const p = reactedWorld.particles[i];
+                if (!p || p.isRemoved) { continue; }
+                if (!v3.eq(hg.axialToCube(a.position), p.position)) { continue; }
+
                 if (areParticleKindsEqual(p, a.input)) {
-                    reactedWorld.particles.splice(i, 1);
+                    reactedWorld.particles[i].isRemoved = true;
                     reactedWorld.consumed[getParticleKindKey(p)] =
                         (reactedWorld.consumed[getParticleKindKey(p)] ?? 0) + 1;
                     // register world mass, energy and momentum change
@@ -73,6 +79,9 @@ function react(world: World) {
                     }
                 }
             }
+        }
+        if (a.kind === "trap") {
+            // acts on movement step
         }
     }
 
@@ -104,15 +113,22 @@ export type World = Solution & ({
     particles: ParticleState[];
 };
 
-export const init = (solution: Solution): World => ({
-    ...solution,
-    init: solution,
-    action: "init",
-    step: 0,
-    energy: 0,
-    consumed: {},
-    particles: [],
-});
+
+export const init = (solution: Solution): World => {
+    // todo: ensure solution is valid:
+    //  * all the actors have unique spots
+    //  * spawners and consumers match the promblem list
+    //--* +anything else?
+    return ({
+        ...solution,
+        init: solution,
+        action: "init",
+        step: 0,
+        energy: 0,
+        consumed: {},
+        particles: [],
+    });
+};
 
 const actions = { move, react }
 const transitionTable = {

@@ -67,6 +67,7 @@ export function App() {
             if (stepNow === step) { return; }
             setStep(stepNow);
             isWin( getWorldAtPlaytime(solution, stepNow) ) ?  setWin(true) : '' ;
+     
         }, 10);
         return () => clearInterval(handler);
     }, [playActionState[0]]);

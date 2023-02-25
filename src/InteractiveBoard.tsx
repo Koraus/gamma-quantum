@@ -55,16 +55,15 @@ export function InteractiveBoard({
 
                     const i = solution.actors.findIndex(a => v2.eq(a.position, hPos));
 
-                    switch (cursorTool) {
+                    switch (cursorTool.kind) {
                         case "none": break;
                         case "spawner": {
                             if (i >= 0) { break; }
                             setSolution(update(solution, {
                                 actors: {
                                     $push: [{
+                                        ...cursorTool,
                                         direction: cursorDirection,
-                                        kind: "spawner",
-                                        output: { content: "red" },
                                         position: hPos
                                     }]
                                 }
@@ -76,9 +75,7 @@ export function InteractiveBoard({
                             setSolution(update(solution, {
                                 actors: {
                                     $push: [{
-                                        direction: cursorDirection,
-                                        kind: "consumer",
-                                        input: { content: ["red", "red", "red", "red"] },
+                                        ...cursorTool,
                                         position: hPos
                                     }]
                                 }
@@ -98,6 +95,18 @@ export function InteractiveBoard({
                             }));
                             break;
                         }
+                        case "trap": {
+                            if (i >= 0) { break; }
+                            setSolution(update(solution, {
+                                actors: {
+                                    $push: [{
+                                        kind: "trap",
+                                        position: hPos
+                                    }]
+                                }
+                            }));
+                            break;
+                        }
                         case "remove": {
                             if (i < 0) { break; }
                             setSolution(update(solution, {
@@ -108,14 +117,14 @@ export function InteractiveBoard({
                     }
                 }
             }} />
-        {cursorTool !== "none" &&
+        {cursorTool.kind !== "none" &&
             <mesh ref={cursorRef} rotation={[0, -Math.PI / 3 * cursorDirection, 0]}>
                 <sphereGeometry args={[0.3]} />
                 <meshPhongMaterial
                     transparent
                     opacity={0.5}
-                    color={cursorTool === "remove" ? "red" : "white"} />
-                {(cursorTool === "mirror" || cursorTool === "spawner") &&
+                    color={cursorTool.kind === "remove" ? "red" : "white"} />
+                {(cursorTool.kind === "mirror" || cursorTool.kind === "spawner") &&
                     <mesh position={[0, 0, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
                         <cylinderGeometry args={[0.05, 0.05, 0.3]} />
                         <meshPhongMaterial
