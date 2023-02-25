@@ -16,7 +16,7 @@ import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
 
-function isWin(world: World): Boolean {
+function isWin(world: World) {
     const key = Object.keys(world.consumed)[0];
     if (Object.keys(world.consumed).length > 0) {
         if (world.consumed[key] > 10) {

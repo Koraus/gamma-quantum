@@ -1,6 +1,6 @@
 import { css, cx } from "@emotion/css";
 
-export function WinPanel({ win }: { win: Boolean }) {
+export function WinPanel({ win }: { win: boolean }) {
     if (win) {
         return <div className={cx(
             css({
