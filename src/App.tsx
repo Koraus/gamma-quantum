@@ -19,6 +19,17 @@ import { WinPanel } from "./WinPanel";
 // todo list:
 // make a level based on simple spawns and reactions
 
+function isWin(world: World): Boolean {
+    const key = Object.keys(world.consumed)[0];
+    if (Object.keys(world.consumed).length > 0) {
+        if (world.consumed[key] > 10) {
+            return true;
+        }
+    }
+    return false;
+}
+ 
+
 
 export function App() {
 
@@ -40,18 +51,6 @@ export function App() {
 
     const [win, setWin] = useState(false);
 
-    function isWin(world: World) {
-        const key = Object.keys(world.consumed)[0];
-        if (Object.keys(world.consumed).length > 0) {
-            if (world.consumed[key] > 10) {
-                if (!win){ setWin(true) }
-            }
-        }
-    }
-    function setWinIfNotWin() {
-        if (win) { setWin(false); console.log('Notwin') }
-    }
-
     const setSolutionAndResetPlayback = (nextSolution: Solution | ((prevSolution: Solution) => Solution)) => {
         setSolution(nextSolution);
         setPlayAction({
@@ -59,7 +58,7 @@ export function App() {
             startPlaytime: 0,
             startRealtime: performance.now(),
         });
-        setWinIfNotWin();
+        setWin(false);
     }
 
     useEffect(() => {
@@ -67,7 +66,7 @@ export function App() {
             const stepNow = Math.floor(nowPlaytime(playActionState[0]));
             if (stepNow === step) { return; }
             setStep(stepNow);
-            isWin(getWorldAtPlaytime(solution, stepNow));
+            isWin( getWorldAtPlaytime(solution, stepNow) ) ?  setWin(true) : '' ;
         }, 10);
         return () => clearInterval(handler);
     }, [playActionState[0]]);
