@@ -45,8 +45,11 @@ function react(world: World) {
         if (a.kind === "consumer") {
             for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
                 const p = reactedWorld.particles[i];
+                if (!p || p.isRemoved) { continue; }
+                if (!v3.eq(hg.axialToCube(a.position), p.position)) { continue; }
+
                 if (areParticleKindsEqual(p, a.input)) {
-                    reactedWorld.particles.splice(i, 1);
+                    reactedWorld.particles[i].isRemoved = true;
                     reactedWorld.consumed[getParticleKindKey(p)] =
                         (reactedWorld.consumed[getParticleKindKey(p)] ?? 0) + 1;
                     // register world mass, energy and momentum change
@@ -103,6 +106,7 @@ export type World = Solution & ({
     consumed: Record<string, number>;
     particles: ParticleState[];
 };
+
 
 export const init = (solution: Solution): World => {
     // todo: ensure solution is valid:
