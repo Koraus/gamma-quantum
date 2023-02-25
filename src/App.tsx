@@ -61,8 +61,7 @@ export function App() {
             const stepNow = Math.floor(nowPlaytime(playActionState[0]));
             if (stepNow === step) { return; }
             setStep(stepNow);
-            isWin(getWorldAtPlaytime(solution, stepNow)) ? setWin(true) : '';
-
+            if (win && isWin(getWorldAtPlaytime(solution, stepNow))) { setWin(true); }
         }, 10);
         return () => clearInterval(handler);
     }, [playActionState[0]]);
