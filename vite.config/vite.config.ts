@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, splitVendorChunkPlugin } from "vite";
 import { viteSingleFile } from "vite-plugin-singlefile";
 import BuildInfo from 'vite-plugin-info';
 import react from '@vitejs/plugin-react';
@@ -8,6 +8,16 @@ import { viteInlineLinkSvg } from "./vite-plugin-inlineLinkSvg";
 export default defineConfig({
     build: {
         // minify: false,
+        rollupOptions: {
+            output: {
+                // manualChunks(id) {
+                //     const match = id.match(/node_modules\/(.*?)\//);
+                //     if (!match) { return; }
+                //     const name = match[1];
+                //     if (name === "three") { return name; }
+                // }
+            }
+        }
     },
     plugins: [
         react({
