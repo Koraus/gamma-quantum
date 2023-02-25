@@ -66,6 +66,56 @@ const reactions: Reaction[] = [
             }];
         }
     },
+    p1 => {
+        const c1 = p1.content;
+        if (!Array.isArray(c1)) { return; }
+        if (c1.length !== 2) { return; }
+        return p2 => {
+            const c2 = p2.content;
+            if (c2 !== "gamma") { return; }
+
+            return [{
+                content: c1[0],
+            }, {
+                content: c1[1],
+            }];
+        }
+    },
+    p1 => {
+        const c1 = p1.content;
+        if (!Array.isArray(c1)) { return; }
+        if (c1.length !== 4) { return; }
+        return p2 => {
+            const c2 = p2.content;
+            if (c2 !== "gamma") { return; }
+
+            return [{
+                content: [c1[0], c1[1]],
+            }, {
+                content: [c1[2], c1[3]],
+            }];
+        }
+    },
+    p1 => {
+        const c1 = p1.content;
+        if (!Array.isArray(c1)) { return; }
+        if (c1.length !== 4) { return; }
+        return p2 => {
+            const c2 = p2.content;
+            if (c2 !== "gamma") { return; }
+
+            return p3 => {
+                const c3 = p3.content;
+                if (c3 !== "gamma") { return; }
+
+                return [{
+                    content: [c1[0], c1[1]],
+                }, {
+                    content: [c1[2], c1[3]],
+                }];
+            }
+        }
+    },
 ];
 
 export function applyReactionsInPlace(particles: ParticleState[]) {
@@ -102,16 +152,40 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                                     continue;
                                 }
 
-                                throw "not implemented";
+                                const requestedReaction = {
+                                    reagents: [p1, p2, p3],
+                                    products: r3,
+                                };
+                                const variants = generateReactionVariants(requestedReaction);
+                                const {
+                                    selectedVariant
+                                } = selectReactionVariant({
+                                    requestedReaction,
+                                    variants,
+                                });
+                                if (selectedVariant) {
+                                    particles[particles.indexOf(p1)] = update(p1, {
+                                        isRemoved: { $set: true, }
+                                    });
+                                    particles[particles.indexOf(p2)] = update(p2, {
+                                        isRemoved: { $set: true, }
+                                    });
+                                    newParticles.push(...selectedVariant.products.map(p => ({
+                                        ...p,
+                                        position: p1.position,
+                                        step: 0,
+                                        isRemoved: false,
+                                    })));
 
-                                return true;
+                                    return true;
+                                }
                             }
-
 
 
                             continue;
                         }
-                        
+
+
                         const requestedReaction = {
                             reagents: [p1, p2],
                             products: r2,

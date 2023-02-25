@@ -76,7 +76,6 @@ export function InteractiveBoard({
                                 actors: {
                                     $push: [{
                                         ...cursorTool,
-                                        direction: cursorDirection,
                                         position: hPos
                                     }]
                                 }
@@ -90,6 +89,18 @@ export function InteractiveBoard({
                                     $push: [{
                                         direction: cursorDirection,
                                         kind: "mirror",
+                                        position: hPos
+                                    }]
+                                }
+                            }));
+                            break;
+                        }
+                        case "trap": {
+                            if (i >= 0) { break; }
+                            setSolution(update(solution, {
+                                actors: {
+                                    $push: [{
+                                        kind: "trap",
                                         position: hPos
                                     }]
                                 }

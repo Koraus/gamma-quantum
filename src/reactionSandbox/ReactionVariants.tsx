@@ -13,7 +13,11 @@ const prepareReactionRequests = ({ reagents, products }: {
     reagents: ParticleKind[];
     products: ParticleKind[];
 }) => groupReactionVariantsBySymmetries(velocityVariants4.map((vels) => ({
-    reagents: [...reagents, particles.g].slice(0, 4)
+    reagents: [
+        ...reagents, 
+        particles.g, 
+        // particles.g
+    ].slice(0, 4)
         .map((p, i) => ({ velocity: vels[i], ...p }))
         .filter(p => particleMass(p) > 0 || hg.cubeLen(p.velocity) > 0),
     products: [],

@@ -1,5 +1,5 @@
 import { v3 } from "../utils/v";
-import { areParticleKindsEqual, directionVector, getParticleKindKey, Particle, Solution } from "./terms";
+import { areParticleKindsEqual, directionVector, getParticleKindKey, Particle, particleMass, Solution } from "./terms";
 import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
 import _ from "lodash";
@@ -15,6 +15,9 @@ function move(world: World) {
     return update(world, {
         particles: Object.fromEntries(world.particles.map((p, i) => [i, {
             position: u.v3_add(p.velocity),
+            ...(world.actors.some(a => a.kind === "trap" && v3.eq(hg.axialToCube(a.position), p.position))
+                ? { velocity: { $set: v3.zero() } }
+                : {})
         }]))
     });
 }
@@ -76,6 +79,9 @@ function react(world: World) {
                     }
                 }
             }
+        }
+        if (a.kind === "trap") {
+            // acts on movement step
         }
     }
 

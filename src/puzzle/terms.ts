@@ -47,22 +47,26 @@ export const particleMomentum = (p: Particle) =>
 export const particleEnegry = (p: Particle) =>
     particleMass(p) + hg.cubeLen(particleMomentum(p));
 
-
+export type SpawnerActor = {
+    position: v2,
+    kind: "spawner",
+    direction: IntRange_0Inc_5Inc,
+    output: ParticleKind,
+};
 
 export type Actor = {
     position: v2,
-    direction: IntRange_0Inc_5Inc,
 } & ({
     kind: "mirror",
+    direction: IntRange_0Inc_5Inc,
 } | {
     kind: "reactor",
 } | {
+    kind: "trap",
+} | {
     kind: "consumer",
     input: ParticleKind,
-} | {
-    kind: "spawner",
-    output: ParticleKind,
-});
+}) | SpawnerActor;
 
 export type Solution = {
     problem: Problem,

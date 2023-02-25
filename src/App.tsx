@@ -13,11 +13,7 @@ import { fourSpawnersParallel as defaultSolution } from "./hardcodedSoultions";
 import { SolutionsList } from "./SolutionsList"
 import { Solution } from "./puzzle/terms";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
-
-
-// todo list:
-// make a level based on simple spawns and reactions
-
+import { WorldInfoPanel } from "./WorldInfoPanel";
 
 export function App() {
 
@@ -88,24 +84,15 @@ export function App() {
             inset: 0,
             pointerEvents: "none",
         }))}>
-            <div>step: {JSON.stringify(world.step)}</div>
-            <div>energy: {JSON.stringify(world.energy)}</div>
-            <div>consumed: {Object.entries(world.consumed).map(([k, v], i) => {
-                return <div key={i}><>= {v} x {k}</></div>;
-            })}</div>
-            <div>particles:
-                {world.particles.map((p, i) => {
-                    if (p.isRemoved) { return null; }
-                    return <div key={i}>
-                        = #{i}: {JSON.stringify(p)}
-                    </div>;
-                })}
-            </div>
-            <ReactionSandboxPanel
+            <WorldInfoPanel
                 className={cx(css({
                     pointerEvents: "all",
                 }))}
-            />
+                world={world} />
+            <ReactionSandboxPanel
+                className={cx(css({
+                    pointerEvents: "all",
+                }))} />
             <SolutionsList
                 className={cx(css({
                     pointerEvents: "all",

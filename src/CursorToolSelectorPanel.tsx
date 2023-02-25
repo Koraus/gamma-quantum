@@ -15,6 +15,8 @@ export type CursorTool = {
 } | {
     kind: "reactor",
 } | {
+    kind: "trap",
+} | {
     kind: "remove",
 };
 
@@ -57,6 +59,7 @@ export function CursorToolSelectorPanel({
         ...availableConsumers,
         { kind: "mirror" },
         // { kind: "reactor" },
+        { kind: "trap" },
         { kind: "remove" },
     ] as const;
     return <div
