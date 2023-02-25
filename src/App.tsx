@@ -4,7 +4,7 @@ import { css, cx } from "@emotion/css";
 import { useEffect, useState } from "react";
 import { nowPlaytime, PlaybackPanel } from "./PlaybackPanel";
 import { appVersion } from "./appVersion";
-import { init as _init, step as _step } from "./puzzle/step";
+import { init as _init, step as _step, World } from "./puzzle/step";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
@@ -14,7 +14,17 @@ import { SolutionsList } from "./SolutionsList"
 import { Solution } from "./puzzle/terms";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
+import { WinPanel } from "./WinPanel";
 
+function isWin(world: World) {
+    const key = Object.keys(world.consumed)[0];
+    if (Object.keys(world.consumed).length > 0) {
+        if (world.consumed[key] > 10) {
+            return true;
+        }
+    }
+    return false;
+}
 export function App() {
 
     const [solution, setSolution] = useState(defaultSolution);
@@ -33,6 +43,8 @@ export function App() {
     });
     const [playAction, setPlayAction] = playActionState;
 
+    const [win, setWin] = useState(false);
+
     const setSolutionAndResetPlayback = (nextSolution: Solution | ((prevSolution: Solution) => Solution)) => {
         setSolution(nextSolution);
         setPlayAction({
@@ -40,6 +52,7 @@ export function App() {
             startPlaytime: 0,
             startRealtime: performance.now(),
         });
+        setWin(false);
         cursorToolState[1]({ kind: "none" });
     }
 
@@ -48,6 +61,7 @@ export function App() {
             const stepNow = Math.floor(nowPlaytime(playActionState[0]));
             if (stepNow === step) { return; }
             setStep(stepNow);
+            if (win && isWin(getWorldAtPlaytime(solution, stepNow))) { setWin(true); }
         }, 10);
         return () => clearInterval(handler);
     }, [playActionState[0]]);
@@ -84,6 +98,7 @@ export function App() {
             inset: 0,
             pointerEvents: "none",
         }))}>
+            <WinPanel win={win} />
             <WorldInfoPanel
                 className={cx(css({
                     pointerEvents: "all",
