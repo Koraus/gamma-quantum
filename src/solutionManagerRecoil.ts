@@ -20,7 +20,7 @@ const postSolution = (solution: Solution) => undefined;
 const getProblemCmp = memoize(_getProblemCmp, { max: 1000 });
 
 const solutionManagerRecoilDefault = {
-    currentSolution: { problem: Object.values(problems)[0], actors: [] },
+    currentSolution: { problem: Object.values(problems)[0], actors: [] } as Solution,
     knownSolutions: {} as Record<string, Solution>,
     confirmedSolutions: {} as Record<string, Awaited<ReturnType<typeof postSolution>>>,
 };
@@ -99,7 +99,7 @@ export const useSetCurrentSolution = () => {
     const set = useSetRecoilState(solutionManagerRecoil);
     return (solution: Solution) => set((prev) => {
         let next = update(prev, {
-            confirmedSolutions: { $set: solution },
+            currentSolution: { $set: solution },
         });
         if (isSolved(solution)) {
             const solutionId = getSolutionCmp(solution);
