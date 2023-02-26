@@ -1,5 +1,5 @@
 import { css, cx } from "@emotion/css";
-import { areParticleKindsEqual, getParticleKindKey, ParticleKind, Solution } from "./puzzle/terms";
+import { areParticleKindsEqual, ParticleKind, Solution } from "./puzzle/terms";
 import { StateProp } from "./utils/StateProp";
 
 export type CursorTool = {

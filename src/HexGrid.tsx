@@ -1,5 +1,4 @@
 import { Plane } from "@react-three/drei";
-import { ThreeElements } from "@react-three/fiber";
 
 export function HexGrid({
     ...props

@@ -5,7 +5,6 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { viteInlineLinkSvg } from "./vite-plugin-inlineLinkSvg";
 import packageLockJson from "../package-lock.json";
-import { resolve } from "path";
 
 export default defineConfig(({
     command,
