@@ -1,6 +1,6 @@
 import { v2 } from "./utils/v";
 import * as hg from "./utils/hg";
-import { DirectionId, Solution } from "./puzzle/terms";
+import { DirectionId, HalfDirectionId, Solution } from "./puzzle/terms";
 import { HexGrid } from "./HexGrid";
 import { StateProp } from "./utils/StateProp";
 import { Mesh, Vector3 } from "three";
@@ -18,7 +18,7 @@ export function InteractiveBoard({
 }) {
 
     const cursorRef = useRef<Mesh>(null);
-    const [cursorDirection, setCursorDirection] = useState(0 as DirectionId);
+    const [cursorDirection, setCursorDirection] = useState(0);
 
     return <group>
         <HexGrid
@@ -28,7 +28,7 @@ export function InteractiveBoard({
                 cursorEl.position.copy(ev.unprojectedPoint);
                 cursorEl.position.addScaledVector(ev.ray.direction, ev.distance);
                 cursorEl.position.copy(apipe(
-                    [cursorEl.position.x * hg.SQRT3, cursorEl.position.z * hg.SQRT3],
+                    [cursorEl.position.x, cursorEl.position.z],
                     hg.flatCartToAxial,
                     hg.axialToCube,
                     hg.cubeRound,
@@ -39,14 +39,14 @@ export function InteractiveBoard({
             }}
             onPointerUp={ev => {
                 if (ev.button === 2) {
-                    setCursorDirection((cursorDirection + 1) % 6 as DirectionId);
+                    setCursorDirection(cursorDirection + (cursorTool.kind === "mirror" ? 1 : 2));
                 }
                 if (ev.button === 0) {
                     const hPos = apipe(
                         ev.unprojectedPoint
                             .clone()
                             .addScaledVector(ev.ray.direction, ev.distance),
-                        ({ x, z }) => [x * hg.SQRT3, z * hg.SQRT3] as v2,
+                        ({ x, z }) => [x, z] as v2,
                         hg.flatCartToAxial,
                         hg.axialToCube,
                         hg.cubeRound,
@@ -63,7 +63,7 @@ export function InteractiveBoard({
                                 actors: {
                                     $push: [{
                                         ...cursorTool,
-                                        direction: cursorDirection,
+                                        direction: (cursorDirection % 12) / 2 as DirectionId,
                                         position: hPos
                                     }]
                                 }
@@ -87,7 +87,7 @@ export function InteractiveBoard({
                             setSolution(update(solution, {
                                 actors: {
                                     $push: [{
-                                        direction: cursorDirection,
+                                        direction: (cursorDirection % 12) as HalfDirectionId,
                                         kind: "mirror",
                                         position: hPos
                                     }]
@@ -118,20 +118,20 @@ export function InteractiveBoard({
                 }
             }} />
         {cursorTool.kind !== "none" &&
-            <mesh ref={cursorRef} rotation={[0, -Math.PI / 3 * cursorDirection, 0]}>
+            <mesh ref={cursorRef} rotation={[0, -Math.PI / 3 * cursorDirection * (cursorTool.kind === "mirror" ? 0.51: 1), 0]}>
                 <sphereGeometry args={[0.3]} />
                 <meshPhongMaterial
                     transparent
                     opacity={0.5}
                     color={cursorTool.kind === "remove" ? "red" : "white"} />
-                {(cursorTool.kind === "mirror" || cursorTool.kind === "spawner") &&
-                    <mesh position={[0, 0, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
-                        <cylinderGeometry args={[0.05, 0.05, 0.3]} />
-                        <meshPhongMaterial
-                            transparent
-                            opacity={0.5}
-                            color={"white"} />
-                    </mesh>}
+                    {(cursorTool.kind === "mirror" || cursorTool.kind === "spawner") &&
+                        <mesh position={[0, 0, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
+                            <cylinderGeometry args={[0.05, 0.05, 0.3]} />
+                            <meshPhongMaterial
+                                transparent
+                                opacity={0.5}
+                                color={"white"} />
+                        </mesh>}
             </mesh>}
     </group>;
 }

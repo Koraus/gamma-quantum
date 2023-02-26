@@ -1,5 +1,5 @@
-import { v3 } from "../utils/v";
-import { areParticleKindsEqual, directionVector, getParticleKindKey, Particle, particleMass, Solution } from "./terms";
+import { v2, v3 } from "../utils/v";
+import { areParticleKindsEqual, directionVector, getParticleKindKey, halfDirection2Vector, Particle, particleMass, Solution } from "./terms";
 import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
 import _ from "lodash";
@@ -65,19 +65,12 @@ function react(world: World) {
                 if (!p || p.isRemoved) { continue; }
                 if (!v3.eq(hg.axialToCube(a.position), p.position)) { continue; }
 
-                // todo: simplify & optimize
-                const mirrorNormal = directionVector[a.direction];
-                const mirrorNormalNeg = v3.negate(mirrorNormal);
-                if (v3.eq(p.velocity, mirrorNormal) || v3.eq(p.velocity, mirrorNormalNeg)) {
-                    p.velocity = v3.negate(p.velocity);
-                } else {
-                    const v1 = hg.cubeRotate60Ccv(p.velocity);
-                    if (v3.eq(v1, mirrorNormal) || v3.eq(v1, mirrorNormalNeg)) {
-                        p.velocity = hg.cubeRotate60Cv(p.velocity);
-                    } else {
-                        p.velocity = v1;
-                    }
-                }
+                const mirrorNormal = halfDirection2Vector[a.direction];
+
+                const vc = hg.axialToFlatCart(p.velocity);
+                const nc = hg.axialToFlatCart(mirrorNormal);
+                const vc1 = v2.add(vc, v2.scale(nc, -0.5 * v2.dot(vc, nc)));
+                p.velocity = hg.cubeRound(hg.axialToCube(hg.flatCartToAxial(vc1)));
             }
         }
         if (a.kind === "trap") {

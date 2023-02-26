@@ -31,7 +31,7 @@ export const problem5Solution: Solution = {
             ]
         },
         {
-            "direction": 4,
+            "direction": 8,
             "kind": "mirror",
             "position": [
                 0,
@@ -39,7 +39,7 @@ export const problem5Solution: Solution = {
             ]
         },
         {
-            "direction": 3,
+            "direction": 6,
             "kind": "mirror",
             "position": [
                 1,
@@ -47,7 +47,7 @@ export const problem5Solution: Solution = {
             ]
         },
         {
-            "direction": 2,
+            "direction": 4,
             "kind": "mirror",
             "position": [
                 3,
@@ -104,7 +104,7 @@ export const problem5Solution: Solution = {
             ]
         },
         {
-            "direction": 1,
+            "direction": 2,
             "kind": "mirror",
             "position": [
                 3,
@@ -196,12 +196,12 @@ export const oneSpawnerSequential: Solution = {
         position: [2, -1]
     },
     {
-        direction: 1,
+        direction: 2,
         kind: "mirror",
         position: [4, -1]
     },
     {
-        direction: 2,
+        direction: 4,
         kind: "mirror",
         position: [4, 1]
     },
@@ -212,7 +212,7 @@ export const oneSpawnerSequential: Solution = {
         position: [-11, 12]
     },
     {
-        direction: 3,
+        direction: 6,
         kind: "mirror",
         position: [-3, 8]
     },

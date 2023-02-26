@@ -3,7 +3,7 @@ type v3 = [number, number, number];
 
 export const SQRT3 = Math.sqrt(3);
 export const axialToFlatCart = ([q, r]: v2 | v3) => [(SQRT3 / 2) * q, (1 / 2) * q + r] as v2;
-export const flatCartToAxial = ([x, y]: v2) => [2 / 3 * x, - 1 / 3 * x + SQRT3 / 3 * y] as v2;
+export const flatCartToAxial = ([x, y]: v2) => [2 / SQRT3 * x, - 1 / SQRT3 * x + y] as v2;
 export const axialToCube = ([q, r]: v2) => [q, r, -q - r] as v3;
 export const cubeLen = ([q, r, s]: v3) => (Math.abs(q) + Math.abs(r) + Math.abs(s)) / 2;
 export const cubeFlatNorth = () => [0, 1, -1] as v3;

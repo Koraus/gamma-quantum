@@ -146,7 +146,7 @@ export function MainScene({
             if (a.kind === "mirror") {
                 return <group
                     key={i}
-                    rotation={[0, -Math.PI / 3 * a.direction, 0]}
+                    rotation={[0, -Math.PI / 6 * a.direction, 0]}
                     position={axialToFlatCartXz(a.position)}
                 >
                     <mesh rotation={[0, 0, 0]}>
