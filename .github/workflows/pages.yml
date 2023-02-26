@@ -16,7 +16,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-${{ steps.system-info.outputs.release }}-node-modules-${{ hashFiles('package-lock.json') }}
 
       - if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
