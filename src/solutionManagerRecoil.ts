@@ -6,10 +6,10 @@ import * as amplitude from "@amplitude/analytics-browser";
 import update from "immutability-helper";
 import memoize from "memoizee";
 import { localStorageAtomEffect } from "./utils/localStorageAtomEffect";
-import { Problem, Solution } from "./puzzle/terms";
+import { Solution } from "./puzzle/terms";
+import { keyProjectProblem, Problem } from "./puzzle/Problem";
 import { onChangeAtomEffect } from "./utils/onChangeAtomEffect";
 
-// todo: implement getProblemCmp
 // todo: implement getSolutionCmpObj && getSolutionCmp
 
 // todo: implement isSolved for Solution (should I preemulate it for like 1k steps? Ideas?)
@@ -17,7 +17,7 @@ import { onChangeAtomEffect } from "./utils/onChangeAtomEffect";
 // todo: implement postSolution & statsClient
 const postSolution = (solution: Solution) => undefined;
 
-const getProblemCmp = memoize(_getProblemCmp, { max: 1000 });
+const getProblemCmp = memoize(keyProjectProblem, { max: 1000 });
 
 const solutionManagerRecoilDefault = {
     currentSolution: { problem: Object.values(problems)[0], actors: [] } as Solution,

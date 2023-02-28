@@ -1,5 +1,6 @@
 import { v2, v3 } from "../utils/v";
-import { areParticleKindsEqual, directionVector, getParticleKindKey, halfDirection2Vector, Particle, particleMass, Solution } from "./terms";
+import { directionVector, halfDirection2Vector, Solution } from "./terms";
+import { keyifyParticleKind, Particle } from "./Particle";
 import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
 import _ from "lodash";
@@ -51,10 +52,10 @@ function react(world: World) {
                 if (!p || p.isRemoved) { continue; }
                 if (!v3.eq(hg.axialToCube(a.position), p.position)) { continue; }
 
-                if (areParticleKindsEqual(p, a.input)) {
+                if (keyifyParticleKind(p) === keyifyParticleKind(a.input)) {
                     reactedWorld.particles[i].isRemoved = true;
-                    reactedWorld.consumed[getParticleKindKey(p)] =
-                        (reactedWorld.consumed[getParticleKindKey(p)] ?? 0) + 1;
+                    reactedWorld.consumed[keyifyParticleKind(p)] =
+                        (reactedWorld.consumed[keyifyParticleKind(p)] ?? 0) + 1;
                     // register world mass, energy and momentum change
                 }
             }

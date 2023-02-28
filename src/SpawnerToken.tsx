@@ -1,15 +1,13 @@
 import { SpawnerActor } from "./puzzle/terms";
 import { ThreeElements } from "@react-three/fiber";
+import { getParticleColors } from "./ParticleToken";
 
 export function SpawnerToken({
     actor, ...props
 }: {
     actor: SpawnerActor;
 } & ThreeElements["group"]) {
-    const colors = (Array.isArray(actor.output.content)
-        ? actor.output.content
-        : [actor.output.content])
-        .map(c => c === "gamma" ? "white" : c);
+    const colors = getParticleColors(actor.output);
 
     return <group {...props}>
         {colors.map((color, j) => <mesh

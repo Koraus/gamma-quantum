@@ -1,11 +1,7 @@
 import { v2, v3 } from "../utils/v";
 import * as hg from "../utils/hg";
-
-export type Problem = {
-    spawners: ParticleKind[],
-    consumers: ParticleKind[],
-    demand: [ParticleKind, number][],
-};
+import { Problem } from "./Problem";
+import { ParticleKind } from "./Particle";
 
 export type IntRange_0Inc_5Inc = 0 | 1 | 2 | 3 | 4 | 5;
 export type DirectionId = IntRange_0Inc_5Inc;
@@ -36,34 +32,6 @@ export const halfDirection2Vector = [
     v3.add(directionVector[5], directionVector[0]),
 ] as const;
 
-export type ParticleKind = {
-    content:
-    "gamma"
-    | "red"
-    | "green"
-    | "blue"
-    | ("red" | "green" | "blue")[]
-}
-
-export type Particle = ParticleKind & {
-    velocity: v3,
-}
-
-export const particleMass = (p: ParticleKind) => {
-    if (p.content === "gamma") { return 0; };
-    if (!Array.isArray(p.content)) { return 1; };
-    if (p.content.length === 2) { return 1; }
-    if (p.content.length === 3) { return 3; }
-    if (p.content.length === 4) { return 4; }
-    throw "unexpected particle content";
-}
-
-export const particleMomentum = (p: Particle) =>
-    v3.scale(p.velocity, (particleMass(p) || 1) * hg.cubeLen(p.velocity));
-
-export const particleEnegry = (p: Particle) =>
-    particleMass(p) + hg.cubeLen(particleMomentum(p));
-
 export type SpawnerActor = {
     position: v2,
     kind: "spawner",
@@ -73,7 +41,7 @@ export type SpawnerActor = {
 
 export type Actor = {
     position: v2,
-} & ({
+} & ({  
     kind: "mirror",
     direction: HalfDirectionId,
 } | {
@@ -88,13 +56,4 @@ export type Actor = {
 export type Solution = {
     problem: Problem,
     actors: Actor[],
-}
-
-export function getParticleKindKey(p: ParticleKind) {
-    if (!Array.isArray(p.content)) { return p.content; }
-    return JSON.stringify([...p.content].sort());
-}
-
-export function areParticleKindsEqual(p1: ParticleKind, p2: ParticleKind) {
-    return getParticleKindKey(p1) == getParticleKindKey(p2);
 }

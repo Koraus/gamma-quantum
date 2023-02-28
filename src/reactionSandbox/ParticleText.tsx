@@ -2,7 +2,9 @@ import { css } from "@emotion/css";
 import * as hg from "../utils/hg";
 import { v3 } from "../utils/v";
 
-import { ParticleKind, particleMass, Particle, DirectionId } from "../puzzle/terms";
+import { ParticleKind, particleMass } from "../puzzle/Particle";
+import { Particle } from "../puzzle/Particle";
+import { DirectionId } from "../puzzle/terms";
 
 export const particleColor = (p: ParticleKind) => {
     if (p.content === "gamma") { return "white"; };

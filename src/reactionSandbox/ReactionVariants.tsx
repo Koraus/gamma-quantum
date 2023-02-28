@@ -6,7 +6,8 @@ import { groupReactionVariantsBySymmetries } from "../puzzle/groupReactionVarian
 import * as hg from "../utils/hg";
 import { particles } from "./particles";
 import { velocityVariants4 } from "../puzzle/generateReactionVariants";
-import { ParticleKind, particleMass, Particle } from "../puzzle/terms";
+import { ParticleKind, particleMass } from "../puzzle/Particle";
+import { Particle } from "../puzzle/Particle";
 
 
 const prepareReactionRequests = ({ reagents, products }: {

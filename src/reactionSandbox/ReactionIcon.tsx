@@ -5,7 +5,7 @@ import { css, cx } from "@emotion/css";
 import { cxy, xy1, xy2 } from "./misc";
 import * as hg from "../utils/hg";
 import { particleColor } from "./ParticleText";
-import { Particle } from "../puzzle/terms";
+import { Particle } from "../puzzle/Particle";
 
 
 export function* hgDiscDots(radius: number, center: v3 = [0, 0, 0]) {

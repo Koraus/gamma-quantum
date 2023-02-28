@@ -22,7 +22,7 @@ export const problem5Solution: Solution = {
         {
             "kind": "spawner",
             "output": {
-                "content": "green"
+                content: { red: 0, green: 1, blue: 0, },
             },
             "direction": 0,
             "position": [
@@ -57,10 +57,7 @@ export const problem5Solution: Solution = {
         {
             "kind": "consumer",
             "input": {
-                "content": [
-                    "green",
-                    "green"
-                ]
+                content: { red: 0, green: 2, blue: 0, },
             },
             "position": [
                 -5,
@@ -70,10 +67,7 @@ export const problem5Solution: Solution = {
         {
             "kind": "consumer",
             "input": {
-                "content": [
-                    "red",
-                    "red"
-                ]
+                content: { red: 2, green: 0, blue: 0, },
             },
             "position": [
                 6,
@@ -83,12 +77,7 @@ export const problem5Solution: Solution = {
         {
             "kind": "spawner",
             "output": {
-                "content": [
-                    "red",
-                    "red",
-                    "red",
-                    "red"
-                ]
+                content: { red: 4, green: 0, blue: 0, },
             },
             "direction": 2,
             "position": [
@@ -120,26 +109,26 @@ export const fourSpawnersParallel: Solution = {
     actors: [{
         kind: "spawner",
         direction: 5,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [-2, 2],
     }, {
         kind: "spawner",
         direction: 1,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [8, -3],
     }, {
         kind: "spawner",
         direction: 4,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [-2, 13],
     }, {
         kind: "spawner",
         direction: 2,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [8, 8],
     }, {
         kind: "consumer",
-        input: { content: ["red", "red", "red", "red"] },
+        input: { content: { red: 4, green: 0, blue: 0, }, },
         position: [3, 5],
     }],
 }
@@ -151,17 +140,17 @@ export const fillerSolution1: Solution = {
     actors: [{
         kind: "spawner",
         direction: 5,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [-2, 2],
     }, {
         kind: "spawner",
         direction: 1,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [8, -3],
     }, {
         kind: "spawner",
         direction: 4,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [-2, 13],
     }],
 }
@@ -173,16 +162,16 @@ export const fillerSolution2: Solution = {
     actors: [{
         kind: "spawner",
         direction: 4,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [-2, 13],
     }, {
         kind: "spawner",
         direction: 2,
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [8, 8],
     }, {
         kind: "consumer",
-        input: { content: ["red", "red", "red", "red"] },
+        input: { content: { red: 4, green: 0, blue: 0, }, },
         position: [3, 5],
     }],
 }
@@ -208,7 +197,7 @@ export const oneSpawnerSequential: Solution = {
     {
         direction: 4,
         kind: "spawner",
-        output: { content: "red" },
+        output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [-11, 12]
     },
     {
@@ -218,7 +207,7 @@ export const oneSpawnerSequential: Solution = {
     },
     {
         kind: "consumer",
-        input: { content: ["red", "red", "red", "red"] },
+        input: { content: { red: 4, green: 0, blue: 0, }, },
         position: [-7, 5]
     },
     {

@@ -1,5 +1,6 @@
 import { css, cx } from "@emotion/css";
-import { areParticleKindsEqual, ParticleKind, Solution } from "./puzzle/terms";
+import { keyifyParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/Particle";
+import { Solution } from "./puzzle/terms";
 import { StateProp } from "./utils/StateProp";
 
 export type CursorTool = {
@@ -30,25 +31,31 @@ export function CursorToolSelectorPanel({
     cursorToolState: StateProp<CursorTool>;
 } & JSX.IntrinsicElements["div"]) {
 
-    const availableSpawners = solution.problem.spawners.map(output => ({
-        kind: "spawner" as const,
-        output,
-        used: false,
-    }));
-    const availableConsumers = solution.problem.consumers.map(input => ({
-        kind: "consumer" as const,
-        input,
-        used: false,
-    }));
+    const availableSpawners = Object.entries(solution.problem.spawners)
+        .flatMap(([kind, count]) =>
+            new Array(count!).fill({
+                kind: "spawner" as const,
+                output: parsePartilceKind(kind as ParticleKindKey),
+                used: false,
+            }));
+
+    const availableConsumers = Object.entries(solution.problem.consumers)
+        .flatMap(([kind, count]) =>
+            new Array(count!).fill({
+                kind: "consumer" as const,
+                input: parsePartilceKind(kind as ParticleKindKey),
+                used: false,
+            }));
+
     for (const usedActor of solution.actors) {
         if (usedActor.kind === "spawner") {
             const item = availableSpawners
-                .find(a => !a.used && areParticleKindsEqual(a.output, usedActor.output));
+                .find(a => !a.used && (keyifyParticleKind(a.output) === keyifyParticleKind(usedActor.output)));
             if (item) { item.used = true; }
         }
         if (usedActor.kind === "consumer") {
             const item = availableConsumers
-                .find(a => !a.used && areParticleKindsEqual(a.input, usedActor.input));
+                .find(a => !a.used && (keyifyParticleKind(a.input) === keyifyParticleKind(usedActor.input)));
             if (item) { item.used = true; }
         }
     }

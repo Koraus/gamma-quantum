@@ -1,15 +1,18 @@
 import { useFrame } from "@react-three/fiber";
 import { PlayAction } from "./PlaybackPanel";
 import { ParticleState } from "./puzzle/step";
-import { ParticleKind } from "./puzzle/terms";
+import { ParticleKind } from "./puzzle/Particle";
 import { directionOf } from "./reactionSandbox/ParticleText";
 import * as hg from "./utils/hg";
 
-const getColors = (p: ParticleKind) =>
-    (() => {
-        if (Array.isArray(p.content)) { return p.content; }
-        return [p.content];
-    })().map(c => c === "gamma" ? "white" : c);
+export const getParticleColors = (p: ParticleKind) =>
+    p.content === "gamma"
+        ? ["white"]
+        : [
+            ...new Array(p.content.red).fill("red"),
+            ...new Array(p.content.green).fill("green"),
+            ...new Array(p.content.blue).fill("blue"),
+        ];
 
 export function ParticleToken({
     particle: p,
@@ -25,7 +28,7 @@ export function ParticleToken({
 
     playAction: PlayAction,
 }) {
-    const colors = getColors(p);
+    const colors = getParticleColors(p);
 
     // const transition = getTransition(playAction.startPlaytime);
 

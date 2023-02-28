@@ -2,8 +2,8 @@ import { v3 } from "../utils/v";
 import { generateReactionVariants } from "./generateReactionVariants";
 import { selectReactionVariant } from "./selectReactionVariant";
 import { ParticleState } from "./step";
-import { ParticleKind } from "./terms";
 import update from "immutability-helper";
+import { particleCount, ParticleKind } from "./Particle";
 
 type Reaction =
     (p1: ParticleState) => (
@@ -24,82 +24,41 @@ const reactions: Reaction[] = [
     p1 => {
         const c1 = p1.content;
         if (c1 === "gamma") { return; }
-        if (Array.isArray(c1)) { return; }
         return p2 => {
             const c2 = p2.content;
             if (c2 === "gamma") { return; }
-            if (Array.isArray(c2)) { return; }
 
             return [{
-                content: [c1, c2]
+                content: {
+                    red: c1.red + c2.red,
+                    green: c1.green + c2.green,
+                    blue: c1.blue + c2.blue,
+                }
             }];
         }
     },
     p1 => {
         const c1 = p1.content;
         if (c1 === "gamma") { return; }
-        if (Array.isArray(c1)) { return; }
+        if (particleCount(p1) !== 4) { return; }
         return p2 => {
             const c2 = p2.content;
-            if (c2 === "gamma") { return; }
-            if (!Array.isArray(c2)) { return; }
-            if (c2.length >= 4) { return; }
+            if (c2 !== "gamma") { return; }
 
-            return [{
-                content: [c1, ...c2]
-            }];
+            const r1 = { ...c1 };
+            const r2 = { red: 0, green: 0, blue: 0 };
+            let counter = 0;
+            while (counter < 2 && r1.red > 0) { counter++; r1.red--; r2.red++; }
+            while (counter < 2 && r1.green > 0) { counter++; r1.green--; r2.green++; }
+            while (counter < 2 && r1.blue > 0) { counter++; r1.blue--; r2.blue++; }
+
+            return [{ content: r1 }, { content: r2 }];
         }
     },
     p1 => {
         const c1 = p1.content;
         if (c1 === "gamma") { return; }
-        if (!Array.isArray(c1)) { return; }
-        if (c1.length >= 4) { return; }
-        return p2 => {
-            const c2 = p2.content;
-            if (c2 === "gamma") { return; }
-            if (!Array.isArray(c2)) { return; }
-            if (c1.length + c2.length > 4) { return; }
-
-            return [{
-                content: [...c1, ...c2]
-            }];
-        }
-    },
-    p1 => {
-        const c1 = p1.content;
-        if (!Array.isArray(c1)) { return; }
-        if (c1.length !== 2) { return; }
-        return p2 => {
-            const c2 = p2.content;
-            if (c2 !== "gamma") { return; }
-
-            return [{
-                content: c1[0],
-            }, {
-                content: c1[1],
-            }];
-        }
-    },
-    p1 => {
-        const c1 = p1.content;
-        if (!Array.isArray(c1)) { return; }
-        if (c1.length !== 4) { return; }
-        return p2 => {
-            const c2 = p2.content;
-            if (c2 !== "gamma") { return; }
-
-            return [{
-                content: [c1[0], c1[1]],
-            }, {
-                content: [c1[2], c1[3]],
-            }];
-        }
-    },
-    p1 => {
-        const c1 = p1.content;
-        if (!Array.isArray(c1)) { return; }
-        if (c1.length !== 4) { return; }
+        if (particleCount(p1) !== 4) { return; }
         return p2 => {
             const c2 = p2.content;
             if (c2 !== "gamma") { return; }
@@ -108,11 +67,14 @@ const reactions: Reaction[] = [
                 const c3 = p3.content;
                 if (c3 !== "gamma") { return; }
 
-                return [{
-                    content: [c1[0], c1[1]],
-                }, {
-                    content: [c1[2], c1[3]],
-                }];
+                const r1 = { ...c1 };
+                const r2 = { red: 0, green: 0, blue: 0 };
+                let counter = 0;
+                while (counter < 2 && r1.red > 0) { counter++; r1.red--; r2.red++; }
+                while (counter < 2 && r1.green > 0) { counter++; r1.green--; r2.green++; }
+                while (counter < 2 && r1.blue > 0) { counter++; r1.blue--; r2.blue++; }
+
+                return [{ content: r1 }, { content: r2 }];
             }
         }
     },
