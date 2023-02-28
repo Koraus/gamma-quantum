@@ -15,12 +15,12 @@ import { Solution } from "./puzzle/terms";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
-import { getParticleKindKey } from './puzzle/terms'
+import { ParticleKindKey } from "./puzzle/Particle";
 
 function isWin(world: World) {
-    return world.problem.demand
+    return Object.entries(world.problem.demand)
         .every(([key, count]) =>
-            (world.consumed[getParticleKindKey(key)] ?? 0) >= count);
+            (world.consumed[key as ParticleKindKey] ?? 0) >= count!);
 }
 export function App() {
 

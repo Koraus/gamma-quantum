@@ -1,6 +1,6 @@
 import { v2, v3 } from "../utils/v";
 import { directionVector, halfDirection2Vector, Solution } from "./terms";
-import { keyifyParticleKind, Particle } from "./Particle";
+import { keyifyParticleKind, Particle, ParticleKindKey } from "./Particle";
 import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
 import _ from "lodash";
@@ -103,7 +103,7 @@ export type World = Solution & ({
     step: number;
 }) & {
     energy: number;
-    consumed: Record<string, number>;
+    consumed: Partial<Record<ParticleKindKey, number>>;
     particles: ParticleState[];
 };
 
