@@ -18,26 +18,9 @@ import { WinPanel } from "./WinPanel";
 import { getParticleKindKey } from './puzzle/terms'
 
 function isWin(world: World) {
-    let win = false; 
-    const tempWin: boolean[] = []; 
-    world.problem.demand.forEach((requisition) => { 
-        const key = getParticleKindKey(requisition[0]); 
-        const value = requisition[1];
-        for (let consumedKey in world.consumed) {
-            if (consumedKey === key) {       
-                if (world.consumed[consumedKey] >= value) { 
-                    tempWin.push(true); 
-                } else { tempWin.push(false); } 
-            }
-        }
-    })
-    if(tempWin.length > 0){   
-        win = tempWin.every((currentValue) => {
-        if (currentValue) {
-            return true;
-        } else false;
-    })}
-    return win;
+    return world.problem.demand
+        .every(([key, count]) =>
+            (world.consumed[getParticleKindKey(key)] ?? 0) >= count);
 }
 export function App() {
 
