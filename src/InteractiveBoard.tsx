@@ -125,7 +125,7 @@ export function InteractiveBoard({
                     transparent
                     opacity={0.5}
                     color={cursorTool.kind === "remove" ? "red" : "white"} />
-                    {(cursorTool.kind === "mirror" || cursorTool.kind === "spawner") &&
+                {(cursorTool.kind === "mirror" || cursorTool.kind === "spawner") &&
                         <mesh position={[0, 0, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
                             <cylinderGeometry args={[0.05, 0.05, 0.3]} />
                             <meshPhongMaterial

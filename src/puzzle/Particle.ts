@@ -17,7 +17,7 @@ export const keyProjectParticleKind = ({
     content: content === "gamma"
         ? content
         : { red: content.red, green: content.green, blue: content.blue },
-})
+});
 export const keyifyParticleKind = createKeyify(keyProjectParticleKind);
 export type ParticleKindKey = ReturnType<typeof keyifyParticleKind>;
 export const parsePartilceKind = (key: ParticleKindKey) => JSON.parse(key) as ParticleKind;
@@ -30,7 +30,7 @@ export type Particle = ParticleKind & {
 export const particleCount = (p: ReadonlyDeep<ParticleKind>) => {
     if (p.content === "gamma") { return 1; };
     return p.content.red + p.content.green + p.content.blue;
-}
+};
 
 export const particleMass = (p: ReadonlyDeep<ParticleKind>) => {
     if (p.content === "gamma") { return 0; };
@@ -40,7 +40,7 @@ export const particleMass = (p: ReadonlyDeep<ParticleKind>) => {
     if (count === 3) { return 2; }
     if (count === 4) { return 4; }
     return 999999;
-}
+};
 
 export const particleMomentum = (p: ReadonlyDeep<Particle>) =>
     v3.scale(p.velocity, (particleMass(p) || 1) * hg.cubeLen(p.velocity));

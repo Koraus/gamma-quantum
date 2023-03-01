@@ -66,4 +66,4 @@ export const problem5: Problem = {
         [keyifyParticleKind({ content: { red: 2, green: 0, blue: 0 } })]: 10,
         [keyifyParticleKind({ content: { red: 0, green: 2, blue: 0 } })]: 10,
     },
-}
+};

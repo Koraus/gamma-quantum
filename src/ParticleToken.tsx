@@ -39,7 +39,7 @@ export function ParticleToken({
         // if (transitionCurrent === transition) { return; }
 
         // todo: trigger render here
-    })
+    });
 
 
     return <group>

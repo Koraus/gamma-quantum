@@ -4,10 +4,10 @@ export function WinPanel({ win }: { win: boolean }) {
     if (win) {
         return <div className={cx(
             css({
-                fontWeight: 'bold',
-                fontSize: '16px',
-                color: 'green',
-                width: 'fit-content'
+                fontWeight: "bold",
+                fontSize: "16px",
+                color: "green",
+                width: "fit-content"
             }),
         )}>  'Win' </div>;
     }

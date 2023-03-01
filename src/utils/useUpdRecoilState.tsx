@@ -1,5 +1,5 @@
 import update, { Spec } from "immutability-helper";
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from "recoil";
 
 
 export function useUpdRecoilState<T>(...useSetRecoilStateArgs: Parameters<typeof useSetRecoilState<T>>) {

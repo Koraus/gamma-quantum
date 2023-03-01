@@ -13,7 +13,7 @@ export const particleColor = (p: ParticleKind) => {
     if (p.content.length === 3) { return "purple"; }
     if (p.content.length === 4) { return "orange"; }
     throw "unexpected particle content";
-}
+};
 
 export function directionOf(v: v3) {
     const [x, y] = hg.axialToFlatCart(v);

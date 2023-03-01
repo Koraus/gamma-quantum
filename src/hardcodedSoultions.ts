@@ -4,17 +4,17 @@ import { SolutionDraft } from "./puzzle/Solution";
 export const problem1Empty: SolutionDraft = {
     problem: problem1,
     actors: [],
-}
+};
 
 export const problem2Empty: SolutionDraft = {
     problem: problem2,
     actors: [],
-}
+};
 
 export const problem5Empty: SolutionDraft = {
     problem: problem5,
     actors: [],
-}
+};
 
 export const problem5Solution: SolutionDraft = {
     problem: problem5,
@@ -101,7 +101,7 @@ export const problem5Solution: SolutionDraft = {
             ]
         }
     ]
-}
+};
 
 
 export const fourSpawnersParallel: SolutionDraft = {
@@ -131,7 +131,7 @@ export const fourSpawnersParallel: SolutionDraft = {
         input: { content: { red: 4, green: 0, blue: 0, }, },
         position: [3, 5],
     }],
-}
+};
 
 
 
@@ -153,7 +153,7 @@ export const fillerSolution1: SolutionDraft = {
         output: { content: { red: 1, green: 0, blue: 0, }, },
         position: [-2, 13],
     }],
-}
+};
 
 
 
@@ -174,7 +174,7 @@ export const fillerSolution2: SolutionDraft = {
         input: { content: { red: 4, green: 0, blue: 0, }, },
         position: [3, 5],
     }],
-}
+};
 
 
 export const oneSpawnerSequential: SolutionDraft = {
@@ -215,4 +215,4 @@ export const oneSpawnerSequential: SolutionDraft = {
         kind: "mirror",
         position: [-7, 2]
     }]
-}
+};

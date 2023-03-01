@@ -101,6 +101,6 @@ export function ReactionSandbox({
                 })}
                 {...selectedReaction}
             />}
-    </div>
+    </div>;
 }
 

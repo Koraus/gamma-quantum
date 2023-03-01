@@ -1,4 +1,4 @@
-type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N ? R : _TupleOf<T, N, [T, ...R]>;
+type _TupleOf<T, N extends number, R extends unknown[]> = R["length"] extends N ? R : _TupleOf<T, N, [T, ...R]>;
 type Tuple<T, N extends number> = N extends N ? number extends N ? T[] : _TupleOf<T, N, []> : never;
 
 export type v<D extends number> = Tuple<number, D>;
@@ -25,7 +25,7 @@ export function v<D extends 1 | 2 | 3 | 4 | 5 | 6 | 7>(d: D) {
         distSq: (a: rvd, b: rvd) => vd.lenSq(vd.sub(b, a)),
         dist: (a: rvd, b: rvd) => vd.len(vd.sub(b, a)),
         eq: (a: rvd, b: rvd, eps = 0) => vd.dist(a, b) <= eps,
-    }
+    };
     return vd;
 }
 

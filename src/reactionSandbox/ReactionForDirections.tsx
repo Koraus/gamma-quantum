@@ -45,7 +45,7 @@ export function ReactionForDirections({
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
                 &nbsp;⇒&nbsp;
                 {selectedVariant.products.map((p, i) => <ParticleText key={i} particle={p} />)}
-            </>
+            </>;
         }
 
         if (noVariants) {
@@ -56,7 +56,7 @@ export function ReactionForDirections({
                     ? products.map((p, i) => <ParticleText key={i} particle={p} />)
                     : <ParticleText particle={{ content: "gamma" }} />
                 }
-            </>
+            </>;
         }
 
         return <>
@@ -67,7 +67,7 @@ export function ReactionForDirections({
                 ? products.map((p, i) => <ParticleText key={i} particle={p} />)
                 : <ParticleText particle={{ content: "gamma" }} />
             }
-        </>
+        </>;
     })();
 
     return <div>

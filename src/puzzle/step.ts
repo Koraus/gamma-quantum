@@ -29,7 +29,7 @@ function react(world: World) {
         ...world,
         consumed: { ...world.consumed },
         particles: [...world.particles],
-    }
+    };
 
 
     applyReactionsInPlace(reactedWorld.particles);
@@ -125,7 +125,7 @@ export const init = (solution: SolutionDraft): World => {
     });
 };
 
-const actions = { move, react }
+const actions = { move, react };
 const transitionTable = {
     init: "move",
     move: "react",

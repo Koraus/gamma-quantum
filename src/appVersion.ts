@@ -1,5 +1,5 @@
-import buildTime from '~build/time';
-import { abbreviatedSha as buildGitRevSha } from '~build/info';
+import buildTime from "~build/time";
+import { abbreviatedSha as buildGitRevSha } from "~build/info";
 
 const biuldTimeStr = ((date: Date) => {
     const digits = "0123456789abcdefghijklmnopqrstuvwxyz";

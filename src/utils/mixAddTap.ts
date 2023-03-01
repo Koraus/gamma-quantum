@@ -1,4 +1,4 @@
-import { Object3D } from 'three';
+import { Object3D } from "three";
 
 export function mixAddTap<T extends new (...args: any[]) => Object3D>(x: T) {
     return class extends x {

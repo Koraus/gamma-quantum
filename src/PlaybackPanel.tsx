@@ -48,7 +48,7 @@ export function PlaybackPanel({
             rangeFullEl.max = (Math.max(30, Math.ceil(nowPlaytime(playAction) / 10 + 1) * 10)).toString();
             rangeFullEl.valueAsNumber = nowPlaytime(playAction);
             handler = requestAnimationFrame(render);
-        }
+        };
         let handler = requestAnimationFrame(render);
         return () => cancelAnimationFrame(handler);
     }, [playAction, stepRef.current, rangeRef.current, rangeFullRef]);

@@ -133,7 +133,7 @@ export function MainScene({
                     actor={a}
                     key={i}
                     position={axialToFlatCartXz(a.position)}
-                />
+                />;
             }
             if (a.kind === "consumer") {
                 return <group key={i} position={axialToFlatCartXz(a.position)}>
@@ -141,7 +141,7 @@ export function MainScene({
                         <torusGeometry args={[0.5, 0.05]} />
                         <meshPhongMaterial color={"grey"} />
                     </mesh>
-                </group>
+                </group>;
             }
             if (a.kind === "mirror") {
                 return <group
@@ -153,22 +153,22 @@ export function MainScene({
                         <boxGeometry args={[1, 0.5, 0.05]} />
                         <meshPhongMaterial color={"grey"} />
                     </mesh>
-                </group>
+                </group>;
             }
             if (a.kind === "trap") {
                 return <group
                     key={i}
                     position={axialToFlatCartXz(a.position)}
                 >
-                <mesh rotation={[0, Math.PI / 4, 0]}>
-                    <boxGeometry args={[0.5, 0.01, 0.1]} />
-                    <meshPhongMaterial color={"grey"} />
-                </mesh>
+                    <mesh rotation={[0, Math.PI / 4, 0]}>
+                        <boxGeometry args={[0.5, 0.01, 0.1]} />
+                        <meshPhongMaterial color={"grey"} />
+                    </mesh>
                     <mesh rotation={[0, -Math.PI / 4, 0]}>
                         <boxGeometry args={[0.5, 0.01, 0.1]} />
                         <meshPhongMaterial color={"grey"} />
                     </mesh>
-                </group>
+                </group>;
             }
         })}
     </>;

@@ -35,7 +35,7 @@ const reactions: Reaction[] = [
                     blue: c1.blue + c2.blue,
                 }
             }];
-        }
+        };
     },
     p1 => {
         const c1 = p1.content;
@@ -53,7 +53,7 @@ const reactions: Reaction[] = [
             while (counter < 2 && r1.blue > 0) { counter++; r1.blue--; r2.blue++; }
 
             return [{ content: r1 }, { content: r2 }];
-        }
+        };
     },
     p1 => {
         const c1 = p1.content;
@@ -75,8 +75,8 @@ const reactions: Reaction[] = [
                 while (counter < 2 && r1.blue > 0) { counter++; r1.blue--; r2.blue++; }
 
                 return [{ content: r1 }, { content: r2 }];
-            }
-        }
+            };
+        };
     },
 ];
 

@@ -52,7 +52,7 @@ const _dirFlat60 = {
     southWest: _dir60.rnq,
     northWest: _dir60.snq,
     north: _dir60.snr,
-}
+};
 const _dirPointy60 = {
     northEast: _dir60.qnr,
     east: _dir60.qns,
@@ -60,7 +60,7 @@ const _dirPointy60 = {
     southWest: _dir60.rnq,
     west: _dir60.snq,
     northWest: _dir60.snr,
-}
+};
 export const direction = {
     ..._dir60,
     flat60: {

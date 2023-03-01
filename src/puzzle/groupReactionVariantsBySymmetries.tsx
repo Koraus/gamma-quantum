@@ -15,7 +15,7 @@ const getParticleKey = (p: Particle) =>
     JSON.stringify({ 
         mass: particleMass(p),
         velocity: p.velocity,
-     });
+    });
 
 const getVariantKey = (v: {
     reagents: Particle[];

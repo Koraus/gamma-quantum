@@ -32,7 +32,7 @@ export const solutionManagerRecoil = atom({
         localStorageAtomEffect(),
         onChangeAtomEffect({ // analytics effect
             select: x => x.confirmedSolutions.problem,
-            onChange: newProblem => amplitude.track(`problem changed`, newProblem),
+            onChange: newProblem => amplitude.track("problem changed", newProblem),
         }),
         onChangeAtomEffect({ // stats submission effect
             select: x => x.knownSolutions,
@@ -65,7 +65,7 @@ export const useSetProblem = () => {
     return (problem: Problem) => upd({
         currentSolution: { $set: { problem, actors: [] } },
     });
-}
+};
 
 export const useSetNextProblem = () => {
     const problem = useRecoilValue(solutionManagerRecoil).currentSolution.problem;
@@ -77,7 +77,7 @@ export const useSetNextProblem = () => {
     }
     const nextLevelIndex = (currentLevelIndex + 1) % Object.values(problems).length;
     return () => setProblem(Object.values(problems)[nextLevelIndex]);
-}
+};
 
 export const firstNotSolvedProblem = (knownSolutions: Record<string, SolutionDraft>) => {
     const knownSovledProblemCmps =
@@ -86,13 +86,13 @@ export const firstNotSolvedProblem = (knownSolutions: Record<string, SolutionDra
         Object.values(problems).find(p => !knownSovledProblemCmps.has(getProblemCmp(p)))
         ?? Object.values(problems)[0];
     return firstNotSolvedProblem;
-}
+};
 
 export const useSetHighestProblem = () => {
     const { knownSolutions } = useRecoilValue(solutionManagerRecoil);
     const setProblem = useSetProblem();
     return () => setProblem(firstNotSolvedProblem(knownSolutions));
-}
+};
 
 export const useSetCurrentSolution = () => {
     // todo: make it effect
@@ -111,4 +111,4 @@ export const useSetCurrentSolution = () => {
         }
         return nextState;
     });
-}
+};

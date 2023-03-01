@@ -10,6 +10,6 @@ export function createRand(seed: string) {
         uint32: randUInt32,
         rangeInt: (maxExcl: number) => Math.floor(rand() * maxExcl),
         el: <T>(arr: T[]) => arr[rand.rangeInt(arr.length)],
-    })
+    });
     return rand;
 }

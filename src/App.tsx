@@ -10,7 +10,7 @@ import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { getWorldAtPlaytime } from "./simulator";
 import { fourSpawnersParallel as defaultSolution } from "./hardcodedSoultions";
-import { SolutionsList } from "./SolutionsList"
+import { SolutionsList } from "./SolutionsList";
 import { SolutionDraft } from "./puzzle/Solution";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
@@ -51,7 +51,7 @@ export function App() {
         });
         setWin(false);
         cursorToolState[1]({ kind: "none" });
-    }
+    };
 
     useEffect(() => {
         const handler = setInterval(() => {
@@ -108,8 +108,8 @@ export function App() {
             <SolutionsList
                 className={cx(css({
                     pointerEvents: "all",
-                    width: 'fit-content',
-                    marginTop: '5px',
+                    width: "fit-content",
+                    marginTop: "5px",
                 }))}
                 solutionState={[solution, setSolutionAndResetPlayback]} />
 
@@ -158,5 +158,5 @@ export function App() {
             </div>
         </div>
 
-    </div>
+    </div>;
 }
