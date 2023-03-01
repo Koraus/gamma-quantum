@@ -1,3 +1,5 @@
+// This lib is mainly based on https://www.redblobgames.com/grids/hexagons/
+
 type v2 = [number, number];
 type v3 = [number, number, number];
 
