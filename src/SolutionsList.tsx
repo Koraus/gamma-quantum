@@ -3,6 +3,8 @@ import * as solutions from './hardcodedSoultions';
 import { useState } from "react";
 import { SolutionDraft } from "./puzzle/Solution";
 import { StateProp } from "./utils/StateProp";
+import * as problems from "./puzzle/problems"
+import ProblemSolutionList from "./ProblemInSolutionList";
 
 export function SolutionsList({
     solutionState: [solution, setSolution],
@@ -58,7 +60,7 @@ export function SolutionsList({
             onClick={(e) => {
                 setIsShown(!isShown)
             }}
-        >  
+        >
             <span> Solutions: {currentSolutionKey ?? "*" } </span>
             <span
                 className={cx(
@@ -85,6 +87,7 @@ export function SolutionsList({
                 }),
             )}
             >{listItems}</ul>
+            <ProblemSolutionList problems={problems} solutions={solutions}/>
         </div>
     </div>
 
