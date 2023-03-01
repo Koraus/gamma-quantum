@@ -5,14 +5,12 @@ import { StateProp } from "./utils/StateProp";
 
 
 export default function ProblemSolutionList({
-    solutionState: [solution, setSolution],
     problems,
     solutions,
     ...props
 }: {
     problems: Problem,
     solutions: SolutionDraft,
-    solutionState: StateProp<SolutionDraft>,
 }) {
     const list = Object.entries(problems).map(([problemName, problem]) => {
         const solutionsForProblem = Object.entries(solutions).filter(([key, s]) => problem === s.problem);
