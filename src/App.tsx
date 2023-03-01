@@ -11,7 +11,7 @@ import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { getWorldAtPlaytime } from "./simulator";
 import { fourSpawnersParallel as defaultSolution } from "./hardcodedSoultions";
 import { SolutionsList } from "./SolutionsList"
-import { Solution } from "./puzzle/terms";
+import { SolutionDraft } from "./puzzle/Solution";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
@@ -42,7 +42,7 @@ export function App() {
 
     const [win, setWin] = useState(false);
 
-    const setSolutionAndResetPlayback = (nextSolution: Solution | ((prevSolution: Solution) => Solution)) => {
+    const setSolutionAndResetPlayback = (nextSolution: SolutionDraft | ((prevSolution: SolutionDraft) => SolutionDraft)) => {
         setSolution(nextSolution);
         setPlayAction({
             playtimeSpeed: 0,

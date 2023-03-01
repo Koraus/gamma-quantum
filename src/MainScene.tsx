@@ -3,7 +3,7 @@ import { v2, v3 } from "./utils/v";
 import { Cylinder, GizmoHelper, GizmoViewport, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { axialToFlatCart } from "./utils/hg";
 import * as hg from "./utils/hg";
-import { Solution } from "./puzzle/terms";
+import { SolutionDraft } from "./puzzle/Solution";
 import { tuple } from "./utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
@@ -49,7 +49,7 @@ export function MainScene({
     playAction,
 }: {
     cursorTool: CursorTool,
-    solutionState: StateProp<Solution>,
+    solutionState: StateProp<SolutionDraft>,
     world: World;
     playAction: PlayAction;
 }) {

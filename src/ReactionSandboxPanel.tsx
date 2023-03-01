@@ -17,6 +17,7 @@ export function ReactionSandboxPanel({
             background: "#000000b0",
             border: "1px solid #ffffffb0",
             padding: "2vmin",
+            zIndex: 100,
         })}>
             <ReactionSandbox />
         </div>}

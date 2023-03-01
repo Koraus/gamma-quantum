@@ -1,6 +1,7 @@
 import { createKeyify } from "../utils/keyify";
 import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
+import { ReadonlyDeep } from "../utils/ReadonlyDeep";
 
 export type ParticleKind = {
     content: "gamma" | {
@@ -26,12 +27,12 @@ export type Particle = ParticleKind & {
     velocity: v3;
 };
 
-export const particleCount = (p: ParticleKind) => {
+export const particleCount = (p: ReadonlyDeep<ParticleKind>) => {
     if (p.content === "gamma") { return 1; };
     return p.content.red + p.content.green + p.content.blue;
 }
 
-export const particleMass = (p: ParticleKind) => {
+export const particleMass = (p: ReadonlyDeep<ParticleKind>) => {
     if (p.content === "gamma") { return 0; };
     const count = particleCount(p);
     if (count === 1) { return 1; };
@@ -41,8 +42,8 @@ export const particleMass = (p: ParticleKind) => {
     return 999999;
 }
 
-export const particleMomentum = (p: Particle) =>
+export const particleMomentum = (p: ReadonlyDeep<Particle>) =>
     v3.scale(p.velocity, (particleMass(p) || 1) * hg.cubeLen(p.velocity));
 
-export const particleEnegry = (p: Particle) =>
+export const particleEnegry = (p: ReadonlyDeep<Particle>) =>
     particleMass(p) + hg.cubeLen(particleMomentum(p));

@@ -1,13 +1,12 @@
 import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
-import { directionVector } from "./terms";
 import { ParticleKind, particleEnegry, particleMass, particleMomentum } from "./Particle";
 import { Particle } from "./Particle";
 import { solveConservation } from "./solveConservation";
 import { tuple } from "../utils/tuple";
 
 
-export const velocityVariants = [v3.zero(), ...directionVector];
+export const velocityVariants = [v3.zero(), ...hg.direction.flat60.itCwFromSouth];
 export const velocityVariants1 = velocityVariants.map(vel => tuple(vel));
 export const velocityVariants2 = velocityVariants.flatMap(vel1 => velocityVariants.map(vel => tuple(vel1, vel)));
 export const velocityVariants3 = velocityVariants2.flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
@@ -33,7 +32,7 @@ export function generateReactionVariants({
         .map((vels) => ({
             reagents,
             products: products
-                .map((p, i) => ({ velocity: vels[i], ...p }))
+                .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
                 .filter(p => particleMass(p) > 0 || hg.cubeLen(p.velocity) > 0),
         }))
         .flatMap(resolvedReaction => {

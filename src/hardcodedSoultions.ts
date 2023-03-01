@@ -1,22 +1,22 @@
 import { problem1, problem2, problem3, problem5 } from "./puzzle/problems";
-import { Solution } from "./puzzle/terms";
+import { SolutionDraft } from "./puzzle/Solution";
 
-export const problem1Empty: Solution = {
+export const problem1Empty: SolutionDraft = {
     problem: problem1,
     actors: [],
 }
 
-export const problem2Empty: Solution = {
+export const problem2Empty: SolutionDraft = {
     problem: problem2,
     actors: [],
 }
 
-export const problem5Empty: Solution = {
+export const problem5Empty: SolutionDraft = {
     problem: problem5,
     actors: [],
 }
 
-export const problem5Solution: Solution = {
+export const problem5Solution: SolutionDraft = {
     problem: problem5,
     actors: [
         {
@@ -104,7 +104,7 @@ export const problem5Solution: Solution = {
 }
 
 
-export const fourSpawnersParallel: Solution = {
+export const fourSpawnersParallel: SolutionDraft = {
     problem: problem3,
     actors: [{
         kind: "spawner",
@@ -135,7 +135,7 @@ export const fourSpawnersParallel: Solution = {
 
 
 
-export const fillerSolution1: Solution = {
+export const fillerSolution1: SolutionDraft = {
     problem: problem3,
     actors: [{
         kind: "spawner",
@@ -157,7 +157,7 @@ export const fillerSolution1: Solution = {
 
 
 
-export const fillerSolution2: Solution = {
+export const fillerSolution2: SolutionDraft = {
     problem: problem3,
     actors: [{
         kind: "spawner",
@@ -177,7 +177,7 @@ export const fillerSolution2: Solution = {
 }
 
 
-export const oneSpawnerSequential: Solution = {
+export const oneSpawnerSequential: SolutionDraft = {
     problem: problem3,
     actors: [{
         direction: 0,

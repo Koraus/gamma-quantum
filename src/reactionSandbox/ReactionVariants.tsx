@@ -8,6 +8,7 @@ import { particles } from "./particles";
 import { velocityVariants4 } from "../puzzle/generateReactionVariants";
 import { ParticleKind, particleMass } from "../puzzle/Particle";
 import { Particle } from "../puzzle/Particle";
+import { tuple } from "../utils/tuple";
 
 
 const prepareReactionRequests = ({ reagents, products }: {
@@ -19,7 +20,7 @@ const prepareReactionRequests = ({ reagents, products }: {
         particles.g, 
         // particles.g
     ].slice(0, 4)
-        .map((p, i) => ({ velocity: vels[i], ...p }))
+        .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
         .filter(p => particleMass(p) > 0 || hg.cubeLen(p.velocity) > 0),
     products: [],
 }))).map(vars => ({

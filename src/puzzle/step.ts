@@ -1,5 +1,6 @@
 import { v2, v3 } from "../utils/v";
-import { directionVector, halfDirection2Vector, Solution } from "./terms";
+import { directionVector, halfDirection2Vector } from "./direction";
+import { SolutionDraft } from "./Solution";
 import { keyifyParticleKind, Particle, ParticleKindKey } from "./Particle";
 import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
@@ -41,7 +42,7 @@ function react(world: World) {
                 reactedWorld.particles.push({
                     ...a.output,
                     position: v3.from(...hg.axialToCube(a.position)),
-                    velocity: directionVector[a.direction],
+                    velocity: [...directionVector[a.direction]],
                     isRemoved: false,
                 });
             }
@@ -92,8 +93,8 @@ function react(world: World) {
     return reactedWorld;
 }
 
-export type World = Solution & ({
-    init: Solution;
+export type World = SolutionDraft & ({
+    init: SolutionDraft;
     prev?: never;
     action: "init";
     step: 0;
@@ -108,7 +109,7 @@ export type World = Solution & ({
 };
 
 
-export const init = (solution: Solution): World => {
+export const init = (solution: SolutionDraft): World => {
     // todo: ensure solution is valid:
     //  * all the actors have unique spots
     //  * spawners and consumers match the promblem list

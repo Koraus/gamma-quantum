@@ -6,7 +6,7 @@ import * as amplitude from "@amplitude/analytics-browser";
 import update from "immutability-helper";
 import memoize from "memoizee";
 import { localStorageAtomEffect } from "./utils/localStorageAtomEffect";
-import { Solution } from "./puzzle/terms";
+import { Solution, SolutionDraft } from "./puzzle/Solution";
 import { keyProjectProblem, Problem } from "./puzzle/Problem";
 import { onChangeAtomEffect } from "./utils/onChangeAtomEffect";
 
@@ -20,8 +20,8 @@ const postSolution = (solution: Solution) => undefined;
 const getProblemCmp = memoize(keyProjectProblem, { max: 1000 });
 
 const solutionManagerRecoilDefault = {
-    currentSolution: { problem: Object.values(problems)[0], actors: [] } as Solution,
-    knownSolutions: {} as Record<string, Solution>,
+    currentSolution: { problem: Object.values(problems)[0], actors: [] } as SolutionDraft,
+    knownSolutions: {} as Record<string, SolutionDraft | Solution>,
     confirmedSolutions: {} as Record<string, Awaited<ReturnType<typeof postSolution>>>,
 };
 
@@ -79,7 +79,7 @@ export const useSetNextProblem = () => {
     return () => setProblem(Object.values(problems)[nextLevelIndex]);
 }
 
-export const firstNotSolvedProblem = (knownSolutions: Record<string, Solution>) => {
+export const firstNotSolvedProblem = (knownSolutions: Record<string, SolutionDraft>) => {
     const knownSovledProblemCmps =
         new Set(Object.values(knownSolutions).map(s => getProblemCmp(s.problem)));
     const firstNotSolvedProblem =
@@ -97,7 +97,7 @@ export const useSetHighestProblem = () => {
 export const useSetCurrentSolution = () => {
     // todo: make it effect
     const set = useSetRecoilState(solutionManagerRecoil);
-    return (solution: Solution) => set((prev) => {
+    return (solution: SolutionDraft) => set((prev) => {
         let next = update(prev, {
             currentSolution: { $set: solution },
         });

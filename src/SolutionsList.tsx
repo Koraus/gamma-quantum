@@ -1,7 +1,7 @@
 import { css, cx } from "@emotion/css";
 import * as solutions from './hardcodedSoultions';
 import { useState } from "react";
-import { Solution } from "./puzzle/terms";
+import { SolutionDraft } from "./puzzle/Solution";
 import { StateProp } from "./utils/StateProp";
 
 export function SolutionsList({
@@ -9,7 +9,7 @@ export function SolutionsList({
     className,
     ...props
 }: {
-    solutionState: StateProp<Solution>,
+    solutionState: StateProp<SolutionDraft>,
 } & JSX.IntrinsicElements['div']) {
 
     const [isShown, setIsShown] = useState(false);

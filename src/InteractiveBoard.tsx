@@ -1,6 +1,7 @@
 import { v2 } from "./utils/v";
 import * as hg from "./utils/hg";
-import { DirectionId, HalfDirectionId, Solution } from "./puzzle/terms";
+import { DirectionId, HalfDirectionId } from "./puzzle/direction";
+import { SolutionDraft } from "./puzzle/Solution";
 import { HexGrid } from "./HexGrid";
 import { StateProp } from "./utils/StateProp";
 import { Mesh, Vector3 } from "three";
@@ -14,7 +15,7 @@ export function InteractiveBoard({
     cursorTool, solutionState: [solution, setSolution],
 }: {
     cursorTool: CursorTool;
-    solutionState: StateProp<Solution>;
+    solutionState: StateProp<SolutionDraft>;
 }) {
 
     const cursorRef = useRef<Mesh>(null);

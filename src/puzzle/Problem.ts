@@ -13,9 +13,9 @@ export const keyProjectProblem = ({
     consumers,
     demand,
 }: Problem) => ({
-    spawners: sortKeys(spawners),
-    consumers: sortKeys(consumers),
-    demand: sortKeys(demand),
+    spawners: sortKeys(spawners), // todo: should I filter out non-ParticleKindKey keys?
+    consumers: sortKeys(consumers), // todo: should I filter out non-ParticleKindKey keys?
+    demand: sortKeys(demand), // todo: should I filter out non-ParticleKindKey keys?
 })
 export const keyifyProblem = createKeyify(keyProjectProblem);
 export type ProblemKey = ReturnType<typeof keyifyProblem>;

@@ -1,6 +1,6 @@
 import { css, cx } from "@emotion/css";
 import { keyifyParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/Particle";
-import { Solution } from "./puzzle/terms";
+import { SolutionDraft } from "./puzzle/Solution";
 import { StateProp } from "./utils/StateProp";
 
 export type CursorTool = {
@@ -27,7 +27,7 @@ export function CursorToolSelectorPanel({
     className,
     ...props
 }: {
-    solution: Solution,
+    solution: SolutionDraft,
     cursorToolState: StateProp<CursorTool>;
 } & JSX.IntrinsicElements["div"]) {
 
