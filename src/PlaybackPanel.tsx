@@ -39,9 +39,13 @@ export function PlaybackPanel({
     const rangeFullRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
         if (playAction.playtimeSpeed === 0) { return; }
-        const stepEl = stepRef.current!;
-        const rangeEl = rangeRef.current!;
-        const rangeFullEl = rangeFullRef.current!;
+        const stepEl = stepRef.current;
+        if (!stepEl) { return; }
+        const rangeEl = rangeRef.current;
+        if (!rangeEl) { return; }
+        const rangeFullEl = rangeFullRef.current;
+        if (!rangeFullEl) { return; }
+        
         const render = () => {
             stepEl.innerText = nowPlaytimeText(playAction);
             rangeEl.valueAsNumber = nowPlaytime(playAction) - Math.floor(nowPlaytime(playAction));

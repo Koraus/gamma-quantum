@@ -7,11 +7,7 @@ import { ReactionVariants } from "./ReactionVariants";
 import { particles } from "./particles";
 
 
-export function ReactionSandbox({
-
-}: {
-    }) {
-
+export function ReactionSandbox() {
     const reactions = [{
         title: "Annihilation (q-m1 + q-m1 => g-m0)",
         reaction: {

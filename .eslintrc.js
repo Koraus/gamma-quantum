@@ -10,10 +10,10 @@ module.exports = {
         ecmaVersion: "latest",
     },
     extends: [
-        // "eslint:recommended",
+        "eslint:recommended",
         // "plugin:react/recommended",
         // "plugin:react/jsx-runtime",
-        // "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended"
     ],
     rules: {
         "indent": ["warn", 4, { "SwitchCase": 1 }], // also enforced by formatter

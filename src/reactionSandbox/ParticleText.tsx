@@ -7,8 +7,8 @@ import { Particle } from "../puzzle/Particle";
 import { DirectionId } from "../puzzle/direction";
 
 export const particleColor = (p: ParticleKind) => {
-    if (p.content === "gamma") { return "white"; };
-    if (!Array.isArray(p.content)) { return "red"; };
+    if (p.content === "gamma") { return "white"; }
+    if (!Array.isArray(p.content)) { return "red"; }
     if (p.content.length === 2) { return "lime"; }
     if (p.content.length === 3) { return "purple"; }
     if (p.content.length === 4) { return "orange"; }

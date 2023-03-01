@@ -9,6 +9,6 @@ export function GroupSync({
     onFrame?: (obj: Group, ...useFrameArgs: Parameters<Parameters<typeof useFrame>[0]>) => void;
 }) {
     const ref = useRef<Group>(null);
-    useFrame((...args) => onFrame?.(ref.current!, ...args));
+    useFrame((...args) => ref.current && onFrame?.(ref.current, ...args));
     return <group ref={ref} {...props} />;
 }

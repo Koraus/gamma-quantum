@@ -25,13 +25,13 @@ export function SolutionsList({
                     width: "fit-content"
                 }),
             )}
-            onClick={(e) => setSolution(s)}
+            onClick={() => setSolution(s)}
             key={key}
         > {key} </li>;
     });
 
     const currentSolutionKey = Object.entries(solutions)
-        .find(([key, s]) => s === solution)?.[0];
+        .find(([, s]) => s === solution)?.[0];
 
     return <div
         className={cx(
@@ -56,9 +56,7 @@ export function SolutionsList({
                     cursor: "pointer",
                 }),
             )}
-            onClick={(e) => {
-                setIsShown(!isShown);
-            }}
+            onClick={() => setIsShown(!isShown)}
         >
             <span> Solutions: {currentSolutionKey ?? "*"} </span>
             <span

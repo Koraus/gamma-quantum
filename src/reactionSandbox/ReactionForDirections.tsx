@@ -28,7 +28,6 @@ export function ReactionForDirections({
 
     const {
         allGrouppedVariants,
-        filteredGrouppedVariants,
         selectedVariant,
         noVariants,
         isResolved,

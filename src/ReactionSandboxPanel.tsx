@@ -5,7 +5,7 @@ import { ReactionSandbox } from "./reactionSandbox/ReactionSandbox";
 
 export function ReactionSandboxPanel({
     ...props
-}: {} & JSX.IntrinsicElements["div"]) {
+}: JSX.IntrinsicElements["div"]) {
     const [isOpen, setIsOpen] = useState(false);
     return <div
         {...props}

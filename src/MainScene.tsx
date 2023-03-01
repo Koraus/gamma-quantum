@@ -53,7 +53,7 @@ export function MainScene({
     world: World;
     playAction: PlayAction;
 }) {
-    const [solution, setSolution] = solutionState;
+    const [solution] = solutionState;
     const particles = world.particles.map((p, i) => {
         const prev = world.prev?.particles[i];
         if (prev && prev.isRemoved) { return; }
@@ -118,11 +118,6 @@ export function MainScene({
                 >
                     <ParticleToken
                         particle={p}
-                        move={{
-                            next: p,
-                            prev: prev ?? p,
-                        }}
-                        playAction={playAction}
                     />
                 </GroupSync>;
             }))

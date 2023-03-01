@@ -33,7 +33,7 @@ export function CursorToolSelectorPanel({
 
     const availableSpawners = Object.entries(solution.problem.spawners)
         .flatMap(([kind, count]) =>
-            new Array(count!).fill({
+            new Array(count ?? 0).fill({
                 kind: "spawner" as const,
                 output: parsePartilceKind(kind as ParticleKindKey),
                 used: false,
@@ -41,7 +41,7 @@ export function CursorToolSelectorPanel({
 
     const availableConsumers = Object.entries(solution.problem.consumers)
         .flatMap(([kind, count]) =>
-            new Array(count!).fill({
+            new Array(count ?? 0).fill({
                 kind: "consumer" as const,
                 input: parsePartilceKind(kind as ParticleKindKey),
                 used: false,

@@ -1,5 +1,4 @@
 import { useFrame } from "@react-three/fiber";
-import { PlayAction } from "./PlaybackPanel";
 import { ParticleState } from "./puzzle/step";
 import { ParticleKind } from "./puzzle/Particle";
 import { directionOf } from "./reactionSandbox/ParticleText";
@@ -16,23 +15,14 @@ export const getParticleColors = (p: ParticleKind) =>
 
 export function ParticleToken({
     particle: p,
-    move,
-
-    playAction,
 }: {
     particle: ParticleState;
-    move?: {
-        prev: ParticleState,
-        next: ParticleState,
-    },
-
-    playAction: PlayAction,
 }) {
     const colors = getParticleColors(p);
 
     // const transition = getTransition(playAction.startPlaytime);
 
-    const timeStartReal = performance.now();
+    // const timeStartReal = performance.now();
     useFrame(() => {
         // const transitionCurrent = getTransition(nowPlaytime(playAction), transition);
 

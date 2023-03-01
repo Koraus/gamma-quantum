@@ -1,5 +1,9 @@
 import { MouseEventHandler, Dispatch, SetStateAction } from "react";
 
+const cyclicAt = 
+    <T,>(arr: readonly T[], i: number) => 
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        arr.at(i % arr.length)!;
 
 export function cyclicSelectorMixin<T, Element>(
     values: readonly T[],
@@ -12,7 +16,7 @@ export function cyclicSelectorMixin<T, Element>(
             else if (ev.button === 1) { i = 0; }
             else { i++; }
 
-            setValue(values.at(i % values.length)!);
+            setValue(cyclicAt(values, i));
 
             ev.preventDefault();
         }) as MouseEventHandler<Element>,

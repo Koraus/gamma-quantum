@@ -2,6 +2,7 @@
   "private": true,
   "name": "gamma-quantum",
   "scripts": {
+    "check": "tsc --noEmit && eslint ./src/**/*.ts[x]",
     "start": "vite --config ./vite.config/vite.config.ts",
     "host": "vite --config ./vite.config/vite.config.ts --host",
     "build": "vite --config ./vite.config/vite.config.ts build"

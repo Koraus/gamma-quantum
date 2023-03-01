@@ -13,15 +13,11 @@ import { ReactionIcon } from "./ReactionIcon";
 export function ReactionMomentumGraph({
     reagents,
     products,
-    deltaMomentum,
-    deltaEnergy,
     twins,
     ...props
 }: {
     reagents: Particle[];
     products: Particle[];
-    deltaMomentum: v3;
-    deltaEnergy: number;
     twins: Array<{ reagents: Particle[]; products: Particle[]; }>
 } & JSX.IntrinsicElements["div"]) {
     const colors = [

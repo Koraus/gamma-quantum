@@ -4,7 +4,7 @@ import { css, cx } from "@emotion/css";
 import { useEffect, useState } from "react";
 import { nowPlaytime, PlaybackPanel } from "./PlaybackPanel";
 import { appVersion } from "./appVersion";
-import { init as _init, step as _step, World } from "./puzzle/step";
+import { World } from "./puzzle/step";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
@@ -20,7 +20,7 @@ import { ParticleKindKey } from "./puzzle/Particle";
 function isWin(world: World) {
     return Object.entries(world.problem.demand)
         .every(([key, count]) =>
-            (world.consumed[key as ParticleKindKey] ?? 0) >= count!);
+            (world.consumed[key as ParticleKindKey] ?? 0) >= (count ?? Infinity));
 }
 export function App() {
 
@@ -38,7 +38,7 @@ export function App() {
         startPlaytime: 0,
         playtimeSpeed: 0,
     });
-    const [playAction, setPlayAction] = playActionState;
+    const [, setPlayAction] = playActionState;
 
     const [win, setWin] = useState(false);
 
