@@ -1,7 +1,8 @@
-import { Problem } from "./Problem";
+import { keyProjectProblem, Problem } from "./Problem";
 import { v2 } from "../utils/v";
 import { ParticleKind } from "./Particle";
 import { DirectionId, HalfDirectionId } from "./direction";
+import { sortedByKey } from "../utils/sortedByKey";
 
 export type SpawnerActor = {
     position: v2,
@@ -12,7 +13,7 @@ export type SpawnerActor = {
 
 export type Actor = {
     position: v2,
-} & ({  
+} & ({
     kind: "mirror",
     direction: HalfDirectionId,
 } | {
@@ -24,7 +25,7 @@ export type Actor = {
     input: ParticleKind,
 }) | SpawnerActor;
 
-
+const keyProjectActor = (actor: Actor): Actor => actor; // todo: implement
 
 export type SolutionDraft = {
     problem: Problem;
@@ -34,3 +35,15 @@ export type SolutionDraft = {
 export type Solution = SolutionDraft & {
     solvedAtStep: number;
 }
+export const keyProjectSolution = ({
+    problem,
+    actors,
+    solvedAtStep,
+}: Solution): Solution => ({
+    problem: keyProjectProblem(problem),
+    actors: sortedByKey(actors, a => JSON.stringify(keyProjectActor(a))),
+    solvedAtStep,
+});
+export type SolutionKey = string; // Stringify<Soultion> // too complex
+export const keyifySolution = (x: Solution) =>
+    JSON.stringify(keyProjectSolution(x)) as SolutionKey;

@@ -12,7 +12,8 @@ import { onChangeAtomEffect } from "./utils/onChangeAtomEffect";
 
 // todo: implement getSolutionCmpObj && getSolutionCmp
 
-// todo: implement isSolved for Solution (should I preemulate it for like 1k steps? Ideas?)
+// todo: implement isSolved for Solution 
+// (should I preemulate it for like 1k steps? Ideas?)
 
 // todo: implement postSolution & statsClient
 const postSolution = (solution: Solution) => undefined;
@@ -20,9 +21,15 @@ const postSolution = (solution: Solution) => undefined;
 const getProblemCmp = memoize(keyProjectProblem, { max: 1000 });
 
 const solutionManagerRecoilDefault = {
-    currentSolution: { problem: Object.values(problems)[0], actors: [] } as SolutionDraft,
+    currentSolution: {
+        problem: Object.values(problems)[0],
+        actors: []
+    } as SolutionDraft,
     knownSolutions: {} as Record<string, SolutionDraft | Solution>,
-    confirmedSolutions: {} as Record<string, Awaited<ReturnType<typeof postSolution>>>,
+    confirmedSolutions: {} as Record<
+        string,
+        Awaited<ReturnType<typeof postSolution>>
+    >,
 };
 
 export const solutionManagerRecoil = atom({
@@ -32,13 +39,18 @@ export const solutionManagerRecoil = atom({
         localStorageAtomEffect(),
         onChangeAtomEffect({ // analytics effect
             select: x => x.confirmedSolutions.problem,
-            onChange: newProblem => amplitude.track("problem changed", newProblem),
+            onChange: newProblem =>
+                amplitude.track("problem changed", newProblem),
         }),
         onChangeAtomEffect({ // stats submission effect
             select: x => x.knownSolutions,
-            onChange: (newKnownSolutions, oldKnownSolutions, _, __, ___, { setSelf }) => {
+            onChange: (
+                newKnownSolutions, oldKnownSolutions, _, __, ___, { setSelf }
+            ) => {
                 const oldKnownSolutions1 =
-                    (oldKnownSolutions instanceof DefaultValue) ? {} : oldKnownSolutions;
+                    (oldKnownSolutions instanceof DefaultValue)
+                        ? {}
+                        : oldKnownSolutions;
 
                 const addedSolutions = Object.keys(newKnownSolutions)
                     .filter(solutionId => !(solutionId in oldKnownSolutions1))
@@ -68,22 +80,27 @@ export const useSetProblem = () => {
 };
 
 export const useSetNextProblem = () => {
-    const problem = useRecoilValue(solutionManagerRecoil).currentSolution.problem;
+    const state = useRecoilValue(solutionManagerRecoil);
+    const problem = state.currentSolution.problem;
     const setProblem = useSetProblem();
-    let currentLevelIndex = Object.values(problems)
+    let currentIndex = Object.values(problems)
         .findIndex(lp => getProblemCmp(lp) === getProblemCmp(problem));
-    if (currentLevelIndex < 0) {
-        currentLevelIndex = 0;
+    if (currentIndex < 0) {
+        currentIndex = 0;
     }
-    const nextLevelIndex = (currentLevelIndex + 1) % Object.values(problems).length;
+    const nextLevelIndex = (currentIndex + 1) % Object.values(problems).length;
     return () => setProblem(Object.values(problems)[nextLevelIndex]);
 };
 
-export const firstNotSolvedProblem = (knownSolutions: Record<string, SolutionDraft>) => {
+export const firstNotSolvedProblem = (
+    knownSolutions: Record<string, SolutionDraft>
+) => {
     const knownSovledProblemCmps =
-        new Set(Object.values(knownSolutions).map(s => getProblemCmp(s.problem)));
+        new Set(Object.values(knownSolutions)
+            .map(s => getProblemCmp(s.problem)));
     const firstNotSolvedProblem =
-        Object.values(problems).find(p => !knownSovledProblemCmps.has(getProblemCmp(p)))
+        Object.values(problems)
+            .find(p => !knownSovledProblemCmps.has(getProblemCmp(p)))
         ?? Object.values(problems)[0];
     return firstNotSolvedProblem;
 };

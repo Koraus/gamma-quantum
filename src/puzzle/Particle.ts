@@ -1,7 +1,7 @@
-import { createKeyify } from "../utils/keyify";
 import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { ReadonlyDeep } from "../utils/ReadonlyDeep";
+import { Stringify } from "../utils/Stringify";
 
 export type ParticleKind = {
     content: "gamma" | {
@@ -18,9 +18,11 @@ export const keyProjectParticleKind = ({
         ? content
         : { red: content.red, green: content.green, blue: content.blue },
 });
-export const keyifyParticleKind = createKeyify(keyProjectParticleKind);
-export type ParticleKindKey = ReturnType<typeof keyifyParticleKind>;
-export const parsePartilceKind = (key: ParticleKindKey) => JSON.parse(key) as ParticleKind;
+export type ParticleKindKey = Stringify<ParticleKind>;
+export const keyifyParticleKind = (x: ParticleKind) => 
+    JSON.stringify(keyProjectParticleKind(x)) as ParticleKindKey;
+export const parsePartilceKind = (key: ParticleKindKey) => 
+    JSON.parse(key) as ParticleKind;
 
 
 export type Particle = ParticleKind & {
@@ -28,14 +30,14 @@ export type Particle = ParticleKind & {
 };
 
 export const particleCount = (p: ReadonlyDeep<ParticleKind>) => {
-    if (p.content === "gamma") { return 1; };
+    if (p.content === "gamma") { return 1; }
     return p.content.red + p.content.green + p.content.blue;
 };
 
 export const particleMass = (p: ReadonlyDeep<ParticleKind>) => {
-    if (p.content === "gamma") { return 0; };
+    if (p.content === "gamma") { return 0; }
     const count = particleCount(p);
-    if (count === 1) { return 1; };
+    if (count === 1) { return 1; }
     if (count === 2) { return 1; }
     if (count === 3) { return 2; }
     if (count === 4) { return 4; }

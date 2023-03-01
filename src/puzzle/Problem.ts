@@ -1,5 +1,5 @@
-import { createKeyify } from "../utils/keyify";
 import { sortKeys } from "../utils/sortKeys";
+import { Stringify } from "../utils/Stringify";
 import { ParticleKindKey } from "./Particle";
 
 
@@ -13,9 +13,11 @@ export const keyProjectProblem = ({
     consumers,
     demand,
 }: Problem) => ({
-    spawners: sortKeys(spawners), // todo: should I filter out non-ParticleKindKey keys?
-    consumers: sortKeys(consumers), // todo: should I filter out non-ParticleKindKey keys?
-    demand: sortKeys(demand), // todo: should I filter out non-ParticleKindKey keys?
+    // todo: should I filter out non-ParticleKindKey keys?
+    spawners: sortKeys(spawners),
+    consumers: sortKeys(consumers),
+    demand: sortKeys(demand),
 });
-export const keyifyProblem = createKeyify(keyProjectProblem);
-export type ProblemKey = ReturnType<typeof keyifyProblem>;
+export type ProblemKey = Stringify<Problem>;
+export const keyifyProblem = (x: Problem) =>
+    JSON.stringify(keyProjectProblem(x)) as ProblemKey;

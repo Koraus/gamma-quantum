@@ -16,10 +16,11 @@ module.exports = {
         "plugin:@typescript-eslint/recommended"
     ],
     rules: {
-        "indent": ["warn", 4, { "SwitchCase": 1 }], // also enforced by formatter
+        "indent": ["warn", 4, { "SwitchCase": 1 }],
         // "linebreak-style": ["warn", "unix"], // enforced by git
         "quotes": ["warn", "double"],
         "semi": ["warn", "always"],
         "max-nested-callbacks": ["warn", 2],
+        "max-len": ["warn", 80],
     },
 };
