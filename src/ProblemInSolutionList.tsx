@@ -5,46 +5,42 @@ import { StateProp } from "./utils/StateProp";
 
 
 export default function ProblemSolutionList({
-    problems,
+    problem,
     solutions,
     solutionState: [solution, setSolution],
-    ...props
 }: {
-    problems: Problem[],
-    solutions: SolutionDraft[],
+    problem: Problem,
+    solutions: Record<string, SolutionDraft>,
     solutionState: StateProp<SolutionDraft>,
-}) {
-
-    const list = Object.entries(problems).map(([problemName, problem]) => {
-
-        const solutionsForProblem = Object.entries(solutions)
-            .filter(([key, s]) => problem === s.problem);
-
-        const listSolutions = solutionsForProblem
-            .map(([solutionName, solution1]) => {
-                return <li
-                    key={solutionName}
-                    className={cx(
-                        css({
-                            listStyle: 'none',
-                            paddingLeft: '10px',
-                            backgroundColor: solution === solution1 ? 'red' : '',
-                        }),
-                    )}
-                > {solutionName} </li>
-            }
-            );
-        return <ul
-            key={problemName}
+},
+) {
+    const solutions1 = Object.entries(solutions)
+        .filter(([key, s]) => problem === s.problem)
+        .map(([solutionName, solution1]) => {
+            return <li
+                key={solutionName}
+                className={cx(
+                    css({
+                        listStyle: "none",
+                        backgroundColor: solution === solution1 ? "red" : "",
+                    }),
+                )}
+                onClick={() => setSolution(solution1)}
+            > {solutionName} </li>;
+        },
+        );
+    return <ul>
+        <li
             className={cx(
                 css({
-                    listStyle: 'none',
-                    paddingLeft: '0',
+                    listStyle: "none",
                 }),
             )}
-            onClick={() => (console.log())}
-        > {problemName} =&gt; {listSolutions} </ul>
-    })
-    return list;
+            onClick={() => setSolution({
+                problem: problem,
+                actors: [],
+            })}
+        > new solution </li>
+        {solutions1}
+    </ul>;
 }
-
