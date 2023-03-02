@@ -4,7 +4,7 @@ import { css, cx } from "@emotion/css";
 import { PlaybackPanel } from "./PlaybackPanel";
 import { appVersion } from "./appVersion";
 import { Canvas } from "@react-three/fiber";
-import { MainScene } from "./MainScene";
+import { MainScene } from "./scene/MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { SolutionsList } from "./solutionManager/SolutionsList";
 import { CursorToolSelectorPanel } from "./CursorToolSelectorPanel";

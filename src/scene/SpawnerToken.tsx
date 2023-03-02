@@ -1,4 +1,4 @@
-import { SpawnerActor } from "./puzzle/Solution";
+import { SpawnerActor } from "../puzzle/Solution";
 import { ThreeElements } from "@react-three/fiber";
 import { getParticleColors } from "./ParticleToken";
 

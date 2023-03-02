@@ -1,8 +1,8 @@
 import { useFrame } from "@react-three/fiber";
-import { ParticleState } from "./puzzle/step";
-import { ParticleKind } from "./puzzle/Particle";
-import { directionOf } from "./reactionSandbox/ParticleText";
-import * as hg from "./utils/hg";
+import { ParticleState } from "../puzzle/step";
+import { ParticleKind } from "../puzzle/Particle";
+import { directionOf } from "../reactionSandbox/ParticleText";
+import * as hg from "../utils/hg";
 
 export const getParticleColors = (p: ParticleKind) =>
     p.content === "gamma"

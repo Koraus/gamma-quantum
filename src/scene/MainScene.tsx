@@ -1,21 +1,21 @@
-import { v2, v3 } from "./utils/v";
+import { v2, v3 } from "../utils/v";
 import { Cylinder, GizmoHelper, GizmoViewport, OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { axialToFlatCart } from "./utils/hg";
-import * as hg from "./utils/hg";
-import { tuple } from "./utils/tuple";
+import { axialToFlatCart } from "../utils/hg";
+import * as hg from "../utils/hg";
+import { tuple } from "../utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
-import { nowPlaytime, playActionRecoil } from "./PlaybackPanel";
+import { nowPlaytime, playActionRecoil } from "../PlaybackPanel";
 import { Vector3 } from "three";
-import { GroupSync } from "./utils/GroupSync";
+import { GroupSync } from "../utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
-import { cursorToolRecoil } from "./CursorToolSelectorPanel";
+import { cursorToolRecoil } from "../CursorToolSelectorPanel";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
 import { useRecoilValue } from "recoil";
-import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
-import { useWorld } from "./useWorld";
-import { useSetSolution } from "./useSetSolution";
+import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
+import { useWorld } from "../useWorld";
+import { useSetSolution } from "../useSetSolution";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {

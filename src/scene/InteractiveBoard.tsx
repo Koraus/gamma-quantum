@@ -1,14 +1,14 @@
-import { v2 } from "./utils/v";
-import * as hg from "./utils/hg";
-import { DirectionId, HalfDirectionId } from "./puzzle/direction";
-import { SolutionDraft } from "./puzzle/Solution";
+import { v2 } from "../utils/v";
+import * as hg from "../utils/hg";
+import { DirectionId, HalfDirectionId } from "../puzzle/direction";
+import { SolutionDraft } from "../puzzle/Solution";
 import { HexGrid } from "./HexGrid";
-import { StateProp } from "./utils/StateProp";
+import { StateProp } from "../utils/StateProp";
 import { Mesh, Vector3 } from "three";
 import { useRef, useState } from "react";
-import { apipe } from "./utils/apipe";
+import { apipe } from "../utils/apipe";
 import update from "immutability-helper";
-import { CursorTool } from "./CursorToolSelectorPanel";
+import { CursorTool } from "../CursorToolSelectorPanel";
 
 
 export function InteractiveBoard({

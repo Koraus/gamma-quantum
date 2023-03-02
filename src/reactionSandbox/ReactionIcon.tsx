@@ -1,4 +1,4 @@
-import { hgCircleDots } from "../MainScene";
+import { hgCircleDots } from "../scene/MainScene";
 import { ArrowHeadMarker } from "./ArrowHeadMarker";
 import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
