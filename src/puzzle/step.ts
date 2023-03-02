@@ -7,6 +7,7 @@ import { applyReactionsInPlace } from "./reactions";
 import _ from "lodash";
 import update from "immutability-helper";
 import * as u from "../utils/u";
+import { apipe } from "../utils/apipe";
 
 export type ParticleState = Particle & {
     position: v3,
@@ -19,8 +20,8 @@ function move(world: World) {
             position: u.v3_add(p.velocity),
             ...(world.actors.some(a => a.kind === "trap" && v3.eq(hg.axialToCube(a.position), p.position))
                 ? { velocity: { $set: v3.zero() } }
-                : {})
-        }]))
+                : {}),
+        }])),
     });
 }
 
@@ -51,7 +52,9 @@ function react(world: World) {
             for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
                 const p = reactedWorld.particles[i];
                 if (!p || p.isRemoved) { continue; }
-                if (!v3.eq(hg.axialToCube(a.position), p.position)) { continue; }
+                if (!v3.eq(hg.axialToCube(a.position), p.position)) {
+                    continue;
+                }
 
                 if (keyifyParticleKind(p) === keyifyParticleKind(a.input)) {
                     reactedWorld.particles[i].isRemoved = true;
@@ -65,14 +68,21 @@ function react(world: World) {
             for (let i = 0; i < reactedWorld.particles.length; i++) {
                 const p = reactedWorld.particles[i];
                 if (!p || p.isRemoved) { continue; }
-                if (!v3.eq(hg.axialToCube(a.position), p.position)) { continue; }
+                if (!v3.eq(hg.axialToCube(a.position), p.position)) {
+                    continue;
+                }
 
                 const mirrorNormal = halfDirection2Vector[a.direction];
 
                 const vc = hg.axialToFlatCart(p.velocity);
                 const nc = hg.axialToFlatCart(mirrorNormal);
                 const vc1 = v2.add(vc, v2.scale(nc, -0.5 * v2.dot(vc, nc)));
-                p.velocity = hg.cubeRound(hg.axialToCube(hg.flatCartToAxial(vc1)));
+                p.velocity = apipe(
+                    vc1,
+                    hg.flatCartToAxial,
+                    hg.axialToCube,
+                    hg.cubeRound,
+                );
             }
         }
         if (a.kind === "trap") {
@@ -84,7 +94,7 @@ function react(world: World) {
         const p = reactedWorld.particles[i];
         if ((p.content === "gamma") && (world.particles[i])) {
             reactedWorld.particles[i] = update(p, {
-                isRemoved: { $set: true, }
+                isRemoved: { $set: true },
             });
             reactedWorld.energy++;
         }

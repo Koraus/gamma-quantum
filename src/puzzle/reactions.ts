@@ -33,7 +33,7 @@ const reactions: Reaction[] = [
                     red: c1.red + c2.red,
                     green: c1.green + c2.green,
                     blue: c1.blue + c2.blue,
-                }
+                },
             }];
         };
     },
@@ -120,17 +120,17 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                                 };
                                 const variants = generateReactionVariants(requestedReaction);
                                 const {
-                                    selectedVariant
+                                    selectedVariant,
                                 } = selectReactionVariant({
                                     requestedReaction,
                                     variants,
                                 });
                                 if (selectedVariant) {
                                     particles[particles.indexOf(p1)] = update(p1, {
-                                        isRemoved: { $set: true, }
+                                        isRemoved: { $set: true },
                                     });
                                     particles[particles.indexOf(p2)] = update(p2, {
-                                        isRemoved: { $set: true, }
+                                        isRemoved: { $set: true },
                                     });
                                     newParticles.push(...selectedVariant.products.map(p => ({
                                         ...p,
@@ -154,17 +154,17 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                         };
                         const variants = generateReactionVariants(requestedReaction);
                         const {
-                            selectedVariant
+                            selectedVariant,
                         } = selectReactionVariant({
                             requestedReaction,
                             variants,
                         });
                         if (selectedVariant) {
                             particles[particles.indexOf(p1)] = update(p1, {
-                                isRemoved: { $set: true, }
+                                isRemoved: { $set: true },
                             });
                             particles[particles.indexOf(p2)] = update(p2, {
-                                isRemoved: { $set: true, }
+                                isRemoved: { $set: true },
                             });
                             newParticles.push(...selectedVariant.products.map(p => ({
                                 ...p,

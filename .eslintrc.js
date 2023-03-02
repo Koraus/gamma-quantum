@@ -1,5 +1,6 @@
 module.exports = {
     env: { browser: true, es2022: true },
+    ignorePatterns: ['/*', '!/src'],
     plugins: [
         "@typescript-eslint",
         // "react", 

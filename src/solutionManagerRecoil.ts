@@ -23,7 +23,7 @@ const getProblemCmp = memoize(keyProjectProblem, { max: 1000 });
 const solutionManagerRecoilDefault = {
     currentSolution: {
         problem: Object.values(problems)[0],
-        actors: []
+        actors: [],
     } as SolutionDraft,
     knownSolutions: {} as Record<string, SolutionDraft | Solution>,
     confirmedSolutions: {} as Record<
@@ -45,7 +45,7 @@ export const solutionManagerRecoil = atom({
         onChangeAtomEffect({ // stats submission effect
             select: x => x.knownSolutions,
             onChange: (
-                newKnownSolutions, oldKnownSolutions, _, __, ___, { setSelf }
+                newKnownSolutions, oldKnownSolutions, _, __, ___, { setSelf },
             ) => {
                 const oldKnownSolutions1 =
                     (oldKnownSolutions instanceof DefaultValue)
@@ -62,14 +62,14 @@ export const solutionManagerRecoil = atom({
                         setSelf(s => update(s, {
                             confirmedSolutions: {
                                 [getSolutionCmp(solution)]: { $set: result },
-                            }
+                            },
                         }));
                     })(); // just run, do not await
                 }
 
-            }
+            },
         }),
-    ]
+    ],
 });
 
 export const useSetProblem = () => {
@@ -93,7 +93,7 @@ export const useSetNextProblem = () => {
 };
 
 export const firstNotSolvedProblem = (
-    knownSolutions: Record<string, SolutionDraft>
+    knownSolutions: Record<string, SolutionDraft>,
 ) => {
     const knownSovledProblemCmps =
         new Set(Object.values(knownSolutions)
@@ -122,8 +122,8 @@ export const useSetCurrentSolution = () => {
             const solutionId = getSolutionCmp(solution);
             next = update(next, {
                 knownSolutions: {
-                    [solutionId]: { $set: getSolutionCmpObj(solution) }
-                }
+                    [solutionId]: { $set: getSolutionCmpObj(solution) },
+                },
             });
         }
         return nextState;
