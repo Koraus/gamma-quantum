@@ -12,7 +12,7 @@ export type ParticleKind = {
     };
 }
 export const keyProjectParticleKind = ({
-    content
+    content,
 }: ParticleKind): ParticleKind => ({
     content: content === "gamma"
         ? content
@@ -23,7 +23,8 @@ export const keyifyParticleKind = (x: ParticleKind) =>
     JSON.stringify(keyProjectParticleKind(x)) as ParticleKindKey;
 export const parsePartilceKind = (key: ParticleKindKey) => 
     JSON.parse(key) as ParticleKind;
-
+export const eqParticleKind = (a: ParticleKind, b: ParticleKind) =>
+    keyifyParticleKind(a) === keyifyParticleKind(b);
 
 export type Particle = ParticleKind & {
     velocity: v3;

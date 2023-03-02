@@ -1,4 +1,4 @@
-import { keyProjectProblem, Problem } from "./Problem";
+import { keyProjectProblem, Problem, ProblemKey } from "./Problem";
 import { v2 } from "../utils/v";
 import { ParticleKind } from "./Particle";
 import { DirectionId, HalfDirectionId } from "./direction";
@@ -44,6 +44,8 @@ export const keyProjectSolution = ({
     actors: sortedByKey(actors, a => JSON.stringify(keyProjectActor(a))),
     solvedAtStep,
 });
-export type SolutionKey = string; // Stringify<Soultion> // too complex
+export type SolutionKey =
+    // Stringify<Solution>; // too complex
+    `{"problem":${ProblemKey}${string}}`;
 export const keyifySolution = (x: Solution) =>
     JSON.stringify(keyProjectSolution(x)) as SolutionKey;

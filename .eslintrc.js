@@ -13,7 +13,7 @@ module.exports = {
         "eslint:recommended",
         // "plugin:react/recommended",
         // "plugin:react/jsx-runtime",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
     ],
     rules: {
         "indent": ["warn", 4, { "SwitchCase": 1 }],
@@ -21,7 +21,9 @@ module.exports = {
         "quotes": ["warn", "double"],
         "semi": ["warn", "always"],
         "max-nested-callbacks": ["warn", 2],
-        "max-len": ["warn", 80],
+        "max-len": ["warn", 80, {
+            "ignorePattern": "^import\\s.+\\sfrom\\s.+;$",
+        }],
         "comma-dangle": ["warn", "always-multiline"],
     },
 };

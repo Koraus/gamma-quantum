@@ -1,5 +1,5 @@
 import { css, cx } from "@emotion/css";
-import { keyifyParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/Particle";
+import { eqParticleKind, keyProjectParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/Particle";
 import { SolutionDraft } from "./puzzle/Solution";
 import { StateProp } from "./utils/StateProp";
 
@@ -21,6 +21,14 @@ export type CursorTool = {
     kind: "remove",
 };
 
+export const particleKindText = (p: ParticleKind) =>
+    p.content === "gamma"
+        ? p.content
+        : Object.entries(keyProjectParticleKind(p).content)
+            .filter(([, count]) => count > 0)
+            .map(([key, count]) => `${key} x${count}`)
+            .join(" & ");
+
 export function CursorToolSelectorPanel({
     solution,
     cursorToolState: [cursor, setCursor],
@@ -33,29 +41,31 @@ export function CursorToolSelectorPanel({
 
     const availableSpawners = Object.entries(solution.problem.spawners)
         .flatMap(([kind, count]) =>
-            new Array(count ?? 0).fill({
+            Array.from({ length: count ?? 0 }, () => ({
                 kind: "spawner" as const,
                 output: parsePartilceKind(kind as ParticleKindKey),
                 used: false,
-            }));
+            })));
 
     const availableConsumers = Object.entries(solution.problem.consumers)
         .flatMap(([kind, count]) =>
-            new Array(count ?? 0).fill({
+            Array.from({ length: count ?? 0 }, () => ({
                 kind: "consumer" as const,
                 input: parsePartilceKind(kind as ParticleKindKey),
                 used: false,
-            }));
+            })));
 
     for (const usedActor of solution.actors) {
         if (usedActor.kind === "spawner") {
             const item = availableSpawners
-                .find(a => !a.used && (keyifyParticleKind(a.output) === keyifyParticleKind(usedActor.output)));
+                .find(a => !a.used
+                    && eqParticleKind(a.output, usedActor.output));
             if (item) { item.used = true; }
         }
         if (usedActor.kind === "consumer") {
             const item = availableConsumers
-                .find(a => !a.used && (keyifyParticleKind(a.input) === keyifyParticleKind(usedActor.input)));
+                .find(a => !a.used
+                    && eqParticleKind(a.input, usedActor.input));
             if (item) { item.used = true; }
         }
     }
@@ -87,8 +97,10 @@ export function CursorToolSelectorPanel({
                     disabled={"used" in tool && tool.used}
                 />
                 {tool.kind}
-                {tool.kind === "spawner" && (":" + tool.output.content)}
-                {tool.kind === "consumer" && (":" + tool.input.content)}
+                {tool.kind === "spawner"
+                    && (": " + particleKindText(tool.output))}
+                {tool.kind === "consumer"
+                    && (": " + particleKindText(tool.input))}
             </label>
         </div>)}
     </div>;
