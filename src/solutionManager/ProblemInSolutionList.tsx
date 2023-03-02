@@ -1,10 +1,10 @@
-import { Problem } from "../puzzle/Problem";
+import { Problem, eqProblem } from "../puzzle/Problem";
 import { SolutionDraft } from "../puzzle/Solution";
 import { css, cx } from "@emotion/css";
 import { StateProp } from "../utils/StateProp";
 
 
-export default function ProblemSolutionList({
+export default function ProblemInSolutionList({
     problem,
     solutions,
     solutionState: [solution, setSolution],
@@ -15,7 +15,7 @@ export default function ProblemSolutionList({
 },
 ) {
     const solutions1 = Object.entries(solutions)
-        .filter(([key, s]) => problem === s.problem)
+        .filter(([key, s]) => eqProblem(problem, s.problem))
         .map(([solutionName, solution1]) => {
             return <li
                 key={solutionName}

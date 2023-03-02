@@ -3,7 +3,6 @@ import { useRecoilValue } from "recoil";
 import * as problems from "../puzzle/problems";
 import * as amplitude from "@amplitude/analytics-browser";
 import update from "immutability-helper";
-import memoize from "memoizee";
 import { localStorageAtomEffect } from "../utils/localStorageAtomEffect";
 import { isSolutionComplete, keyifySolution, parseSolution, Solution, SolutionDraft, SolutionKey } from "../puzzle/Solution";
 import { keyifyProblem as _keyifyProblem, Problem } from "../puzzle/Problem";
@@ -12,10 +11,6 @@ import * as solutions from "./hardcodedSoultions";
 
 // todo: implement postSolution & statsClient
 const postSolution = (solution: Solution) => Promise.resolve(solution);
-
-const keyifyProblem = memoize(_keyifyProblem, { max: 1000 });
-const eqProblem = (a: Problem, b: Problem) =>
-    keyifyProblem(a) === keyifyProblem(b);
 
 const solutionManagerRecoilDefault = {
     // single current solution, loaded from saved or created empty

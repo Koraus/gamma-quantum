@@ -3,9 +3,10 @@ import { useState } from "react";
 import { SolutionDraft } from "../puzzle/Solution";
 import { StateProp } from "../utils/StateProp";
 import * as problems from "../puzzle/problems";
-import ProblemSolutionList from "./ProblemInSolutionList";
+import ProblemInSolutionList from "./ProblemInSolutionList";
 import { useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManagerRecoil";
+import { eqProblem } from "../puzzle/Problem";
 
 
 export function SolutionsList({
@@ -18,23 +19,22 @@ export function SolutionsList({
     const solutions = useRecoilValue(solutionManagerRecoil).savedSolutions;
 
     const problemsList = Object.entries(problems)
-        .map(([problemName, problem]) => {
-
-            return <ul className={cx(
-                css({
-                    padding: 0,
-                    listStyle: "none",
-                }),
-            )}
-            key={problemName} >
-
-                {problemName}
-                <ProblemSolutionList
-                    problem={problem}
-                    solutions={solutions}
-                    solutionState={[solution, setSolution]} />
-            </ul>;
-        });
+        .map(([problemName, problem]) => <ul
+            key={problemName}
+            className={cx(css({
+                padding: 0,
+                listStyle: "none",
+                background: eqProblem(solution.problem, problem) 
+                    ? "#303030b0"
+                    : "#000000b0",
+            }))}
+        >
+            {problemName}
+            <ProblemInSolutionList
+                problem={problem}
+                solutions={solutions}
+                solutionState={[solution, setSolution]} />
+        </ul>);
 
     const [isShown, setIsShown] = useState(false);
 

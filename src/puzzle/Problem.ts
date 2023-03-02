@@ -2,6 +2,7 @@ import { sortKeys } from "../utils/sortKeys";
 import { Stringify } from "../utils/Stringify";
 import { ParticleKindKey } from "./Particle";
 import { puzzleId } from "./puzzleId";
+import memoize from "memoizee";
 
 
 export type Problem = {
@@ -23,5 +24,9 @@ export const keyProjectProblem = ({
     demand: sortKeys(demand),
 });
 export type ProblemKey = Stringify<Problem>;
-export const keyifyProblem = (x: Problem) =>
+export const _keyifyProblem = (x: Problem) =>
     JSON.stringify(keyProjectProblem(x)) as ProblemKey;
+
+export const keyifyProblem = memoize(_keyifyProblem, { max: 1000 });
+export const eqProblem = (a: Problem, b: Problem) =>
+    keyifyProblem(a) === keyifyProblem(b);
