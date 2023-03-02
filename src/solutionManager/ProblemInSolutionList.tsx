@@ -1,7 +1,7 @@
-import { Problem } from "./puzzle/Problem";
-import { SolutionDraft } from "./puzzle/Solution";
+import { Problem } from "../puzzle/Problem";
+import { SolutionDraft } from "../puzzle/Solution";
 import { css, cx } from "@emotion/css";
-import { StateProp } from "./utils/StateProp";
+import { StateProp } from "../utils/StateProp";
 
 
 export default function ProblemSolutionList({

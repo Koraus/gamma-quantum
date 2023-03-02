@@ -9,14 +9,14 @@ import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { getWorldAtPlaytime } from "./simulator";
-import { SolutionsList } from "./SolutionsList";
+import { SolutionsList } from "./solutionManager/SolutionsList";
 import { SolutionDraft } from "./puzzle/Solution";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
 import { ParticleKindKey } from "./puzzle/Particle";
 import { useRecoilValue } from "recoil";
-import { solutionManagerRecoil, useSetCurrentSolution } from "./solutionManagerRecoil";
+import { solutionManagerRecoil, useSetCurrentSolution } from "./solutionManager/solutionManagerRecoil";
 
 function isWin(world: World) {
     return Object.entries(world.problem.demand)

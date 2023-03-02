@@ -1,5 +1,5 @@
-import { problem1, problem2, problem3, problem5 } from "./puzzle/problems";
-import { SolutionDraft } from "./puzzle/Solution";
+import { problem1, problem2, problem3, problem5 } from "../puzzle/problems";
+import { SolutionDraft } from "../puzzle/Solution";
 
 
 

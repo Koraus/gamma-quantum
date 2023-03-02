@@ -1,13 +1,13 @@
 import { atom, useSetRecoilState, DefaultValue } from "recoil";
 import { useRecoilValue } from "recoil";
-import * as problems from "./puzzle/problems";
+import * as problems from "../puzzle/problems";
 import * as amplitude from "@amplitude/analytics-browser";
 import update from "immutability-helper";
 import memoize from "memoizee";
-import { localStorageAtomEffect } from "./utils/localStorageAtomEffect";
-import { isSolutionComplete, keyifySolution, parseSolution, Solution, SolutionDraft, SolutionKey } from "./puzzle/Solution";
-import { keyifyProblem as _keyifyProblem, Problem } from "./puzzle/Problem";
-import { onChangeAtomEffect } from "./utils/onChangeAtomEffect";
+import { localStorageAtomEffect } from "../utils/localStorageAtomEffect";
+import { isSolutionComplete, keyifySolution, parseSolution, Solution, SolutionDraft, SolutionKey } from "../puzzle/Solution";
+import { keyifyProblem as _keyifyProblem, Problem } from "../puzzle/Problem";
+import { onChangeAtomEffect } from "../utils/onChangeAtomEffect";
 import * as solutions from "./hardcodedSoultions";
 
 // todo: implement postSolution & statsClient

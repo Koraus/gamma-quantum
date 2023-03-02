@@ -1,8 +1,8 @@
 import { css, cx } from "@emotion/css";
 import { useState } from "react";
-import { SolutionDraft } from "./puzzle/Solution";
-import { StateProp } from "./utils/StateProp";
-import * as problems from "./puzzle/problems";
+import { SolutionDraft } from "../puzzle/Solution";
+import { StateProp } from "../utils/StateProp";
+import * as problems from "../puzzle/problems";
 import ProblemSolutionList from "./ProblemInSolutionList";
 import { useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManagerRecoil";
