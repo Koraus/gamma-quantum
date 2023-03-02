@@ -6,6 +6,7 @@ import { StateProp } from "./utils/StateProp";
 import * as problems from "./puzzle/problems";
 import ProblemSolutionList from "./ProblemInSolutionList";
 
+
 export function SolutionsList({
     solutionState: [solution, setSolution],
     className,
@@ -14,23 +15,26 @@ export function SolutionsList({
     solutionState: StateProp<SolutionDraft>,
 } & JSX.IntrinsicElements["div"]) {
 
-    const [isShown, setIsShown] = useState(false);
+    const problemsList = Object.entries(problems)
+        .map(([problemName, problem]) => {
 
-    const listItems = Object.entries(solutions).map(([key, s]) => {
-        return <li
-            className={cx(
+            return <ul className={cx(
                 css({
-                    color: "white",
-                    background: solution === s ? "#f34494" : "#a3119F",
-                    margin: "0 0 10px 0",
-                    cursor: "pointer",
-                    width: "fit-content",
+                    padding: 0,
+                    listStyle: "none",
                 }),
             )}
-            onClick={() => setSolution(s)}
-            key={key}
-        > {key} </li>;
-    });
+            key={problemName} >
+
+                {problemName}
+                <ProblemSolutionList
+                    problem={problem}
+                    solutions={solutions}
+                    solutionState={[solution, setSolution]} />
+            </ul>
+        });
+
+    const [isShown, setIsShown] = useState(false);
 
     const currentSolutionKey = Object.entries(solutions)
         .find(([, s]) => s === solution)?.[0];
@@ -61,6 +65,7 @@ export function SolutionsList({
             onClick={() => setIsShown(!isShown)}
         >
             <span> Solutions: {currentSolutionKey ?? "*"} </span>
+
             <span
                 className={cx(
                     css({
@@ -73,24 +78,14 @@ export function SolutionsList({
                 )}
             > &gt; </span>
         </div>
+
         <div className={cx(
             css({
                 display: isShown ? "block" : "none",
                 margin: "2vmin",
             }),
         )}>
-            <ul className={cx(
-                css({
-                    padding: 0,
-                    listStyle: "none",
-                }),
-            )}
-            >{listItems}</ul>
-            <ProblemSolutionList
-                problems={problems}
-                solutions={solutions}
-                solutionState={[solution, setSolution]} />
+            {problemsList}
         </div>
     </div>;
-
 }

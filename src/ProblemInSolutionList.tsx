@@ -5,46 +5,33 @@ import { StateProp } from "./utils/StateProp";
 
 
 export default function ProblemSolutionList({
-    problems,
+    problem,
     solutions,
     solutionState: [solution, setSolution],
-    ...props
 }: {
-    problems: Problem[],
+    problem: Problem,
     solutions: SolutionDraft[],
     solutionState: StateProp<SolutionDraft>,
-}) {
+},
+) {
 
-    const list = Object.entries(problems).map(([problemName, problem]) => {
 
-        const solutionsForProblem = Object.entries(solutions)
-            .filter(([key, s]) => problem === s.problem);
+    const solutions1 = Object.entries(solutions)
+        .filter(([key, s]) => problem === s.problem)
+        .map(([solutionName, solution1]) => {
+            return <li
+                key={solutionName}
+                className={cx(
+                    css({
+                        listStyle: "none",
+                        paddingLeft: "10px",
+                        backgroundColor: solution === solution1 ? "red" : "",
+                    }),
+                )}
+                onClick={() => setSolution(solution1)}
+            > {solutionName} </li>
+        },
+        );
 
-        const listSolutions = solutionsForProblem
-            .map(([solutionName, solution1]) => {
-                return <li
-                    key={solutionName}
-                    className={cx(
-                        css({
-                            listStyle: 'none',
-                            paddingLeft: '10px',
-                            backgroundColor: solution === solution1 ? 'red' : '',
-                        }),
-                    )}
-                > {solutionName} </li>
-            }
-            );
-        return <ul
-            key={problemName}
-            className={cx(
-                css({
-                    listStyle: 'none',
-                    paddingLeft: '0',
-                }),
-            )}
-            onClick={() => (console.log())}
-        > {problemName} =&gt; {listSolutions} </ul>
-    })
-    return list;
+    return <li>{solutions1}</li>
 }
-
