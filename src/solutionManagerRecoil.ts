@@ -17,12 +17,24 @@ const eqProblem = (a: Problem, b: Problem) =>
     keyifyProblem(a) === keyifyProblem(b);
 
 const solutionManagerRecoilDefault = {
+    // single current solution, loaded from saved or created empty
+    // being edited by player at the moment
     currentSolution: {
         problem: Object.values(problems)[0],
         actors: [],
     } as SolutionDraft,
+
+    // all solutions (draft and complete)
+    // the player explicitely decide to save
+    // using player-generated string key (name)
     savedSolutions: {} as Record<string, SolutionDraft | Solution>,
+
+    // all solutions known to be complete
+    // that were ever assigned to currentSolution
     knownSolutions: {} as Partial<Record<SolutionKey, true>>,
+
+    // all known solutions
+    // that were posted to stats backend and got positive response
     confirmedSolutions: {} as Partial<Record<
         SolutionKey,
         Awaited<ReturnType<typeof postSolution>>
