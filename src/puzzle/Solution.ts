@@ -66,4 +66,4 @@ export const isSolutionComplete =
         //     from saved solutions - trusted, why not
         //     as current solution - trusted
         return true;
-    }
+    };

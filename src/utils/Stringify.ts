@@ -23,7 +23,6 @@ type Obj<T extends object> =
     `{${ObjBody<T, Union.ListOf<keyof T>>}}`;
 
 // todo tuples
-// todo arrays in some or any way
 type Arr<Element> = 
     "[]" 
     | `[${Stringify<Element>}]` 
