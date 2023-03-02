@@ -20,10 +20,7 @@ const eqProblem = (a: Problem, b: Problem) =>
 const solutionManagerRecoilDefault = {
     // single current solution, loaded from saved or created empty
     // being edited by player at the moment
-    currentSolution: {
-        problem: Object.values(problems)[0],
-        actors: [],
-    } as SolutionDraft,
+    currentSolution: solutions.fourSpawnersParallel,
 
     // all solutions (draft and complete)
     // the player explicitely decided to save
@@ -45,7 +42,7 @@ const solutionManagerRecoilDefault = {
 };
 
 export const solutionManagerRecoil = atom({
-    key: "solution",
+    key: "solutionManager",
     default: solutionManagerRecoilDefault,
     effects: [
         localStorageAtomEffect(),

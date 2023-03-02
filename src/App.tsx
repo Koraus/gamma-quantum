@@ -9,13 +9,14 @@ import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
 import { getWorldAtPlaytime } from "./simulator";
-import { fourSpawnersParallel as defaultSolution } from "./hardcodedSoultions";
 import { SolutionsList } from "./SolutionsList";
 import { SolutionDraft } from "./puzzle/Solution";
 import { CursorTool, CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
 import { ParticleKindKey } from "./puzzle/Particle";
+import { useRecoilValue } from "recoil";
+import { solutionManagerRecoil, useSetCurrentSolution } from "./solutionManagerRecoil";
 
 function isWin(world: World) {
     return Object.entries(world.problem.demand)
@@ -24,7 +25,8 @@ function isWin(world: World) {
 }
 export function App() {
 
-    const [solution, setSolution] = useState(defaultSolution);
+    const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
+    const setSolution = useSetCurrentSolution();
 
     const stepState = useState(0);
     const [step, setStep] = stepState;
@@ -42,8 +44,15 @@ export function App() {
 
     const [win, setWin] = useState(false);
 
-    const setSolutionAndResetPlayback = (nextSolution: SolutionDraft | ((prevSolution: SolutionDraft) => SolutionDraft)) => {
-        setSolution(nextSolution);
+    const setSolutionAndResetPlayback = (
+        nextSolution: SolutionDraft
+            | ((prevSolution: SolutionDraft) => SolutionDraft),
+    ) => {
+        const resolvedNextSolution =
+            ("function" === typeof nextSolution)
+                ? nextSolution(solution)
+                : nextSolution;
+        setSolution(resolvedNextSolution);
         setPlayAction({
             playtimeSpeed: 0,
             startPlaytime: 0,
