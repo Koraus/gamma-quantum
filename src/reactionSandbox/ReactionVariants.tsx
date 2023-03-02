@@ -16,8 +16,8 @@ const prepareReactionRequests = ({ reagents, products }: {
     products: ParticleKind[];
 }) => groupReactionVariantsBySymmetries(velocityVariants4.map((vels) => ({
     reagents: [
-        ...reagents, 
-        particles.g, 
+        ...reagents,
+        particles.g,
         // particles.g
     ].slice(0, 4)
         .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
@@ -54,10 +54,11 @@ export function ReactionVariants({
             {title}
         </div>
         {!isCollapsed && <div className={css({ paddingLeft: 20 })}>
-            {prepareReactionRequests(reaction).map((reaction, i) => <ReactionForDirections
-                key={i}
-                {...reaction}
-                setSelectedReactionVariant={setSelectedReactionVariant} />)}
+            {prepareReactionRequests(reaction)
+                .map((reaction, i) => <ReactionForDirections
+                    key={i}
+                    {...reaction}
+                    setSelectedReactionVariant={setSelectedReactionVariant} />)}
         </div>}
     </div>;
 }

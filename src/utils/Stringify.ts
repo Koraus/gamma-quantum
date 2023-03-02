@@ -1,28 +1,33 @@
 import { Union } from "ts-toolbelt";
 
 
-type StringifierError<T extends string> = { error: true } & T;
+type Error<T extends string> = { error: true } & T;
 
-type StringifyObjectMember<T, K extends string & keyof T> =
+type ObjMember<T, K extends string & keyof T> =
     string extends K 
         ? `${string}`
         : `"${K}":${Stringify<T[K]>}`;
-type StringifyObjectBody<T extends object, Keys extends ReadonlyArray<keyof T>> = 
-    Keys extends [infer Key, ...infer RestKeys] 
+type ObjBody<
+    T extends object, 
+    Keys extends ReadonlyArray<keyof T>
+> = Keys extends [infer Key, ...infer RestKeys] 
         ? Key extends string & keyof T
             ? [] extends RestKeys
-                ? `${StringifyObjectMember<T, Key>}` // last key
+                ? `${ObjMember<T, Key>}` // last key
                 : RestKeys extends (keyof T)[]
-                    ? `${StringifyObjectMember<T, Key>},${StringifyObjectBody<T, RestKeys>}` 
-                    : StringifierError<"StringifyObjectBody: Unknown 0">
-            : StringifierError<"StringifyObjectBody: Key is not string">
+                    ? `${ObjMember<T, Key>},${ObjBody<T, RestKeys>}` 
+                    : Error<"StringifyObjectBody: Unknown 0">
+            : Error<"StringifyObjectBody: Key is not string">
         : ""; // empty object
-type StringifyObject<T extends object> = `{${StringifyObjectBody<T, Union.ListOf<keyof T>>}}`;
+type Obj<T extends object> = 
+    `{${ObjBody<T, Union.ListOf<keyof T>>}}`;
 
 // todo tuples
 // todo arrays in some or any way
-type StringifyArray<Element> = 
-    "[]" | `[${Stringify<Element>}]` | `[${Stringify<Element>},${string}${Stringify<Element>}]`;
+type Arr<Element> = 
+    "[]" 
+    | `[${Stringify<Element>}]` 
+    | `[${Stringify<Element>},${string}${Stringify<Element>}]`;
 
     
 export type Stringify<T> =
@@ -31,7 +36,7 @@ export type Stringify<T> =
         : T extends number | boolean | null
             ? `${T}`
             : T extends (infer Element)[] 
-                ? StringifyArray<Element>
+                ? Arr<Element>
                 : T extends object
-                    ? StringifyObject<T>
-                    : StringifierError<"Stringify: Type not supported">;
+                    ? Obj<T>
+                    : Error<"Stringify: Type not supported">;

@@ -5,7 +5,7 @@ const cyclicAt =
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         arr.at(i % arr.length)!;
 
-export function cyclicSelectorMixin<T, Element>(
+export function cyclicSelectorMixin<T, El>(
     values: readonly T[],
     [value, setValue]: [T, Dispatch<SetStateAction<T>>],
 ) {
@@ -19,8 +19,8 @@ export function cyclicSelectorMixin<T, Element>(
             setValue(cyclicAt(values, i));
 
             ev.preventDefault();
-        }) as MouseEventHandler<Element>,
-        onMouseDown: (ev => ev.preventDefault()) as MouseEventHandler<Element>,
-        onContextMenu: (ev => ev.preventDefault()) as MouseEventHandler<Element>,
+        }) as MouseEventHandler<El>,
+        onMouseDown: (ev => ev.preventDefault()) as MouseEventHandler<El>,
+        onContextMenu: (ev => ev.preventDefault()) as MouseEventHandler<El>,
     };
 }

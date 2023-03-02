@@ -31,7 +31,7 @@ export function ReactionVariant({
             display: "flex",
             flexDirection: "row",
         })}>
-            <ReactionIcon 
+            <ReactionIcon
                 reagents={reagents}
                 products={products} />
 
@@ -47,7 +47,10 @@ export function ReactionVariant({
                 ~p {JSON.stringify(deltaMomentum)}<br />
                 ~p_len {hg.cubeLen(deltaMomentum)}<br />
                 ~E {deltaEnergy}<br />
-                {twins.length > 0 && <span className={css({ color: "yellow" })}>⚠&nbsp;</span>}
+                {twins.length > 0
+                    && <span className={css({ color: "yellow" })}>
+                        ⚠&nbsp;
+                    </span>}
                 tw {twins.length}
             </div>
         </div>

@@ -4,7 +4,6 @@ import { SolutionDraft } from "./Solution";
 import { keyifyParticleKind, Particle, ParticleKindKey } from "./Particle";
 import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
-import _ from "lodash";
 import update from "immutability-helper";
 import * as u from "../utils/u";
 import { apipe } from "../utils/apipe";
@@ -18,7 +17,10 @@ function move(world: World) {
     return update(world, {
         particles: Object.fromEntries(world.particles.map((p, i) => [i, {
             position: u.v3_add(p.velocity),
-            ...(world.actors.some(a => a.kind === "trap" && v3.eq(hg.axialToCube(a.position), p.position))
+            ...(world.actors.some(a =>
+                a.kind === "trap"
+                && v3.eq(hg.axialToCube(a.position), p.position),
+            )
                 ? { velocity: { $set: v3.zero() } }
                 : {}),
         }])),

@@ -6,10 +6,13 @@ type rv2 = Readonly<v2>;
 type rv3 = Readonly<v3>;
 
 export const SQRT3 = Math.sqrt(3);
-export const axialToFlatCart = ([q, r]: rv2 | rv3) => [(SQRT3 / 2) * q, (1 / 2) * q + r] as v2;
-export const flatCartToAxial = ([x, y]: rv2) => [2 / SQRT3 * x, - 1 / SQRT3 * x + y] as v2;
+export const axialToFlatCart = ([q, r]: rv2 | rv3) => 
+    [(SQRT3 / 2) * q, (1 / 2) * q + r] as v2;
+export const flatCartToAxial = ([x, y]: rv2) => 
+    [2 / SQRT3 * x, - 1 / SQRT3 * x + y] as v2;
 export const axialToCube = ([q, r]: rv2) => [q, r, -q - r] as v3;
-export const cubeLen = ([q, r, s]: rv3) => (Math.abs(q) + Math.abs(r) + Math.abs(s)) / 2;
+export const cubeLen = ([q, r, s]: rv3) => 
+    (Math.abs(q) + Math.abs(r) + Math.abs(s)) / 2;
 export const cubeRotate60Cw = ([q, r, s]: rv3) => [-r, -s, -q] as v3;
 export const cubeRotate60Ccw = ([q, r, s]: rv3) => [-s, -q, -r] as v3;
 export const cubeRotate60CwTimes = (v: rv3, times: number) => {
@@ -114,5 +117,8 @@ export const direction = {
         ["↖"]: _dirPointy60.northWest,
         nw: _dirPointy60.northWest,
     },
-    itCw60: [_dir60.qnr, _dir60.qns, _dir60.rns, _dir60.rnq, _dir60.snq, _dir60.snr],
+    itCw60: [
+        _dir60.qnr, _dir60.qns, _dir60.rns, 
+        _dir60.rnq, _dir60.snq, _dir60.snr,
+    ],
 } as const;

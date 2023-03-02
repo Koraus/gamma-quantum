@@ -57,9 +57,12 @@ export function ReactionMomentumGraph({
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Σp</span>
                 &nbsp;
-                {directionOf(productsMomentum).map((d, i) => <span key={i}>{directionSymbol[d]}</span>)}
+                {directionOf(productsMomentum)
+                    .map((d, i) => <span key={i}>{directionSymbol[d]}</span>)}
                 &nbsp;
-                <span className={css({ opacity: 0.4 })}>{JSON.stringify(reagentsMomentum)}</span>
+                <span className={css({ opacity: 0.4 })}>{
+                    JSON.stringify(reagentsMomentum)
+                }</span>
                 &nbsp;
                 <br />
                 &nbsp;
@@ -77,7 +80,9 @@ export function ReactionMomentumGraph({
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Σp</span>
                 &nbsp;
-                <span className={css({ opacity: 0.4 })}>{JSON.stringify(productsMomentum)}</span>
+                <span className={css({ opacity: 0.4 })}>{
+                    JSON.stringify(productsMomentum)
+                }</span>
                 &nbsp;
                 <br />
                 &nbsp;
@@ -91,15 +96,19 @@ export function ReactionMomentumGraph({
             <div>&nbsp;</div>
 
             <div>
-                {(hg.cubeLen(v3.sub(productsMomentum, reagentsMomentum)) !== 0) && <span className={css({ color: "yellow" })}>⚠</span>}
+                {(hg.cubeLen(v3.sub(productsMomentum, reagentsMomentum)) !== 0)
+                    && <span className={css({ color: "yellow" })}>⚠</span>}
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Δp</span>
                 &nbsp;
                 {hg.cubeLen(v3.sub(productsMomentum, reagentsMomentum))}
                 &nbsp;
-                <span className={css({ opacity: 0.4 })}>{JSON.stringify(v3.sub(productsMomentum, reagentsMomentum))}</span>
+                <span className={css({ opacity: 0.4 })}>{
+                    JSON.stringify(v3.sub(productsMomentum, reagentsMomentum))
+                }</span>
                 <br />
-                {(productsEnergy - reagentsEnergy !== 0) && <span className={css({ color: "yellow" })}>⚠</span>}
+                {(productsEnergy - reagentsEnergy !== 0)
+                    && <span className={css({ color: "yellow" })}>⚠</span>}
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>ΔE</span>
                 &nbsp;
@@ -120,9 +129,11 @@ export function ReactionMomentumGraph({
         }
 
         <svg viewBox="-5 -5 10 10" width={300}>
-            {colors.map((color, i) => <ArrowHeadMarker key={i} color={color} />)}
+            {colors.map((color, i) =>
+                <ArrowHeadMarker key={i} color={color} />)}
 
-            {[...hgDiscDots(5)].map((pos, i) => <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
+            {[...hgDiscDots(5)].map((pos, i) =>
+                <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
 
             {reagents
                 .map(((offset: v3) => particle => {
