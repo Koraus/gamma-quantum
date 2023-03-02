@@ -7,7 +7,14 @@ const dir = [
     [1, 0, -1], // ↘
 ] as const;
 
-const solution = (a: number, b: number, c: number, d: number, e: number, f: number) => [
+const solution = (
+    a: number, 
+    b: number, 
+    c: number, 
+    d: number, 
+    e: number, 
+    f: number,
+) => [
     ...Array(a).fill(dir[0]),
     ...Array(b).fill(dir[1]),
     ...Array(c).fill(dir[2]),

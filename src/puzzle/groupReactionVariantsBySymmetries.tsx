@@ -11,8 +11,8 @@ export const mirrorTransforms = tuple(
     ([q, r, s]: v3) => [q, s, r] as v3,
 );
 
-const getParticleKey = (p: Particle) => 
-    JSON.stringify({ 
+const getParticleKey = (p: Particle) =>
+    JSON.stringify({
         mass: particleMass(p),
         velocity: p.velocity,
     });
@@ -41,8 +41,10 @@ export function groupReactionVariantsBySymmetries<T extends {
         keysProcessed.add(key1);
 
         for (const var2 of mirrorTransforms.map(m => ({
-            reagents: var1.reagents.map(p => ({ ...p, velocity: m(p.velocity) })),
-            products: var1.products.map(p => ({ ...p, velocity: m(p.velocity) })),
+            reagents: var1.reagents
+                .map(p => ({ ...p, velocity: m(p.velocity) })),
+            products: var1.products
+                .map(p => ({ ...p, velocity: m(p.velocity) })),
         }))) {
             const key2 = getVariantKey(var2);
             const g2 = groups[key2];
@@ -51,7 +53,9 @@ export function groupReactionVariantsBySymmetries<T extends {
             if (!g2) { groups[key2] = g1; continue; }
 
             for (const v of g2) { g1.add(v); }
-            for (const k in groups) { if (groups[k] === g2) { groups[k] = g1; } }
+            for (const k in groups) {
+                if (groups[k] === g2) { groups[k] = g1; }
+            }
         }
     }
 

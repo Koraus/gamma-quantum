@@ -1,8 +1,10 @@
-import { keyifyParticleKind, ParticleKindKey } from "./Particle";
+import { keyifyParticleKind } from "./Particle";
 import { Problem } from "./Problem";
+import { puzzleId } from "./puzzleId";
 
 
 export const problem1: Problem = {
+    puzzleId,
     spawners: {
         [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 2,
     },
@@ -15,6 +17,7 @@ export const problem1: Problem = {
 };
 
 export const problem2: Problem = {
+    puzzleId,
     spawners: {
         [keyifyParticleKind({ content: { red: 2, green: 0, blue: 0 } })]: 1,
         [keyifyParticleKind({ content: "gamma" })]: 1,
@@ -29,6 +32,7 @@ export const problem2: Problem = {
 
 
 export const problem3: Problem = {
+    puzzleId,
     spawners: {
         [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 4,
     },
@@ -42,6 +46,7 @@ export const problem3: Problem = {
 
 
 export const problem4: Problem = {
+    puzzleId,
     spawners: {
         [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 2,
     },
@@ -54,6 +59,7 @@ export const problem4: Problem = {
 };
 
 export const problem5: Problem = {
+    puzzleId,
     spawners: {
         [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 1,
         [keyifyParticleKind({ content: { red: 0, green: 4, blue: 0 } })]: 1,

@@ -46,6 +46,24 @@ export const keyProjectSolution = ({
 });
 export type SolutionKey =
     // Stringify<Solution>; // too complex
-    `{"problem":${ProblemKey}${string}}`;
+    `{"problem":${string}}`;
 export const keyifySolution = (x: Solution) =>
     JSON.stringify(keyProjectSolution(x)) as SolutionKey;
+export const parseSolution = (x: SolutionKey) =>
+    JSON.parse(x) as Solution;
+
+export const isSolutionComplete =
+    (s: Solution | SolutionDraft): s is Solution => {
+        if (!("solvedAtStep" in s)) { return false; }
+        // simulate and check?
+        // solution can come from:
+        //   at stats server context:
+        //     from post - not trusted, 
+        //       but should be validated, 
+        //       and simulation can be part of validation
+        //     from saved state - trusted
+        //   at client context
+        //     from saved solutions - trusted, why not
+        //     as current solution - trusted
+        return true;
+    }

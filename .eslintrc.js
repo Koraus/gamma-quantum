@@ -26,5 +26,6 @@ module.exports = {
             "ignorePattern": "^import\\s.+\\sfrom\\s.+;$",
         }],
         "comma-dangle": ["warn", "always-multiline"],
+        "no-warning-comments": ["warn"],
     },
 };

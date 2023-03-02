@@ -1,5 +1,13 @@
-type _TupleOf<T, N extends number, R extends unknown[]> = R["length"] extends N ? R : _TupleOf<T, N, [T, ...R]>;
-type Tuple<T, N extends number> = N extends N ? number extends N ? T[] : _TupleOf<T, N, []> : never;
+type _TupleOf<T, N extends number, R extends unknown[]> = 
+    R["length"] extends N 
+        ? R 
+        : _TupleOf<T, N, [T, ...R]>;
+type Tuple<T, N extends number> = 
+    N extends N 
+        ? number extends N 
+            ? T[] 
+            : _TupleOf<T, N, []> 
+        : never;
 
 export type v<D extends number> = Tuple<number, D>;
 
@@ -10,11 +18,13 @@ export function v<D extends 1 | 2 | 3 | 4 | 5 | 6 | 7>(d: D) {
         from: (...v: rvd) => [...v] as vd,
         zero: () => Array.from({length: d}, () => 0) as vd,
         ones: () => Array.from({length: d}, () => 1) as vd,
-        one: (i: number) => Array.from({length: d}, (_, _i) => Number(i === _i)) as vd,
+        one: (i: number) => 
+            Array.from({length: d}, (_, _i) => Number(i === _i)) as vd,
 
         add: (a: rvd, b: rvd) => a.map((_, i) => a[i] + b[i]) as vd,
         scale: (a: rvd, b: number) => a.map((_, i) => a[i] * b) as vd,
-        dot: (a: rvd, b: rvd) => a.map((_, i) => a[i] * b[i]).reduce((acc, v) => acc + v, 0),
+        dot: (a: rvd, b: rvd) => 
+            a.map((_, i) => a[i] * b[i]).reduce((acc, v) => acc + v, 0),
         eqStrict: (a: rvd, b: rvd) => a.every((_, i) => a[i] === b[i]),
         
         negate: (a: rvd) => vd.scale(a, -1),

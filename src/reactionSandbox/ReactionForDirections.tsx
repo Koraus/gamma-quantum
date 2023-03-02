@@ -21,8 +21,12 @@ export function ReactionForDirections({
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }) => void;
 }) {
-    const reagentsMomentum = reagents.map(particleMomentum).reduce(v3.add, v3.zero());
-    const reagentsEnergy = reagents.map(particleEnegry).reduce((acc, v) => acc + v, 0);
+    const reagentsMomentum = reagents
+        .map(particleMomentum)
+        .reduce(v3.add, v3.zero());
+    const reagentsEnergy = reagents
+        .map(particleEnegry)
+        .reduce((acc, v) => acc + v, 0);
 
     const variants = [...generateReactionVariants({ reagents, products })];
 
@@ -43,7 +47,8 @@ export function ReactionForDirections({
             return <>
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
                 &nbsp;⇒&nbsp;
-                {selectedVariant.products.map((p, i) => <ParticleText key={i} particle={p} />)}
+                {selectedVariant.products.map((p, i) =>
+                    <ParticleText key={i} particle={p} />)}
             </>;
         }
 
@@ -52,7 +57,8 @@ export function ReactionForDirections({
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
                 &nbsp;<span className={css({ color: "crimson" })}>⇏</span>&nbsp;
                 {products.length > 0
-                    ? products.map((p, i) => <ParticleText key={i} particle={p} />)
+                    ? products.map((p, i) =>
+                        <ParticleText key={i} particle={p} />)
                     : <ParticleText particle={{ content: "gamma" }} />
                 }
             </>;
@@ -91,8 +97,12 @@ export function ReactionForDirections({
                         } = variant;
                         const mainProducts = products.slice(0, products.length);
 
-                        const productsMomentum = mainProducts.map(particleMomentum).reduce(v3.add, v3.zero());
-                        const productsEnergy = mainProducts.map(particleEnegry).reduce((acc, v) => acc + v, 0);
+                        const productsMomentum = mainProducts
+                            .map(particleMomentum)
+                            .reduce(v3.add, v3.zero());
+                        const productsEnergy = mainProducts
+                            .map(particleEnegry)
+                            .reduce((acc, v) => acc + v, 0);
 
                         const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
                         const deltaEnergy = productsEnergy - reagentsEnergy;

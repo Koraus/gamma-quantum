@@ -27,7 +27,8 @@ export function InteractiveBoard({
                 const cursorEl = cursorRef.current;
                 if (!cursorEl) { return; }
                 cursorEl.position.copy(ev.unprojectedPoint);
-                cursorEl.position.addScaledVector(ev.ray.direction, ev.distance);
+                cursorEl.position
+                    .addScaledVector(ev.ray.direction, ev.distance);
                 cursorEl.position.copy(apipe(
                     [cursorEl.position.x, cursorEl.position.z],
                     hg.flatCartToAxial,
@@ -40,7 +41,9 @@ export function InteractiveBoard({
             }}
             onPointerUp={ev => {
                 if (ev.button === 2) {
-                    setCursorDirection(cursorDirection + (cursorTool.kind === "mirror" ? 1 : 2));
+                    setCursorDirection(
+                        cursorDirection
+                        + (cursorTool.kind === "mirror" ? 1 : 2));
                 }
                 if (ev.button === 0) {
                     const hPos = apipe(
@@ -54,7 +57,8 @@ export function InteractiveBoard({
                         ([x, y]) => [x, y] as v2,
                     );
 
-                    const i = solution.actors.findIndex(a => v2.eq(a.position, hPos));
+                    const i = solution.actors
+                        .findIndex(a => v2.eq(a.position, hPos));
 
                     switch (cursorTool.kind) {
                         case "none": break;
@@ -119,20 +123,32 @@ export function InteractiveBoard({
                 }
             }} />
         {cursorTool.kind !== "none" &&
-            <mesh ref={cursorRef} rotation={[0, -Math.PI / 3 * cursorDirection * (cursorTool.kind === "mirror" ? 0.51: 1), 0]}>
+            <mesh
+                ref={cursorRef}
+                rotation={[
+                    0,
+                    -Math.PI / 3
+                    * cursorDirection
+                    * (cursorTool.kind === "mirror" ? 0.51 : 1),
+                    0,
+                ]}
+            >
                 <sphereGeometry args={[0.3]} />
                 <meshPhongMaterial
                     transparent
                     opacity={0.5}
                     color={cursorTool.kind === "remove" ? "red" : "white"} />
-                {(cursorTool.kind === "mirror" || cursorTool.kind === "spawner") &&
-                        <mesh position={[0, 0, 0.4]} rotation={[Math.PI / 2, 0, 0]}>
-                            <cylinderGeometry args={[0.05, 0.05, 0.3]} />
-                            <meshPhongMaterial
-                                transparent
-                                opacity={0.5}
-                                color={"white"} />
-                        </mesh>}
+                {(cursorTool.kind === "mirror" || cursorTool.kind === "spawner")
+                    && <mesh
+                        position={[0, 0, 0.4]}
+                        rotation={[Math.PI / 2, 0, 0]}
+                    >
+                        <cylinderGeometry args={[0.05, 0.05, 0.3]} />
+                        <meshPhongMaterial
+                            transparent
+                            opacity={0.5}
+                            color={"white"} />
+                    </mesh>}
             </mesh>}
     </group>;
 }
