@@ -25,7 +25,7 @@ const solutionManagerRecoilDefault = {
     } as SolutionDraft,
 
     // all solutions (draft and complete)
-    // the player explicitely decide to save
+    // the player explicitely decided to save
     // using player-generated string key (name)
     savedSolutions: {} as Record<string, SolutionDraft | Solution>,
 
