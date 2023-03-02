@@ -86,7 +86,10 @@ export function SolutionsList({
                 }),
             )}
             >{listItems}</ul>
-            <ProblemSolutionList problems={problems} solutions={solutions}/>
+            <ProblemSolutionList
+                problems={problems}
+                solutions={solutions}
+                solutionState={[solution, setSolution]} />
         </div>
     </div>;
 
