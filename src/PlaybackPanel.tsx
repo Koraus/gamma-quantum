@@ -5,13 +5,23 @@ import { PlayFill } from "@emotion-icons/bootstrap/PlayFill";
 import { PauseFill } from "@emotion-icons/bootstrap/PauseFill";
 import { SkipEndFill } from "@emotion-icons/bootstrap/SkipEndFill";
 import { SkipStartFill } from "@emotion-icons/bootstrap/SkipStartFill";
-import { StateProp } from "./utils/StateProp";
+import { atom, useRecoilState } from "recoil";
+
 
 export type PlayAction = {
     startRealtime: number;
     startPlaytime: number;
     playtimeSpeed: number;
 }
+
+export const playActionRecoil = atom<PlayAction>({
+    key: "playAction",
+    default: {
+        startRealtime: 0,
+        startPlaytime: 0,
+        playtimeSpeed: 0,
+    },
+});
 
 export const nowPlaytime = (
     { startRealtime, startPlaytime, playtimeSpeed }: PlayAction,
@@ -22,13 +32,12 @@ const toFixedFloor = (x: number, digits: number) =>
     (Math.floor(x * 10 ** digits) / 10 ** digits).toFixed(digits);
 
 export function PlaybackPanel({
-    playActionState: [playAction, setPlayAction],
     defalutPlaytimeSpeed = 1,
     className, ...props
 }: {
-    playActionState: StateProp<PlayAction>;
     defalutPlaytimeSpeed?: number;
 } & JSX.IntrinsicElements["div"]) {
+    const [playAction, setPlayAction] = useRecoilState(playActionRecoil);
 
     const nowPlaytimeText = (playAction: PlayAction) => {
         const t = nowPlaytime(playAction);
@@ -45,11 +54,14 @@ export function PlaybackPanel({
         if (!rangeEl) { return; }
         const rangeFullEl = rangeFullRef.current;
         if (!rangeFullEl) { return; }
-        
+
         const render = () => {
             stepEl.innerText = nowPlaytimeText(playAction);
-            rangeEl.valueAsNumber = nowPlaytime(playAction) - Math.floor(nowPlaytime(playAction));
-            rangeFullEl.max = (Math.max(30, Math.ceil(nowPlaytime(playAction) / 10 + 1) * 10)).toString();
+            rangeEl.valueAsNumber =
+                nowPlaytime(playAction) - Math.floor(nowPlaytime(playAction));
+            rangeFullEl.max =
+                (Math.max(30, Math.ceil(nowPlaytime(playAction) / 10 + 1) * 10))
+                    .toString();
             rangeFullEl.valueAsNumber = nowPlaytime(playAction);
             handler = requestAnimationFrame(render);
         };
@@ -85,7 +97,8 @@ export function PlaybackPanel({
                 padding: "0px",
             }))}
             onClick={() => setPlayAction({
-                startPlaytime: Math.max(0, Math.floor(nowPlaytime(playAction)) - 1),
+                startPlaytime:
+                    Math.max(0, Math.floor(nowPlaytime(playAction)) - 1),
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
             })}
@@ -117,10 +130,13 @@ export function PlaybackPanel({
             }))}
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
-                playtimeSpeed: playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : 0,
+                playtimeSpeed:
+                    playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : 0,
                 startRealtime: performance.now() / 1000,
             })}
-        >{playAction.playtimeSpeed === 0 ? <PlayFill /> : <PauseFill />}</button>
+        >
+            {playAction.playtimeSpeed === 0 ? <PlayFill /> : <PauseFill />}
+        </button>
 
         <input
             ref={rangeRef}
@@ -128,9 +144,11 @@ export function PlaybackPanel({
             min={0}
             max={0.9999}
             step={0.001}
-            value={nowPlaytime(playAction) - Math.floor(nowPlaytime(playAction))}
+            value={nowPlaytime(playAction) % 1}
             onChange={ev => setPlayAction({
-                startPlaytime: Math.floor(nowPlaytime(playAction)) + ev.target.valueAsNumber,
+                startPlaytime:
+                    Math.floor(nowPlaytime(playAction))
+                    + ev.target.valueAsNumber,
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
             })}

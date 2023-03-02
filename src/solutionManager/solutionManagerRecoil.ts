@@ -5,9 +5,10 @@ import * as amplitude from "@amplitude/analytics-browser";
 import update from "immutability-helper";
 import { localStorageAtomEffect } from "../utils/localStorageAtomEffect";
 import { isSolutionComplete, keyifySolution, parseSolution, Solution, SolutionDraft, SolutionKey } from "../puzzle/Solution";
-import { keyifyProblem as _keyifyProblem, Problem } from "../puzzle/Problem";
+import { keyifyProblem as _keyifyProblem, eqProblem, keyifyProblem, Problem } from "../puzzle/Problem";
 import { onChangeAtomEffect } from "../utils/onChangeAtomEffect";
 import * as solutions from "./hardcodedSoultions";
+import { SetStateAction } from "react";
 
 // todo: implement postSolution & statsClient
 const postSolution = (solution: Solution) => Promise.resolve(solution);
@@ -20,7 +21,7 @@ const solutionManagerRecoilDefault = {
     // all solutions (draft and complete)
     // the player explicitely decided to save
     // using player-generated string key (name)
-    savedSolutions: { 
+    savedSolutions: {
         ...solutions,
     } as Record<string, SolutionDraft | Solution>,
 
@@ -79,24 +80,28 @@ export const solutionManagerRecoil = atom({
 
 export const useSetCurrentSolution = () => {
     const set = useSetRecoilState(solutionManagerRecoil);
-    return (solution: SolutionDraft) => set((prev) => {
-        let next = update(prev, {
-            currentSolution: { $set: solution },
-        });
-        if (isSolutionComplete(solution)) {
-            // todo: make it effect
-            const isSolutionKnown = false; // todo
-            if (!isSolutionKnown) {
-                const solutionId = keyifySolution(solution);
-                next = update(next, {
-                    knownSolutions: {
-                        [solutionId]: { $set: true },
-                    },
-                });
+    return (xxxx: SetStateAction<SolutionDraft>) =>
+        set((prev) => {
+            const nextCurrentSolution = "function" === typeof xxxx
+                ? xxxx(prev.currentSolution)
+                : xxxx;
+            let next = update(prev, {
+                currentSolution: { $set: nextCurrentSolution },
+            });
+            if (isSolutionComplete(nextCurrentSolution)) {
+                // todo: make it effect
+                const isSolutionKnown = false; // todo
+                if (!isSolutionKnown) {
+                    const solutionId = keyifySolution(nextCurrentSolution);
+                    next = update(next, {
+                        knownSolutions: {
+                            [solutionId]: { $set: true },
+                        },
+                    });
+                }
             }
-        }
-        return next;
-    });
+            return next;
+        });
 };
 
 export const useSetProblem = () => {

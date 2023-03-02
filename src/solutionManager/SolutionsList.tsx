@@ -1,22 +1,20 @@
 import { css, cx } from "@emotion/css";
 import { useState } from "react";
-import { SolutionDraft } from "../puzzle/Solution";
-import { StateProp } from "../utils/StateProp";
 import * as problems from "../puzzle/problems";
 import ProblemInSolutionList from "./ProblemInSolutionList";
 import { useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManagerRecoil";
 import { eqProblem } from "../puzzle/Problem";
+import { useSetSolution } from "../useSetSolution";
 
 
 export function SolutionsList({
-    solutionState: [solution, setSolution],
     className,
     ...props
-}: {
-    solutionState: StateProp<SolutionDraft>,
-} & JSX.IntrinsicElements["div"]) {
+}: JSX.IntrinsicElements["div"]) {
     const solutions = useRecoilValue(solutionManagerRecoil).savedSolutions;
+    const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
+    const setSolution = useSetSolution();
 
     const problemsList = Object.entries(problems)
         .map(([problemName, problem]) => <ul
@@ -24,7 +22,7 @@ export function SolutionsList({
             className={cx(css({
                 padding: 0,
                 listStyle: "none",
-                background: eqProblem(solution.problem, problem) 
+                background: eqProblem(solution.problem, problem)
                     ? "#303030b0"
                     : "#000000b0",
             }))}
@@ -80,6 +78,15 @@ export function SolutionsList({
                 )}
             > &gt; </span>
         </div>
+        <button
+            onClick={() => {
+                console.log(solution);
+                navigator.clipboard.writeText(
+                    JSON.stringify(solution, undefined, 4));
+            }}
+        >
+            copy current solution into clipboard
+        </button>
 
         <div className={cx(
             css({

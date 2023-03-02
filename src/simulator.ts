@@ -21,8 +21,22 @@ const getWorldAtStep = memoize(
             ? init(solution)
             : step(getWorldAtStep(solution, x - 1)));
 
-export const getStepAtPlaytime = (playtime: number) => 
+export const getStepAtPlaytime = (playtime: number) =>
     Math.max(0, Math.floor(playtime));
 
 export const getWorldAtPlaytime = (solution: SolutionDraft, playtime: number) =>
     getWorldAtStep(solution, getStepAtPlaytime(playtime));
+
+const trustedEntries =
+    <TRecord extends Partial<Record<keyof object, unknown>>>(obj: TRecord) =>
+        Object.entries(obj) as [
+            keyof TRecord,
+            NonNullable<TRecord[keyof TRecord]>
+        ][];
+
+export function isWin(world: World) {
+    return trustedEntries(world.problem.demand)
+        .every(([key, count]) => (world.consumed[key] ?? 0) >= count);
+}
+
+

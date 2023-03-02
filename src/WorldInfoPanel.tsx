@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { World } from "./puzzle/step";
+import { useWorld } from "./useWorld";
 
 
 export function WorldInfoPanel({
-    world, ...props
-}: {
-    world: World;
-} & JSX.IntrinsicElements["div"]) {
+    ...props
+}: JSX.IntrinsicElements["div"]) {
+    const world = useWorld();
     const [isParticlesCollapsed, setIsParticlesCollapsed] = useState(true);
 
     const liveParticlesCount = world.particles.filter(p => !p.isRemoved).length;

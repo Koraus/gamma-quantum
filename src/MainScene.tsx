@@ -1,20 +1,21 @@
-import { World } from "./puzzle/step";
 import { v2, v3 } from "./utils/v";
 import { Cylinder, GizmoHelper, GizmoViewport, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { axialToFlatCart } from "./utils/hg";
 import * as hg from "./utils/hg";
-import { SolutionDraft } from "./puzzle/Solution";
 import { tuple } from "./utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
-import { nowPlaytime, PlayAction } from "./PlaybackPanel";
-import { StateProp } from "./utils/StateProp";
+import { nowPlaytime, playActionRecoil } from "./PlaybackPanel";
 import { Vector3 } from "three";
 import { GroupSync } from "./utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
-import { CursorTool } from "./CursorToolSelectorPanel";
+import { cursorToolRecoil } from "./CursorToolSelectorPanel";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
+import { useRecoilValue } from "recoil";
+import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
+import { useWorld } from "./useWorld";
+import { useSetSolution } from "./useSetSolution";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -37,22 +38,21 @@ export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
 
 
-export const axialToFlatCartXz = (...args: Parameters<typeof axialToFlatCart>) => {
-    const v = axialToFlatCart(...args);
-    return [v[0], 0, v[1]] as v3;
-};
+export const axialToFlatCartXz =
+    (...args: Parameters<typeof axialToFlatCart>) => {
+        const v = axialToFlatCart(...args);
+        return [v[0], 0, v[1]] as v3;
+    };
 
-export function MainScene({
-    cursorTool,
-    solutionState,
-    world,
-    playAction,
-}: {
-    cursorTool: CursorTool,
-    solutionState: StateProp<SolutionDraft>,
-    world: World;
-    playAction: PlayAction;
-}) {
+export function MainScene() {
+    const cursorTool = useRecoilValue(cursorToolRecoil);
+    const solutionState = tuple(
+        useRecoilValue(solutionManagerRecoil).currentSolution,
+        useSetSolution,
+    );
+    const world = useWorld();
+    const playAction = useRecoilValue(playActionRecoil);
+
     const [solution] = solutionState;
     const particles = world.particles.map((p, i) => {
         const prev = world.prev?.particles[i];
@@ -106,15 +106,19 @@ export function MainScene({
                         } else {
                             // move
                             g.scale.setScalar(1);
-                            g.position.set(...x0y(axialToFlatCart(prev.position)));
+                            g.position.set(
+                                ...x0y(axialToFlatCart(prev.position)));
                             g.position.lerp(
-                                new Vector3(...x0y(axialToFlatCart(p.position))),
+                                new Vector3(
+                                    ...x0y(axialToFlatCart(p.position))),
                                 easeSinInOut(t));
                             g.position.y = j * 0.2;
                         }
 
                     }}
-                    position={v3.add(x0y(axialToFlatCart((prev ?? p).position)), [0, j * 0.2, 0])}
+                    position={v3.add(
+                        x0y(axialToFlatCart((prev ?? p).position)),
+                        [0, j * 0.2, 0])}
                 >
                     <ParticleToken
                         particle={p}

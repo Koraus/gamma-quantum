@@ -1,7 +1,7 @@
 import { css, cx } from "@emotion/css";
 import { eqParticleKind, keyProjectParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/Particle";
-import { SolutionDraft } from "./puzzle/Solution";
-import { StateProp } from "./utils/StateProp";
+import { atom, useRecoilState, useRecoilValue } from "recoil";
+import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
 
 export type CursorTool = {
     kind: "none",
@@ -21,6 +21,11 @@ export type CursorTool = {
     kind: "remove",
 };
 
+export const cursorToolRecoil = atom<CursorTool>({
+    key: "cursorTool",
+    default: { kind: "none" },
+});
+
 export const particleKindText = (p: ParticleKind) =>
     p.content === "gamma"
         ? p.content
@@ -30,14 +35,11 @@ export const particleKindText = (p: ParticleKind) =>
             .join(" & ");
 
 export function CursorToolSelectorPanel({
-    solution,
-    cursorToolState: [cursor, setCursor],
     className,
     ...props
-}: {
-    solution: SolutionDraft,
-    cursorToolState: StateProp<CursorTool>;
-} & JSX.IntrinsicElements["div"]) {
+}: JSX.IntrinsicElements["div"]) {
+    const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
+    const [cursor, setCursor] = useRecoilState(cursorToolRecoil);
 
     const availableSpawners = Object.entries(solution.problem.spawners)
         .flatMap(([kind, count]) =>
