@@ -1,10 +1,11 @@
 import { css, cx } from "@emotion/css";
-import * as solutions from "./hardcodedSoultions";
 import { useState } from "react";
 import { SolutionDraft } from "./puzzle/Solution";
 import { StateProp } from "./utils/StateProp";
 import * as problems from "./puzzle/problems";
 import ProblemSolutionList from "./ProblemInSolutionList";
+import { useRecoilValue } from "recoil";
+import { solutionManagerRecoil } from "./solutionManagerRecoil";
 
 export function SolutionsList({
     solutionState: [solution, setSolution],
@@ -13,6 +14,7 @@ export function SolutionsList({
 }: {
     solutionState: StateProp<SolutionDraft>,
 } & JSX.IntrinsicElements["div"]) {
+    const solutions = useRecoilValue(solutionManagerRecoil).savedSolutions;
 
     const [isShown, setIsShown] = useState(false);
 

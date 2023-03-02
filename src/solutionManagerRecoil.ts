@@ -8,6 +8,7 @@ import { localStorageAtomEffect } from "./utils/localStorageAtomEffect";
 import { isSolutionComplete, keyifySolution, parseSolution, Solution, SolutionDraft, SolutionKey } from "./puzzle/Solution";
 import { keyifyProblem as _keyifyProblem, Problem } from "./puzzle/Problem";
 import { onChangeAtomEffect } from "./utils/onChangeAtomEffect";
+import * as solutions from "./hardcodedSoultions";
 
 // todo: implement postSolution & statsClient
 const postSolution = (solution: Solution) => Promise.resolve(solution);
@@ -27,7 +28,9 @@ const solutionManagerRecoilDefault = {
     // all solutions (draft and complete)
     // the player explicitely decided to save
     // using player-generated string key (name)
-    savedSolutions: {} as Record<string, SolutionDraft | Solution>,
+    savedSolutions: { 
+        ...solutions,
+    } as Record<string, SolutionDraft | Solution>,
 
     // all solutions known to be complete
     // that were ever assigned to currentSolution
@@ -83,13 +86,13 @@ export const solutionManagerRecoil = atom({
 });
 
 export const useSetCurrentSolution = () => {
-    // todo: make it effect
     const set = useSetRecoilState(solutionManagerRecoil);
     return (solution: SolutionDraft) => set((prev) => {
         let next = update(prev, {
             currentSolution: { $set: solution },
         });
         if (isSolutionComplete(solution)) {
+            // todo: make it effect
             const isSolutionKnown = false; // todo
             if (!isSolutionKnown) {
                 const solutionId = keyifySolution(solution);

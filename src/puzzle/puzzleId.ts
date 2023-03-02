@@ -1,0 +1,1 @@
+export const puzzleId = "gamma-quantum@1" as const;
