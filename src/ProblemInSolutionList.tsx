@@ -10,7 +10,7 @@ export default function ProblemSolutionList({
     solutionState: [solution, setSolution],
 }: {
     problem: Problem,
-    solutions: SolutionDraft[],
+    solutions: Record<string, SolutionDraft>,
     solutionState: StateProp<SolutionDraft>,
 },
 ) {
