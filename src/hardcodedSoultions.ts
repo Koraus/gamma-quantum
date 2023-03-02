@@ -22,7 +22,7 @@ export const problem5Solution: SolutionDraft = {
         {
             "kind": "spawner",
             "output": {
-                content: { red: 0, green: 1, blue: 0 },
+                content: { red: 1, green: 0, blue: 0 },
             },
             "direction": 0,
             "position": [
@@ -57,7 +57,7 @@ export const problem5Solution: SolutionDraft = {
         {
             "kind": "consumer",
             "input": {
-                content: { red: 0, green: 2, blue: 0 },
+                content: { red: 2, green: 0, blue: 0 },
             },
             "position": [
                 -5,
@@ -67,7 +67,7 @@ export const problem5Solution: SolutionDraft = {
         {
             "kind": "consumer",
             "input": {
-                content: { red: 2, green: 0, blue: 0 },
+                content: { red: 0, green: 2, blue: 0 },
             },
             "position": [
                 6,
@@ -77,7 +77,7 @@ export const problem5Solution: SolutionDraft = {
         {
             "kind": "spawner",
             "output": {
-                content: { red: 4, green: 0, blue: 0 },
+                content: { red: 0, green: 4, blue: 0 },
             },
             "direction": 2,
             "position": [
