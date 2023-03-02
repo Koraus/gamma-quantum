@@ -1,20 +1,7 @@
 import { problem1, problem2, problem3, problem5 } from "./puzzle/problems";
 import { SolutionDraft } from "./puzzle/Solution";
 
-export const problem1Empty: SolutionDraft = {
-    problem: problem1,
-    actors: [],
-};
 
-export const problem2Empty: SolutionDraft = {
-    problem: problem2,
-    actors: [],
-};
-
-export const problem5Empty: SolutionDraft = {
-    problem: problem5,
-    actors: [],
-};
 
 export const problem5Solution: SolutionDraft = {
     problem: problem5,

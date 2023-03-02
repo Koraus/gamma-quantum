@@ -31,7 +31,7 @@ export function SolutionsList({
                     problem={problem}
                     solutions={solutions}
                     solutionState={[solution, setSolution]} />
-            </ul>
+            </ul>;
         });
 
     const [isShown, setIsShown] = useState(false);

@@ -14,8 +14,6 @@ export default function ProblemSolutionList({
     solutionState: StateProp<SolutionDraft>,
 },
 ) {
-
-
     const solutions1 = Object.entries(solutions)
         .filter(([key, s]) => problem === s.problem)
         .map(([solutionName, solution1]) => {
@@ -24,14 +22,25 @@ export default function ProblemSolutionList({
                 className={cx(
                     css({
                         listStyle: "none",
-                        paddingLeft: "10px",
                         backgroundColor: solution === solution1 ? "red" : "",
                     }),
                 )}
                 onClick={() => setSolution(solution1)}
-            > {solutionName} </li>
+            > {solutionName} </li>;
         },
         );
-
-    return <li>{solutions1}</li>
+    return <ul>
+        <li
+            className={cx(
+                css({
+                    listStyle: "none",
+                }),
+            )}
+            onClick={() => setSolution({
+                problem: problem,
+                actors: [],
+            })}
+        > new solution </li>
+        {solutions1}
+    </ul>;
 }
