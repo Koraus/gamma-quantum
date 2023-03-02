@@ -14,8 +14,7 @@ export function SpawnerToken({
             key={j} rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[0.5 - j * 0.1, 0.05]} />
             <meshPhongMaterial color={color} />
-        </mesh>
-        )}
+        </mesh>)}
         <group
             rotation={[0, -Math.PI / 3 * actor.direction, 0]}
         >

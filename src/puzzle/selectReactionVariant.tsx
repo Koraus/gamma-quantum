@@ -8,7 +8,7 @@ import { Particle } from "./Particle";
 
 
 export function selectReactionVariant({
-    requestedReaction, variants
+    requestedReaction, variants,
 }: {
     requestedReaction: {
         reagents: Particle[];

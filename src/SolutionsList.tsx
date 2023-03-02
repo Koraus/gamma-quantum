@@ -3,7 +3,7 @@ import * as solutions from "./hardcodedSoultions";
 import { useState } from "react";
 import { SolutionDraft } from "./puzzle/Solution";
 import { StateProp } from "./utils/StateProp";
-import * as problems from "./puzzle/problems"
+import * as problems from "./puzzle/problems";
 import ProblemSolutionList from "./ProblemInSolutionList";
 
 export function SolutionsList({
@@ -24,7 +24,7 @@ export function SolutionsList({
                     background: solution === s ? "#f34494" : "#a3119F",
                     margin: "0 0 10px 0",
                     cursor: "pointer",
-                    width: "fit-content"
+                    width: "fit-content",
                 }),
             )}
             onClick={() => setSolution(s)}
@@ -67,7 +67,7 @@ export function SolutionsList({
                         transform: isShown ? "rotate(-90deg)" : "rotate(90deg)",
                         display: "inline-block",
                         transitionDuration: "0.1s",
-                        paddingRight: "1px"
+                        paddingRight: "1px",
 
                     }),
                 )}

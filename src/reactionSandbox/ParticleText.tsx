@@ -42,7 +42,7 @@ export const directionSymbol = [
 ] as Record<DirectionId, string>;
 
 export function ParticleText({
-    particle: p
+    particle: p,
 }: {
     particle: ParticleKind | Particle;
 }) {

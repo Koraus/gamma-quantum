@@ -7,7 +7,7 @@ export function WinPanel({ win }: { win: boolean }) {
                 fontWeight: "bold",
                 fontSize: "16px",
                 color: "green",
-                width: "fit-content"
+                width: "fit-content",
             }),
         )}>  'Win' </div>;
     }

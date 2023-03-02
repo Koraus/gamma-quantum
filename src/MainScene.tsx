@@ -24,7 +24,7 @@ export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
             const ps = [
                 [radius, -j] as [number, number],
                 [radius - j, -radius] as [number, number],
-                [radius - j - 1, j + 1] as [number, number]
+                [radius - j - 1, j + 1] as [number, number],
             ].map(hg.axialToCube);
             for (const p of ps) {
                 yield p;

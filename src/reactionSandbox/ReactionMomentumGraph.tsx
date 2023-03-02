@@ -45,7 +45,7 @@ export function ReactionMomentumGraph({
 
         <div className={css({
             display: "flex",
-            flexDirection: "row"
+            flexDirection: "row",
         })}>
             <ReactionIcon reagents={reagents} products={products} />
 

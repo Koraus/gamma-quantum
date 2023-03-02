@@ -8,7 +8,7 @@ export const mirrorTransforms = tuple(
     ([q, r, s]: v3) => [-s, -r, -q] as v3,
     ([q, r, s]: v3) => [r, q, s] as v3,
     ([q, r, s]: v3) => [-r, -q, -s] as v3,
-    ([q, r, s]: v3) => [q, s, r] as v3
+    ([q, r, s]: v3) => [q, s, r] as v3,
 );
 
 const getParticleKey = (p: Particle) => 

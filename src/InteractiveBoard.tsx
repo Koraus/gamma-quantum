@@ -34,7 +34,7 @@ export function InteractiveBoard({
                     hg.axialToCube,
                     hg.cubeRound,
                     hg.axialToFlatCart,
-                    ([x, y]) => new Vector3(x, 0, y)
+                    ([x, y]) => new Vector3(x, 0, y),
                 ));
                 // cursorEl.scale.setScalar(ev.distance * 0.02);
             }}
@@ -51,7 +51,7 @@ export function InteractiveBoard({
                         hg.flatCartToAxial,
                         hg.axialToCube,
                         hg.cubeRound,
-                        ([x, y]) => [x, y] as v2
+                        ([x, y]) => [x, y] as v2,
                     );
 
                     const i = solution.actors.findIndex(a => v2.eq(a.position, hPos));
@@ -65,9 +65,9 @@ export function InteractiveBoard({
                                     $push: [{
                                         ...cursorTool,
                                         direction: (cursorDirection % 12) / 2 as DirectionId,
-                                        position: hPos
-                                    }]
-                                }
+                                        position: hPos,
+                                    }],
+                                },
                             }));
                             break;
                         }
@@ -77,9 +77,9 @@ export function InteractiveBoard({
                                 actors: {
                                     $push: [{
                                         ...cursorTool,
-                                        position: hPos
-                                    }]
-                                }
+                                        position: hPos,
+                                    }],
+                                },
                             }));
                             break;
                         }
@@ -90,9 +90,9 @@ export function InteractiveBoard({
                                     $push: [{
                                         direction: (cursorDirection % 12) as HalfDirectionId,
                                         kind: "mirror",
-                                        position: hPos
-                                    }]
-                                }
+                                        position: hPos,
+                                    }],
+                                },
                             }));
                             break;
                         }
@@ -102,16 +102,16 @@ export function InteractiveBoard({
                                 actors: {
                                     $push: [{
                                         kind: "trap",
-                                        position: hPos
-                                    }]
-                                }
+                                        position: hPos,
+                                    }],
+                                },
                             }));
                             break;
                         }
                         case "remove": {
                             if (i < 0) { break; }
                             setSolution(update(solution, {
-                                actors: { $splice: [[i, 1]] }
+                                actors: { $splice: [[i, 1]] },
                             }));
                             break;
                         }

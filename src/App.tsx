@@ -154,7 +154,7 @@ export function App() {
                 }))}
             >
                 {appVersion.split("+")[0]}<br />
-                <span className={css({ fontSize: "0.8em", })}>{appVersion.split("+")[1]}</span>
+                <span className={css({ fontSize: "0.8em" })}>{appVersion.split("+")[1]}</span>
             </div>
         </div>
 

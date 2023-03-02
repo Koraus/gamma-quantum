@@ -87,7 +87,7 @@ export function ReactionForDirections({
                     ## sym group, size {symGroup.length}
                     {symGroup.map((variant, i) => {
                         const {
-                            products
+                            products,
                         } = variant;
                         const mainProducts = products.slice(0, products.length);
 

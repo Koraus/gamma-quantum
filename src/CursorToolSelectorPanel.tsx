@@ -73,7 +73,7 @@ export function CursorToolSelectorPanel({
         className={cx(
             css({
             }),
-            className
+            className,
         )}
         {...props}
     >

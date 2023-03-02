@@ -22,5 +22,6 @@ module.exports = {
         "semi": ["warn", "always"],
         "max-nested-callbacks": ["warn", 2],
         "max-len": ["warn", 80],
+        "comma-dangle": ["warn", "always-multiline"],
     },
 };

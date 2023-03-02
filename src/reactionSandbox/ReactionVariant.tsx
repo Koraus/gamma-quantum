@@ -23,13 +23,13 @@ export function ReactionVariant({
     return <div
         className={cx(
             css({}),
-            className
+            className,
         )}
         {...props}
     >
         <div className={css({
             display: "flex",
-            flexDirection: "row"
+            flexDirection: "row",
         })}>
             <ReactionIcon 
                 reagents={reagents}
