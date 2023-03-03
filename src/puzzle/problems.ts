@@ -73,3 +73,32 @@ export const problem5: Problem = {
         [keyifyParticleKind({ content: { red: 0, green: 2, blue: 0 } })]: 10,
     },
 };
+
+export const sandbox: Problem = {
+    puzzleId,
+    spawners: {
+        [keyifyParticleKind({ content: "gamma" })]: 4,
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 1, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 0, blue: 1 } })]: 4,
+        [keyifyParticleKind({ content: { red: 2, green: 0, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 2, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 0, blue: 2 } })]: 4,
+        [keyifyParticleKind({ content: { red: 3, green: 0, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 3, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 0, blue: 3 } })]: 4,
+        [keyifyParticleKind({ content: { red: 4, green: 0, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 4, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 0, blue: 4 } })]: 4,
+        [keyifyParticleKind({ content: { red: 1, green: 1, blue: 0 } })]: 4,
+        [keyifyParticleKind({ content: { red: 0, green: 1, blue: 1 } })]: 4,
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 1 } })]: 4,
+        [keyifyParticleKind({ content: { red: 1, green: 1, blue: 1 } })]: 4,
+    },
+    consumers: {
+
+    },
+    demand: {
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 9999,
+    },
+};
