@@ -157,8 +157,7 @@ export function PlaybackPanel({
             }))}
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
-                playtimeSpeed:
-                    playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : 2,
+                playtimeSpeed:   2 * defalutPlaytimeSpeed,
                 startRealtime: performance.now() / 1000,
             })}
         > <PlayForward /> </button>
