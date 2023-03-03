@@ -92,7 +92,7 @@ export function PlaybackPanel({
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
             })}
-        ><StopFill /></button>.
+        ><StopFill /></button>
         <button
             className={cx(css({
                 width: "30px",
@@ -103,7 +103,7 @@ export function PlaybackPanel({
                 playtimeSpeed: -1 * defalutPlaytimeSpeed,
                 startRealtime: performance.now() / 1000,
             })}
-        ><CaretBack/></button>
+        ><CaretBack /></button>
         <button
             className={cx(css({
                 width: "30px",
@@ -161,7 +161,7 @@ export function PlaybackPanel({
                     playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : 2,
                 startRealtime: performance.now() / 1000,
             })}
-        > <PlayForward/> </button>
+        > <PlayForward /> </button>
         <input
             ref={rangeRef}
             type="range"
