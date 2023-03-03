@@ -68,7 +68,8 @@ export function InteractiveBoard({
                                 actors: {
                                     $push: [{
                                         ...cursorTool,
-                                        direction: (cursorDirection % 12) / 2 as DirectionId,
+                                        direction:
+                                            Math.floor((cursorDirection % 12) / 2) as DirectionId,
                                         position: hPos,
                                     }],
                                 },
@@ -127,9 +128,10 @@ export function InteractiveBoard({
                 ref={cursorRef}
                 rotation={[
                     0,
-                    -Math.PI / 3
-                    * cursorDirection
-                    * (cursorTool.kind === "mirror" ? 0.51 : 1),
+                    -Math.PI / 6
+                    * (cursorTool.kind === "spawner"
+                        ? Math.floor(cursorDirection / 2) * 2
+                        : cursorDirection),
                     0,
                 ]}
             >
@@ -149,6 +151,7 @@ export function InteractiveBoard({
                             opacity={0.5}
                             color={"white"} />
                     </mesh>}
-            </mesh>}
-    </group>;
+            </mesh>
+        }
+    </group >;
 }
