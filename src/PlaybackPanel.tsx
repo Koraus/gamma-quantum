@@ -100,10 +100,17 @@ export function PlaybackPanel({
             }))}
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
-                playtimeSpeed: -1 * defalutPlaytimeSpeed,
+                playtimeSpeed:
+                    playAction.playtimeSpeed === -defalutPlaytimeSpeed
+                        ? 0
+                        : -defalutPlaytimeSpeed,
                 startRealtime: performance.now() / 1000,
             })}
-        ><CaretBack /></button>
+        >
+            {playAction.playtimeSpeed === -defalutPlaytimeSpeed
+                ? <Pause />
+                : <CaretBack />}
+        </button>
         <button
             className={cx(css({
                 width: "30px",
@@ -144,11 +151,15 @@ export function PlaybackPanel({
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
                 playtimeSpeed:
-                    playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : 0,
+                    playAction.playtimeSpeed === defalutPlaytimeSpeed
+                        ? 0
+                        : defalutPlaytimeSpeed,
                 startRealtime: performance.now() / 1000,
             })}
         >
-            {playAction.playtimeSpeed === 0 ? <Play /> : <Pause />}
+            {playAction.playtimeSpeed === defalutPlaytimeSpeed
+                ? <Pause />
+                : <Play />}
         </button>
         <button
             className={cx(css({
@@ -157,10 +168,17 @@ export function PlaybackPanel({
             }))}
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
-                playtimeSpeed:   2 * defalutPlaytimeSpeed,
+                playtimeSpeed:
+                    playAction.playtimeSpeed === 2 * defalutPlaytimeSpeed
+                        ? 0
+                        : (2 * defalutPlaytimeSpeed),
                 startRealtime: performance.now() / 1000,
             })}
-        > <PlayForward /> </button>
+        >
+            {playAction.playtimeSpeed === 2 * defalutPlaytimeSpeed
+                ? <Pause />
+                : <PlayForward />}
+        </button>
         <input
             ref={rangeRef}
             type="range"
