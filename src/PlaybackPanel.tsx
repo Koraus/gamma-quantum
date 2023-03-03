@@ -5,8 +5,8 @@ import { PlayFill } from "@emotion-icons/bootstrap/PlayFill";
 import { PauseFill } from "@emotion-icons/bootstrap/PauseFill";
 import { SkipEndFill } from "@emotion-icons/bootstrap/SkipEndFill";
 import { SkipStartFill } from "@emotion-icons/bootstrap/SkipStartFill";
-import { ChevronDoubleRight } from "@emotion-icons/bootstrap/ChevronDoubleRight";
-import { ChevronLeft } from "@emotion-icons/bootstrap/ChevronLeft";
+import { PlayForward } from "@emotion-icons/ionicons-solid/PlayForward";
+import { CaretBack } from "@emotion-icons/ionicons-solid/CaretBack";
 import { atom, useRecoilState } from "recoil";
 
 
@@ -92,7 +92,7 @@ export function PlaybackPanel({
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
             })}
-        ><StopFill /></button>
+        ><StopFill /></button>.
         <button
             className={cx(css({
                 width: "30px",
@@ -100,11 +100,10 @@ export function PlaybackPanel({
             }))}
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
-                playtimeSpeed:
-                    playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : -1,
+                playtimeSpeed: -1 * defalutPlaytimeSpeed,
                 startRealtime: performance.now() / 1000,
             })}
-        ><ChevronLeft/></button>
+        ><CaretBack/></button>
         <button
             className={cx(css({
                 width: "30px",
@@ -162,7 +161,7 @@ export function PlaybackPanel({
                     playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : 2,
                 startRealtime: performance.now() / 1000,
             })}
-        > <ChevronDoubleRight /> </button>
+        > <PlayForward/> </button>
         <input
             ref={rangeRef}
             type="range"
