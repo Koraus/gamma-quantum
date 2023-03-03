@@ -5,6 +5,8 @@ import { PlayFill } from "@emotion-icons/bootstrap/PlayFill";
 import { PauseFill } from "@emotion-icons/bootstrap/PauseFill";
 import { SkipEndFill } from "@emotion-icons/bootstrap/SkipEndFill";
 import { SkipStartFill } from "@emotion-icons/bootstrap/SkipStartFill";
+import { ChevronDoubleRight } from "@emotion-icons/bootstrap/ChevronDoubleRight";
+import { ChevronLeft } from "@emotion-icons/bootstrap/ChevronLeft";
 import { atom, useRecoilState } from "recoil";
 
 
@@ -97,6 +99,18 @@ export function PlaybackPanel({
                 padding: "0px",
             }))}
             onClick={() => setPlayAction({
+                startPlaytime: nowPlaytime(playAction),
+                playtimeSpeed:
+                    playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : -1,
+                startRealtime: performance.now() / 1000,
+            })}
+        ><ChevronLeft/></button>
+        <button
+            className={cx(css({
+                width: "30px",
+                padding: "0px",
+            }))}
+            onClick={() => setPlayAction({
                 startPlaytime:
                     Math.max(0, Math.floor(nowPlaytime(playAction)) - 1),
                 playtimeSpeed: 0,
@@ -137,7 +151,18 @@ export function PlaybackPanel({
         >
             {playAction.playtimeSpeed === 0 ? <PlayFill /> : <PauseFill />}
         </button>
-
+        <button
+            className={cx(css({
+                width: "30px",
+                padding: "0px",
+            }))}
+            onClick={() => setPlayAction({
+                startPlaytime: nowPlaytime(playAction),
+                playtimeSpeed:
+                    playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : 2,
+                startRealtime: performance.now() / 1000,
+            })}
+        > <ChevronDoubleRight /> </button>
         <input
             ref={rangeRef}
             type="range"
