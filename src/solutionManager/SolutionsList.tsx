@@ -52,24 +52,18 @@ export function SolutionsList({
         <div
             className={cx(
                 css({
-                    height: "100%",
-                    width: "fit-content",
                     background: "#ff010Ab0",
-                    textAlign: "center",
                     margin: "0 auto",
-                    boxSizing: "border-box",
                     padding: "2px",
                     cursor: "pointer",
                 }),
             )}
             onClick={() => setIsShown(!isShown)}
         >
-            <span> Solutions: {currentSolutionKey ?? "*"} </span>
-
             <span
                 className={cx(
                     css({
-                        transform: isShown ? "rotate(-90deg)" : "rotate(90deg)",
+                        transform: isShown ? "rotate(90deg)" : "rotate(0deg)",
                         display: "inline-block",
                         transitionDuration: "0.1s",
                         paddingRight: "1px",
@@ -77,7 +71,19 @@ export function SolutionsList({
                     }),
                 )}
             > &gt; </span>
+            <span> Solutions: {currentSolutionKey ?? "*"} </span>
         </div>
+
+        {isShown
+            && <div className={cx(
+                css({
+                    margin: "2vmin",
+                }),
+            )}>
+                {problemsList}
+            </div>
+        }
+
         <button
             onClick={() => {
                 console.log(solution);
@@ -85,16 +91,7 @@ export function SolutionsList({
                     JSON.stringify(solution, undefined, 4));
             }}
         >
-            copy current solution into clipboard
+            copy current solution json<br />into clipboard
         </button>
-
-        <div className={cx(
-            css({
-                display: isShown ? "block" : "none",
-                margin: "2vmin",
-            }),
-        )}>
-            {problemsList}
-        </div>
     </div>;
 }

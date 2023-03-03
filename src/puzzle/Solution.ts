@@ -1,8 +1,9 @@
-import { keyProjectProblem, Problem, ProblemKey } from "./Problem";
+import { keyProjectProblem, Problem } from "./Problem";
 import { v2 } from "../utils/v";
 import { ParticleKind } from "./Particle";
 import { DirectionId, HalfDirectionId } from "./direction";
 import { sortedByKey } from "../utils/sortedByKey";
+import memoize from "memoizee";
 
 export type SpawnerActor = {
     position: v2,
@@ -32,6 +33,24 @@ export type SolutionDraft = {
     actors: Actor[];
 };
 
+export const keyProjectSolutionDraft = ({
+    problem,
+    actors,
+}: SolutionDraft): SolutionDraft => ({
+    problem: keyProjectProblem(problem),
+    actors: sortedByKey(actors, a => JSON.stringify(keyProjectActor(a))),
+});
+export type SolutionDraftKey =
+    // Stringify<Solution>; // too complex
+    `{"problem":${string},"actors":${string}}`;
+export const _keyifySolutionDraft = (x: SolutionDraft) =>
+    JSON.stringify(keyProjectSolutionDraft(x)) as SolutionDraftKey;
+export const keyifySolutionDraft = memoize(_keyifySolutionDraft, { max: 1000 });
+export const parseSolutionDraft = (x: SolutionDraftKey) =>
+    JSON.parse(x) as Solution;
+export const eqSolutionDraft = (a: SolutionDraft, b: SolutionDraft) =>
+    keyifySolutionDraft(a) === keyifySolutionDraft(b);
+
 export type Solution = SolutionDraft & {
     solvedAtStep: number;
 }
@@ -46,11 +65,14 @@ export const keyProjectSolution = ({
 });
 export type SolutionKey =
     // Stringify<Solution>; // too complex
-    `{"problem":${string}}`;
-export const keyifySolution = (x: Solution) =>
+    `{"problem":${string},"actors":${string},"solvedAtStep":${number}}`;
+export const _keyifySolution = (x: Solution) =>
     JSON.stringify(keyProjectSolution(x)) as SolutionKey;
+export const keyifySolution = memoize(_keyifySolution, { max: 1000 });
 export const parseSolution = (x: SolutionKey) =>
     JSON.parse(x) as Solution;
+export const eqSolution = (a: Solution, b: Solution) =>
+    keyifySolution(a) === keyifySolution(b);
 
 export const isSolutionComplete =
     (s: Solution | SolutionDraft): s is Solution => {

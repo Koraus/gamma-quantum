@@ -1,8 +1,13 @@
 import { Problem, eqProblem } from "../puzzle/Problem";
-import { SolutionDraft } from "../puzzle/Solution";
+import { SolutionDraft, eqSolutionDraft } from "../puzzle/Solution";
 import { css, cx } from "@emotion/css";
 import { StateProp } from "../utils/StateProp";
+import { Save as SaveIcon } from "@emotion-icons/remix-fill/Save";
+import { useSetRecoilState } from "recoil";
+import { solutionManagerRecoil } from "./solutionManagerRecoil";
+import update from "immutability-helper";
 
+const { entries } = Object;
 
 export default function ProblemInSolutionList({
     problem,
@@ -12,35 +17,64 @@ export default function ProblemInSolutionList({
     problem: Problem,
     solutions: Record<string, SolutionDraft>,
     solutionState: StateProp<SolutionDraft>,
-},
-) {
-    const solutions1 = Object.entries(solutions)
-        .filter(([key, s]) => eqProblem(problem, s.problem))
-        .map(([solutionName, solution1]) => {
+}) {
+    const setSolutionManagerState = useSetRecoilState(solutionManagerRecoil);
+    const saveCurrentSolution = () =>
+        setSolutionManagerState(prev => update(prev, {
+            savedSolutions: {
+                [new Date().toISOString()]: { $set: solution },
+            },
+        }));
+    const solutionList = entries(solutions)
+        .filter(([, s]) => eqProblem(problem, s.problem))
+        .map(([solutionName, s]) => {
             return <li
                 key={solutionName}
                 className={cx(
                     css({
                         listStyle: "none",
-                        backgroundColor: solution === solution1 ? "red" : "",
+                        cursor: "pointer",
+                        backgroundColor: 
+                            eqSolutionDraft(s, solution) ? "red" : "",
                     }),
                 )}
-                onClick={() => setSolution(solution1)}
+                onClick={() => setSolution(s)}
             > {solutionName} </li>;
-        },
-        );
-    return <ul>
+        });
+    const showCurrentSeparately =
+        eqProblem(solution.problem, problem)
+        && entries(solutions).every(([, s]) => !eqSolutionDraft(s, solution));
+    return <ul className={cx(css({ paddingLeft: "2vmin" }))}>
+        {solutionList}
         <li
             className={cx(
                 css({
                     listStyle: "none",
+                    cursor: "pointer",
                 }),
             )}
             onClick={() => setSolution({
                 problem: problem,
                 actors: [],
             })}
-        > new solution </li>
-        {solutions1}
+        > [new solution] </li>
+        {showCurrentSeparately
+            && <li
+                className={cx(
+                    css({
+                        listStyle: "none",
+                        backgroundColor: "red",
+                    }),
+                )}
+            >
+                current solution*
+                &nbsp;<button
+                    className={cx(css({
+                        width: "1.5em",
+                        padding: "0px",
+                    }))}
+                    onClick={saveCurrentSolution}
+                ><SaveIcon /></button>
+            </li>}
     </ul>;
 }

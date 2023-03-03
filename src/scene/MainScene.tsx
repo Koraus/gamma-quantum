@@ -48,7 +48,7 @@ export function MainScene() {
     const cursorTool = useRecoilValue(cursorToolRecoil);
     const solutionState = tuple(
         useRecoilValue(solutionManagerRecoil).currentSolution,
-        useSetSolution,
+        useSetSolution(),
     );
     const world = useWorld();
     const playAction = useRecoilValue(playActionRecoil);
