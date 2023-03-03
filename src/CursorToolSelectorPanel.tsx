@@ -1,7 +1,9 @@
 import { css, cx } from "@emotion/css";
-import { eqParticleKind, keyProjectParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/Particle";
+import { keyifyParticleKind, keyProjectParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/Particle";
 import { atom, useRecoilState, useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
+import { hasValueAtKey } from "ts-is-present";
+import { trustedEntries } from "./simulator";
 
 export type CursorTool = {
     kind: "none",
@@ -31,8 +33,8 @@ export const particleKindText = (p: ParticleKind) =>
         ? p.content
         : Object.entries(keyProjectParticleKind(p).content)
             .filter(([, count]) => count > 0)
-            .map(([key, count]) => `${key} x${count}`)
-            .join(" & ");
+            .map(([key, count]) => `${new Array(count).fill(key[0]).join("")}`)
+            .join("");
 
 export function CursorToolSelectorPanel({
     className,
@@ -41,36 +43,28 @@ export function CursorToolSelectorPanel({
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const [cursor, setCursor] = useRecoilState(cursorToolRecoil);
 
-    const availableSpawners = Object.entries(solution.problem.spawners)
-        .flatMap(([kind, count]) =>
-            Array.from({ length: count ?? 0 }, () => ({
-                kind: "spawner" as const,
-                output: parsePartilceKind(kind as ParticleKindKey),
-                used: false,
-            })));
-
-    const availableConsumers = Object.entries(solution.problem.consumers)
-        .flatMap(([kind, count]) =>
-            Array.from({ length: count ?? 0 }, () => ({
-                kind: "consumer" as const,
-                input: parsePartilceKind(kind as ParticleKindKey),
-                used: false,
-            })));
-
-    for (const usedActor of solution.actors) {
-        if (usedActor.kind === "spawner") {
-            const item = availableSpawners
-                .find(a => !a.used
-                    && eqParticleKind(a.output, usedActor.output));
-            if (item) { item.used = true; }
-        }
-        if (usedActor.kind === "consumer") {
-            const item = availableConsumers
-                .find(a => !a.used
-                    && eqParticleKind(a.input, usedActor.input));
-            if (item) { item.used = true; }
-        }
-    }
+    const availableSpawners = trustedEntries(solution.problem.spawners)
+        .map(([kind, count]) => ({
+            kind: "spawner" as const,
+            output: parsePartilceKind(kind as ParticleKindKey),
+            used:
+                solution.actors
+                    .filter(hasValueAtKey("kind", "spawner" as const))
+                    .filter(a => kind === keyifyParticleKind(a.output))
+                    .length,
+            count,
+        }));
+    const availableConsumers = trustedEntries(solution.problem.consumers)
+        .map(([kind, count]) => ({
+            kind: "consumer" as const,
+            input: parsePartilceKind(kind as ParticleKindKey),
+            used:
+                solution.actors
+                    .filter(hasValueAtKey("kind", "consumer" as const))
+                    .filter(a => kind === keyifyParticleKind(a.input))
+                    .length,
+            count,
+        }));
 
     const availableTools = [
         { kind: "none" },
@@ -96,13 +90,15 @@ export function CursorToolSelectorPanel({
                     radioGroup="cursorTool"
                     checked={JSON.stringify(cursor) === JSON.stringify(tool)}
                     onChange={() => setCursor(tool)}
-                    disabled={"used" in tool && tool.used}
+                    disabled={"used" in tool && tool.used >= tool.count}
                 />
                 {tool.kind}
                 {tool.kind === "spawner"
-                    && (": " + particleKindText(tool.output))}
+                    && (`: ${tool.used}/${tool.count}`
+                        + ` x ${particleKindText(tool.output)}`)}
                 {tool.kind === "consumer"
-                    && (": " + particleKindText(tool.input))}
+                    && (`: ${tool.used}/${tool.count}`
+                        + ` x ${particleKindText(tool.input)}`)}
             </label>
         </div>)}
     </div>;

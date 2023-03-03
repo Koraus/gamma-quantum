@@ -38,6 +38,7 @@
     "react-dom": "^18.2.0",
     "recoil": "^0.7.6",
     "three": "^0.148.0",
+    "ts-is-present": "^1.2.2",
     "ts-toolbelt": "^9.6.0",
     "typescript": "^4.8.4",
     "vite": "^3.2.1",

@@ -65,11 +65,11 @@ export function ParticleToken({
                     </mesh>
                     <mesh position={[-0.02, 0, 0.05]}>
                         <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[0]} />
+                        <meshPhongMaterial color={colors[1]} />
                     </mesh>
                     <mesh position={[-0.02, 0, -0.05]}>
                         <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[1]} />
+                        <meshPhongMaterial color={colors[3]} />
                     </mesh>
                 </>;
                 case 4: return <>
@@ -83,11 +83,11 @@ export function ParticleToken({
                     </mesh>
                     <mesh position={[0, 0, 0.07]}>
                         <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[0]} />
+                        <meshPhongMaterial color={colors[2]} />
                     </mesh>
                     <mesh position={[0, 0, -0.07]}>
                         <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[1]} />
+                        <meshPhongMaterial color={colors[3]} />
                     </mesh>
                 </>;
                 default: throw "not supproted";
