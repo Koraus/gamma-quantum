@@ -42,7 +42,7 @@ export function ReactionSandboxPanel({
                     right: "0",
                 })}
                 onClick={(e) => {
-                    e.stopPropagation(); setIsOpen(false);
+                    setIsOpen(false);
                 }}> X </button>
         </div>}
     </div>;
