@@ -8,19 +8,19 @@ const dir = [
 ] as const;
 
 const solution = (
-    a: number, 
-    b: number, 
-    c: number, 
-    d: number, 
-    e: number, 
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
     f: number,
 ) => [
-    ...Array(a).fill(dir[0]),
-    ...Array(b).fill(dir[1]),
-    ...Array(c).fill(dir[2]),
-    ...Array(d).fill(dir[3]),
-    ...Array(e).fill(dir[4]),
-    ...Array(f).fill(dir[5]),
+    ...Array.from({ length: a }, () => dir[0]),
+    ...Array.from({ length: b }, () => dir[1]),
+    ...Array.from({ length: c }, () => dir[2]),
+    ...Array.from({ length: d }, () => dir[3]),
+    ...Array.from({ length: e }, () => dir[4]),
+    ...Array.from({ length: f }, () => dir[5]),
 ];
 
 export function* solveConservation({

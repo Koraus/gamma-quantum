@@ -1,13 +1,13 @@
 import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
-import { ParticleKind, particleEnegry, particleMass, particleMomentum } from "./Particle";
+import { ParticleKind, particleMass, particlesEnergy, particlesMomentum } from "./Particle";
 import { Particle } from "./Particle";
 import { solveConservation } from "./solveConservation";
 import { tuple } from "../utils/tuple";
 
 
 export const velocityVariants = [
-    v3.zero(), 
+    v3.zero(),
     ...hg.direction.flat60.itCwFromSouth,
 ];
 export const velocityVariants1 = velocityVariants
@@ -25,6 +25,11 @@ export const velocityVariantsArr = [
     velocityVariants4, velocityVariants4,
 ] as const;
 
+const gamma = (d: Readonly<v3>) => ({
+    content: "gamma",
+    velocity: d,
+} as Particle);
+
 export function generateReactionVariants({
     reagents, products,
 }: {
@@ -35,12 +40,8 @@ export function generateReactionVariants({
         throw "not implemented";
     }
 
-    const reagentsMomentum = reagents
-        .map(particleMomentum)
-        .reduce(v3.add, v3.zero());
-    const reagentsEnergy = reagents
-        .map(particleEnegry)
-        .reduce((acc, v) => acc + v, 0);
+    const reagentsMomentum = particlesMomentum(reagents);
+    const reagentsEnergy = particlesEnergy(reagents);
 
     return velocityVariantsArr[products.length]
         .map((vels) => ({
@@ -50,12 +51,11 @@ export function generateReactionVariants({
                 .filter(p => particleMass(p) > 0 || hg.cubeLen(p.velocity) > 0),
         }))
         .flatMap(resolvedReaction => {
-            const productsMomentum = resolvedReaction.products
-                .map(particleMomentum)
-                .reduce(v3.add, v3.zero());
-            const productsEnergy = resolvedReaction.products
-                .map(particleEnegry)
-                .reduce((acc, v) => acc + v, 0);
+            const productsMomentum =
+                particlesMomentum(resolvedReaction.products);
+            const productsEnergy =
+                particlesEnergy(resolvedReaction.products);
+
 
             const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
             const deltaEnergy = productsEnergy - reagentsEnergy;
@@ -67,10 +67,7 @@ export function generateReactionVariants({
                 reagents,
                 products: [
                     ...resolvedReaction.products,
-                    ...ds.map(d => ({
-                        content: "gamma",
-                        velocity: d,
-                    } as Particle)),
+                    ...ds.map(gamma),
                 ],
             }));
         });

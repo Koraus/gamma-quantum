@@ -1,7 +1,7 @@
 import { v2, v3 } from "../utils/v";
 import { directionVector, halfDirection2Vector } from "./direction";
 import { SolutionDraft } from "./Solution";
-import { keyifyParticleKind, Particle, ParticleKindKey } from "./Particle";
+import { keyifyParticleKind, Particle, ParticleKindKey, particleMomentum, particlesMomentum } from "./Particle";
 import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
 import update from "immutability-helper";
@@ -14,7 +14,15 @@ export type ParticleState = Particle & {
 }
 
 function move(world: World) {
+    const trappedMomentum = particlesMomentum(
+        world.particles
+            .filter(p => !p.isRemoved
+                && world.actors.some(a =>
+                    a.kind === "trap"
+                    && v3.eq(hg.axialToCube(a.position), p.position))));
+
     return update(world, {
+        momentum: u.v3_add(trappedMomentum),
         particles: Object.fromEntries(world.particles.map((p, i) => [i, {
             position: u.v3_add(p.velocity),
             ...(world.actors.some(a =>
@@ -40,8 +48,6 @@ function react(world: World) {
     for (const a of world.actors) {
         if (a.kind === "spawner") {
             if (reactedWorld.step % 12 === 1) {
-                reactedWorld.energy -= 2;
-                // register world mass, energy and momentum change
                 reactedWorld.particles.push({
                     ...a.output,
                     position: v3.from(...hg.axialToCube(a.position)),
@@ -62,7 +68,6 @@ function react(world: World) {
                     reactedWorld.particles[i].isRemoved = true;
                     reactedWorld.consumed[keyifyParticleKind(p)] =
                         (reactedWorld.consumed[keyifyParticleKind(p)] ?? 0) + 1;
-                    // register world mass, energy and momentum change
                 }
             }
         }
@@ -76,6 +81,8 @@ function react(world: World) {
 
                 const mirrorNormal = halfDirection2Vector[a.direction];
 
+                const m1 = particleMomentum(p);
+
                 const vc = hg.axialToFlatCart(p.velocity);
                 const nc = hg.axialToFlatCart(mirrorNormal);
                 const vc1 = v2.add(vc, v2.scale(nc, -0.5 * v2.dot(vc, nc)));
@@ -84,6 +91,12 @@ function react(world: World) {
                     hg.flatCartToAxial,
                     hg.axialToCube,
                     hg.cubeRound,
+                );
+
+                const dm = v3.sub(m1, particleMomentum(p));
+                reactedWorld.momentum = v3.add(
+                    reactedWorld.momentum,
+                    dm,
                 );
             }
         }
@@ -95,10 +108,13 @@ function react(world: World) {
     for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
         const p = reactedWorld.particles[i];
         if ((p.content === "gamma") && (world.particles[i])) {
+            reactedWorld.momentum = v3.add(
+                reactedWorld.momentum,
+                particleMomentum(reactedWorld.particles[i]),
+            );
             reactedWorld.particles[i] = update(p, {
                 isRemoved: { $set: true },
             });
-            reactedWorld.energy++;
         }
     }
 
@@ -116,6 +132,7 @@ export type World = SolutionDraft & ({
     step: number;
 }) & {
     energy: number;
+    momentum: v3;
     consumed: Partial<Record<ParticleKindKey, number>>;
     particles: ParticleState[];
 };
@@ -132,6 +149,7 @@ export const init = (solution: SolutionDraft): World => {
         action: "init",
         step: 0,
         energy: 0,
+        momentum: v3.zero(),
         consumed: {},
         particles: [],
     });

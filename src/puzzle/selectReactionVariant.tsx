@@ -3,7 +3,7 @@ import * as hg from "../utils/hg";
 import _ from "lodash";
 import { tuple } from "../utils/tuple";
 import { groupReactionVariantsBySymmetries } from "./groupReactionVariantsBySymmetries";
-import { ParticleKind, particleMomentum, particleEnegry } from "./Particle";
+import { ParticleKind, particlesMomentum, particlesEnergy } from "./Particle";
 import { Particle } from "./Particle";
 
 
@@ -19,23 +19,15 @@ export function selectReactionVariant({
         products: Particle[];
     }>;
 }) {
-    const reagentsMomentum = requestedReaction.reagents
-        .map(particleMomentum)
-        .reduce(v3.add, v3.zero());
-    const reagentsEnergy = requestedReaction.reagents
-        .map(particleEnegry)
-        .reduce((acc, v) => acc + v, 0);
+    const reagentsMomentum = particlesMomentum(requestedReaction.reagents);
+    const reagentsEnergy = particlesEnergy(requestedReaction.reagents);
 
     const allGrouppedVariants = Object.entries(_.groupBy(variants, vr => {
         const mainProducts = vr.products
             .slice(0, requestedReaction.products.length);
 
-        const productsMomentum = mainProducts
-            .map(particleMomentum)
-            .reduce(v3.add, v3.zero());
-        const productsEnergy = mainProducts
-            .map(particleEnegry)
-            .reduce((acc, v) => acc + v, 0);
+        const productsMomentum = particlesMomentum(mainProducts);
+        const productsEnergy = particlesEnergy(mainProducts);
 
         const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
         const deltaEnergy = productsEnergy - reagentsEnergy;

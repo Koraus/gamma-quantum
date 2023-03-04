@@ -23,9 +23,10 @@
 ">
 	<div id="root"></div>
 	<script type="module">
-		import { createRoot } from 'react-dom/client';
-		import { createElement } from 'react';
-		import { RecoilRoot } from 'recoil';
+		import "@rauschma/iterator-helpers-polyfill/install";
+		import { createRoot } from "react-dom/client";
+		import { createElement } from "react";
+		import { RecoilRoot } from "recoil";
 
 		import { App } from "./src/App";
 

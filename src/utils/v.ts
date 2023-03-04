@@ -35,6 +35,11 @@ export function v<D extends 1 | 2 | 3 | 4 | 5 | 6 | 7>(d: D) {
         distSq: (a: rvd, b: rvd) => vd.lenSq(vd.sub(b, a)),
         dist: (a: rvd, b: rvd) => vd.len(vd.sub(b, a)),
         eq: (a: rvd, b: rvd, eps = 0) => vd.dist(a, b) <= eps,
+
+        sumReducer: () => [
+            (acc: rvd, v: rvd) => vd.add(acc, v), 
+            vd.zero(),
+        ] as const,
     };
     return vd;
 }

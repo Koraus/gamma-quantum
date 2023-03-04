@@ -48,5 +48,15 @@ export const particleMass = (p: ReadonlyDeep<ParticleKind>) => {
 export const particleMomentum = (p: ReadonlyDeep<Particle>) =>
     v3.scale(p.velocity, (particleMass(p) || 1) * hg.cubeLen(p.velocity));
 
-export const particleEnegry = (p: ReadonlyDeep<Particle>) =>
+export const particlesMomentum = (ps: Iterable<ReadonlyDeep<Particle>>) =>
+    ps[Symbol.iterator]()
+        .map(particleMomentum)
+        .reduce(...v3.sumReducer());
+
+export const particleEnergy = (p: ReadonlyDeep<Particle>) =>
     particleMass(p) + hg.cubeLen(particleMomentum(p));
+
+export const particlesEnergy = (ps: Iterable<ReadonlyDeep<Particle>>) =>
+    ps[Symbol.iterator]()
+        .map(particleEnergy)
+        .reduce((acc, v) => acc + v, 0);

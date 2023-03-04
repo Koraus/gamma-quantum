@@ -3,7 +3,7 @@ import { v3 } from "../utils/v";
 import { css, cx } from "@emotion/css";
 import { ArrowHeadMarker } from "./ArrowHeadMarker";
 import { cxy, xy1, xy2 } from "./misc";
-import { particleEnegry, particleMomentum } from "../puzzle/Particle";
+import { particlesEnergy, particleMomentum, particlesMomentum } from "../puzzle/Particle";
 import { Particle } from "../puzzle/Particle";
 import { directionOf, directionSymbol, particleColor, ParticleText } from "./ParticleText";
 import * as hg from "../utils/hg";
@@ -25,21 +25,10 @@ export function ReactionMomentumGraph({
         ...products.map(particleColor),
     ];
 
-    const reagentsMomentum = reagents
-        .map(particleMomentum)
-        .reduce((acc, v) => v3.add(acc, v), v3.zero());
-
-    const reagentsEnergy = reagents
-        .map(particleEnegry)
-        .reduce((acc, v) => acc + v, 0);
-
-    const productsMomentum = products
-        .map(particleMomentum)
-        .reduce((acc, v) => v3.add(acc, v), v3.zero());
-
-    const productsEnergy = products
-        .map(particleEnegry)
-        .reduce((acc, v) => acc + v, 0);
+    const reagentsMomentum = particlesMomentum(reagents);
+    const reagentsEnergy = particlesEnergy(reagents);
+    const productsMomentum = particlesMomentum(products);
+    const productsEnergy = particlesEnergy(products);
 
     return <div {...props}>
 

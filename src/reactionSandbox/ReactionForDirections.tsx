@@ -4,7 +4,7 @@ import { generateReactionVariants } from "../puzzle/generateReactionVariants";
 import { ReactionVariant } from "./ReactionVariant";
 import { ParticleText } from "./ParticleText";
 import { useState } from "react";
-import { ParticleKind, particleMomentum, particleEnegry } from "../puzzle/Particle";
+import { ParticleKind, particlesMomentum, particlesEnergy } from "../puzzle/Particle";
 import { Particle } from "../puzzle/Particle";
 import { selectReactionVariant } from "../puzzle/selectReactionVariant";
 
@@ -21,12 +21,8 @@ export function ReactionForDirections({
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }) => void;
 }) {
-    const reagentsMomentum = reagents
-        .map(particleMomentum)
-        .reduce(v3.add, v3.zero());
-    const reagentsEnergy = reagents
-        .map(particleEnegry)
-        .reduce((acc, v) => acc + v, 0);
+    const reagentsMomentum = particlesMomentum(reagents);
+    const reagentsEnergy = particlesEnergy(reagents);
 
     const variants = [...generateReactionVariants({ reagents, products })];
 
@@ -34,13 +30,12 @@ export function ReactionForDirections({
         allGrouppedVariants,
         selectedVariant,
         noVariants,
-        isResolved,
     } = selectReactionVariant({
         requestedReaction: { reagents, products },
         variants,
     });
 
-    const [isCollapsed, setIsCollapsed] = useState(isResolved);
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
     const header = (() => {
         if (selectedVariant) {
@@ -97,12 +92,9 @@ export function ReactionForDirections({
                         } = variant;
                         const mainProducts = products.slice(0, products.length);
 
-                        const productsMomentum = mainProducts
-                            .map(particleMomentum)
-                            .reduce(v3.add, v3.zero());
-                        const productsEnergy = mainProducts
-                            .map(particleEnegry)
-                            .reduce((acc, v) => acc + v, 0);
+                        const productsMomentum = 
+                            particlesMomentum(mainProducts);
+                        const productsEnergy = particlesEnergy(mainProducts);
 
                         const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
                         const deltaEnergy = productsEnergy - reagentsEnergy;
