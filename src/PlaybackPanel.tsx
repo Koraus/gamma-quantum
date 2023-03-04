@@ -1,10 +1,10 @@
 import { css, cx } from "@emotion/css";
 import { useEffect, useRef } from "react";
-import { StopFill } from "@emotion-icons/bootstrap/StopFill";
-import { PlayFill } from "@emotion-icons/bootstrap/PlayFill";
-import { PauseFill } from "@emotion-icons/bootstrap/PauseFill";
-import { SkipEndFill } from "@emotion-icons/bootstrap/SkipEndFill";
-import { SkipStartFill } from "@emotion-icons/bootstrap/SkipStartFill";
+import { Stop } from "@emotion-icons/ionicons-solid/Stop";
+import { Play } from "@emotion-icons/ionicons-solid/Play";
+import { Pause } from "@emotion-icons/ionicons-solid/Pause";
+import { PlaySkipBack } from "@emotion-icons/ionicons-solid/PlaySkipBack";
+import { PlaySkipForward } from "@emotion-icons/ionicons-solid/PlaySkipForward";
 import { PlayForward } from "@emotion-icons/ionicons-solid/PlayForward";
 import { CaretBack } from "@emotion-icons/ionicons-solid/CaretBack";
 import { atom, useRecoilState } from "recoil";
@@ -92,7 +92,7 @@ export function PlaybackPanel({
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
             })}
-        ><StopFill /></button>
+        ><Stop /></button>
         <button
             className={cx(css({
                 width: "30px",
@@ -100,10 +100,17 @@ export function PlaybackPanel({
             }))}
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
-                playtimeSpeed: -1 * defalutPlaytimeSpeed,
+                playtimeSpeed:
+                    playAction.playtimeSpeed === -defalutPlaytimeSpeed
+                        ? 0
+                        : -defalutPlaytimeSpeed,
                 startRealtime: performance.now() / 1000,
             })}
-        ><CaretBack /></button>
+        >
+            {playAction.playtimeSpeed === -defalutPlaytimeSpeed
+                ? <Pause />
+                : <CaretBack />}
+        </button>
         <button
             className={cx(css({
                 width: "30px",
@@ -115,7 +122,7 @@ export function PlaybackPanel({
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
             })}
-        ><SkipStartFill /></button>
+        ><PlaySkipBack /></button>
         <span
             className={cx(css({
                 verticalAlign: "bottom",
@@ -135,7 +142,7 @@ export function PlaybackPanel({
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
             })}
-        ><SkipEndFill /></button>
+        ><PlaySkipForward /></button>
         <button
             className={cx(css({
                 width: "30px",
@@ -144,11 +151,15 @@ export function PlaybackPanel({
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
                 playtimeSpeed:
-                    playAction.playtimeSpeed === 0 ? defalutPlaytimeSpeed : 0,
+                    playAction.playtimeSpeed === defalutPlaytimeSpeed
+                        ? 0
+                        : defalutPlaytimeSpeed,
                 startRealtime: performance.now() / 1000,
             })}
         >
-            {playAction.playtimeSpeed === 0 ? <PlayFill /> : <PauseFill />}
+            {playAction.playtimeSpeed === defalutPlaytimeSpeed
+                ? <Pause />
+                : <Play />}
         </button>
         <button
             className={cx(css({
@@ -157,10 +168,17 @@ export function PlaybackPanel({
             }))}
             onClick={() => setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
-                playtimeSpeed:   2 * defalutPlaytimeSpeed,
+                playtimeSpeed:
+                    playAction.playtimeSpeed === 2 * defalutPlaytimeSpeed
+                        ? 0
+                        : (2 * defalutPlaytimeSpeed),
                 startRealtime: performance.now() / 1000,
             })}
-        > <PlayForward /> </button>
+        >
+            {playAction.playtimeSpeed === 2 * defalutPlaytimeSpeed
+                ? <Pause />
+                : <PlayForward />}
+        </button>
         <input
             ref={rangeRef}
             type="range"

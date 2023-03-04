@@ -27,7 +27,7 @@ export const getStepAtPlaytime = (playtime: number) =>
 export const getWorldAtPlaytime = (solution: SolutionDraft, playtime: number) =>
     getWorldAtStep(solution, getStepAtPlaytime(playtime));
 
-const trustedEntries =
+export const trustedEntries =
     <TRecord extends Partial<Record<keyof object, unknown>>>(obj: TRecord) =>
         Object.entries(obj) as [
             keyof TRecord,
