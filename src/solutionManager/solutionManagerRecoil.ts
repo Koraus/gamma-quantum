@@ -5,7 +5,7 @@ import * as amplitude from "@amplitude/analytics-browser";
 import update from "immutability-helper";
 import { localStorageAtomEffect } from "../utils/localStorageAtomEffect";
 import { isSolutionComplete, keyifySolution, parseSolution, Solution, SolutionDraft, SolutionKey } from "../puzzle/Solution";
-import { keyifyProblem as _keyifyProblem, eqProblem, keyifyProblem, Problem } from "../puzzle/Problem";
+import { eqProblem, keyifyProblem, Problem } from "../puzzle/Problem";
 import { onChangeAtomEffect } from "../utils/onChangeAtomEffect";
 import * as solutions from "./hardcodedSoultions";
 import { SetStateAction } from "react";
