@@ -21,17 +21,6 @@ export function ReactionSandboxPanel({
         }
     }, [isOpen]);
 
-    const close = <button
-        className={css({
-            position: "absolute",
-            padding: "0px 3px 0px 3px",
-            top: "0",
-            right: "0",
-        })}
-        onClick={(e) => {
-            e.stopPropagation(); setIsOpen(false);
-        }}> X </button>;
-
     return <div
         {...props}
     >
@@ -45,7 +34,16 @@ export function ReactionSandboxPanel({
             zIndex: 100,
         })}>
             <ReactionSandbox />
-            {close}
+            <button
+                className={css({
+                    position: "absolute",
+                    padding: "0px 3px 0px 3px",
+                    top: "0",
+                    right: "0",
+                })}
+                onClick={(e) => {
+                    e.stopPropagation(); setIsOpen(false);
+                }}> X </button>
         </div>}
     </div>;
 }
