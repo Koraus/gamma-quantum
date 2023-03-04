@@ -48,6 +48,8 @@ export function App() {
                     pointerEvents: "all",
                     width: "fit-content",
                     marginTop: "5px",
+                    position: "absolute",
+                    zIndex: 50,
                 }))} />
             <CursorToolSelectorPanel
                 className={cx(css({
@@ -63,7 +65,7 @@ export function App() {
                     position: "absolute",
                     bottom: 0,
                 }))}
-                defalutPlaytimeSpeed={3}
+                defalutPlaytimeSpeed={5}
             />
             <div
                 className={cx(css({

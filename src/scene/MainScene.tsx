@@ -1,5 +1,5 @@
 import { v2, v3 } from "../utils/v";
-import { Cylinder, GizmoHelper, GizmoViewport, OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { GizmoHelper, GizmoViewport, OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { axialToFlatCart } from "../utils/hg";
 import * as hg from "../utils/hg";
 import { tuple } from "../utils/tuple";
@@ -84,9 +84,6 @@ export function MainScene() {
 
         <directionalLight intensity={0.6} position={[-10, 30, 45]} />
         <ambientLight intensity={0.3} />
-        <Cylinder args={[0.01, 0.01, 3]}>
-            <meshBasicMaterial color={"lime"} />
-        </ Cylinder>
 
         {Object.values(_.groupBy(particles, p => JSON.stringify(p.p.position)))
             .flatMap((ps) => ps.map(({ p, prev, i }, j) => {
