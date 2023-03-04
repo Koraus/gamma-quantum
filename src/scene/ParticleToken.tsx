@@ -8,9 +8,9 @@ export const getParticleColors = (p: ParticleKind) =>
     p.content === "gamma"
         ? ["white"]
         : [
-            ...new Array(p.content.red).fill("red"),
-            ...new Array(p.content.green).fill("green"),
-            ...new Array(p.content.blue).fill("blue"),
+            ...new Array(p.content.red).fill("#ff4000"),
+            ...new Array(p.content.green).fill("#50ff00"),
+            ...new Array(p.content.blue).fill("#9000ff"),
         ];
 
 export function ParticleToken({

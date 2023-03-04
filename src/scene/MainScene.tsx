@@ -109,13 +109,13 @@ export function MainScene() {
                                 new Vector3(
                                     ...x0y(axialToFlatCart(p.position))),
                                 easeSinInOut(t));
-                            g.position.y = j * 0.2;
+                            g.position.y = 0.1 + j * 0.2;
                         }
 
                     }}
                     position={v3.add(
                         x0y(axialToFlatCart((prev ?? p).position)),
-                        [0, j * 0.2, 0])}
+                        [0, 0.1 + j * 0.2, 0])}
                 >
                     <ParticleToken
                         particle={p}
@@ -134,7 +134,7 @@ export function MainScene() {
             if (a.kind === "consumer") {
                 return <group key={i} position={axialToFlatCartXz(a.position)}>
                     <mesh rotation={[Math.PI / 2, 0, 0]}>
-                        <torusGeometry args={[0.5, 0.05]} />
+                        <torusGeometry args={[0.5, 0.01]} />
                         <meshPhongMaterial color={"grey"} />
                     </mesh>
                 </group>;
@@ -146,7 +146,7 @@ export function MainScene() {
                     position={axialToFlatCartXz(a.position)}
                 >
                     <mesh rotation={[0, 0, 0]}>
-                        <boxGeometry args={[1, 0.5, 0.05]} />
+                        <boxGeometry args={[1, 0.5, 0.03]} />
                         <meshPhongMaterial color={"grey"} />
                     </mesh>
                 </group>;

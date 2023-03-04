@@ -278,8 +278,8 @@ export const demo1: SolutionDraft = {
             "output": {
                 "content": {
                     "red": 0,
-                    "green": 1,
-                    "blue": 0,
+                    "green": 0,
+                    "blue": 1,
                 },
             },
             "direction": 3,
@@ -396,8 +396,8 @@ export const demo1: SolutionDraft = {
             "output": {
                 "content": {
                     "red": 0,
-                    "green": 0,
-                    "blue": 1,
+                    "green": 1,
+                    "blue": 0,
                 },
             },
             "direction": 0,
@@ -411,8 +411,8 @@ export const demo1: SolutionDraft = {
             "output": {
                 "content": {
                     "red": 0,
-                    "green": 0,
-                    "blue": 1,
+                    "green": 1,
+                    "blue": 0,
                 },
             },
             "direction": 4,
