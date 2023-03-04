@@ -1,12 +1,26 @@
 import { css } from "@emotion/css";
 import { useState } from "react";
 import { ReactionSandbox } from "./reactionSandbox/ReactionSandbox";
+import { useEffect } from 'react';
 
 
 export function ReactionSandboxPanel({
     ...props
 }: JSX.IntrinsicElements["div"]) {
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            const close = (e: KeyboardEvent) => {
+                if (e.key === "Escape") { setIsOpen(false); }
+            };
+            window.addEventListener("keydown", close);
+            return () => {
+                window.removeEventListener("keydown", close);
+            };
+        }
+    }, [isOpen]);
+
     return <div
         {...props}
     >
@@ -20,6 +34,16 @@ export function ReactionSandboxPanel({
             zIndex: 100,
         })}>
             <ReactionSandbox />
+            <button
+                className={css({
+                    position: "absolute",
+                    padding: "0px 3px 0px 3px",
+                    top: "0",
+                    right: "0",
+                })}
+                onClick={(e) => {
+                    setIsOpen(false);
+                }}> X </button>
         </div>}
     </div>;
 }
