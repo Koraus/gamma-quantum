@@ -12,7 +12,6 @@ import { _throw } from "../../src/utils/_throw";
 import { assertDecoded } from "../../src/utils/DecoderEx";
 export { Stats } from "./Stats";
 
-// todo check and update npm deps
 
 export function getStatsStub(
     name: string,
@@ -22,6 +21,7 @@ export function getStatsStub(
     const stub = env.STATS.get(id);
     return clientifyStatsStub(stub);
 }
+
 const router = Router()
     .options("*", () => status(204))
     .get("/", async (req, env: Env) => {
