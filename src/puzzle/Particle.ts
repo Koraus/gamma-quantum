@@ -2,15 +2,22 @@ import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { ReadonlyDeep } from "../utils/ReadonlyDeep";
 import { Stringify } from "../utils/Stringify";
+import * as D from "io-ts/Decoder";
+import { assertDecoded, guardDecoded } from "../utils/DecoderEx";
 
-export type ParticleKind = {
-    content: "gamma" | {
-        red: number, // 0, 1, 2, ...
-        green: number, // 0, 1, 2, ...
-        blue: number, // 0, 1, 2, ...
-        // todo: but not all zeros
-    };
-}
+export const ParticleKindDecoder = D.struct({
+    content: D.union(
+        D.literal("gamma"),
+        D.struct({
+            red: D.number, // 0, 1, 2, ...
+            green: D.number, // 0, 1, 2, ...
+            blue: D.number, // 0, 1, 2, ...
+            // todo: but not all zeros
+        }),
+    ),
+});
+export type ParticleKind = D.TypeOf<typeof ParticleKindDecoder>;
+
 export const keyProjectParticleKind = ({
     content,
 }: ParticleKind): ParticleKind => ({
@@ -19,10 +26,21 @@ export const keyProjectParticleKind = ({
         : { red: content.red, green: content.green, blue: content.blue },
 });
 export type ParticleKindKey = Stringify<ParticleKind>;
-export const keyifyParticleKind = (x: ParticleKind) => 
+export const isParticleKindKey = (key: unknown): key is ParticleKindKey => {
+    if ("string" !== typeof key) { return false; }
+    const parsed = (() => {
+        try { return JSON.parse(key); } catch { /* mute */ }
+    })();
+    if (!parsed) { return false; }
+    return guardDecoded(ParticleKindDecoder, parsed);
+};
+export const keyifyParticleKind = (x: ParticleKind) =>
     JSON.stringify(keyProjectParticleKind(x)) as ParticleKindKey;
-export const parsePartilceKind = (key: ParticleKindKey) => 
-    JSON.parse(key) as ParticleKind;
+export const parsePartilceKind = (key: ParticleKindKey) => {
+    const parsed = JSON.parse(key);
+    assertDecoded(ParticleKindDecoder, parsed);
+    return parsed;
+};
 export const eqParticleKind = (a: ParticleKind, b: ParticleKind) =>
     keyifyParticleKind(a) === keyifyParticleKind(b);
 

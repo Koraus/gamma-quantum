@@ -1,8 +1,9 @@
 
 
 
-export function _throw(message: string, ctor = Error): never {
-    throw new ctor(message);
+export function _throw(message: string | unknown, ctor = Error): never {
+    if ("string" === typeof message) { throw new ctor(message); }
+    throw message;
 }
 
 
