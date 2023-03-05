@@ -6,7 +6,7 @@ import * as hg from "../utils/hg";
 import { applyReactionsInPlace } from "./reactions";
 import update from "immutability-helper";
 import * as u from "../utils/u";
-import { apipe } from "../utils/apipe";
+import { pipe } from "fp-ts/lib/function";
 
 export type ParticleState = Particle & {
     position: v3,
@@ -86,7 +86,7 @@ function react(world: World) {
                 const vc = hg.axialToFlatCart(p.velocity);
                 const nc = hg.axialToFlatCart(mirrorNormal);
                 const vc1 = v2.add(vc, v2.scale(nc, -0.5 * v2.dot(vc, nc)));
-                p.velocity = apipe(
+                p.velocity = pipe(
                     vc1,
                     hg.flatCartToAxial,
                     hg.axialToCube,

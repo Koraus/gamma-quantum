@@ -24,6 +24,7 @@ module.exports = {
         "max-nested-callbacks": ["warn", 2],
         "max-len": ["warn", 80, {
             "ignorePattern": "^import\\s.+\\sfrom\\s.+;$",
+            "ignoreUrls": true,
         }],
         "comma-dangle": ["warn", "always-multiline"],
         "no-warning-comments": ["warn"],

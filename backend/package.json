@@ -6,6 +6,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^3.14.1",
     "@types/itty-router-extras": "^0.4.0",
+    "io-ts": "^2.2.20",
     "itty-router": "^2.6.1",
     "itty-router-extras": "^0.4.2"
   }
