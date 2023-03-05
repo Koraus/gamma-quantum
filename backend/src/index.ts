@@ -2,7 +2,7 @@ import { Router } from "itty-router";
 import { json, error, withContent, status } from "itty-router-extras";
 import { isSolved } from "../../src/puzzle/actions";
 import { evaluate } from "../../src/puzzle/evaluate";
-import { getProblemCmp } from "../../src/puzzle/problem";
+import { ProblemDecoder, getProblemCmp } from "../../src/puzzle/problem";
 import { clientifyStatsStub } from "./Stats";
 import { Env } from "./Env";
 import SHA256 from "crypto-js/sha256";
@@ -26,16 +26,9 @@ const router = Router()
     .options("*", () => status(204))
     .get("/", async (req, env: Env) => {
         const q = new URL(req.url).searchParams;
-        // todo: rewrite problem construction
-        //  also, maybe just parse it from probem key?
-        const problem = {
-            puzzleId: q.get("puzzleId")!,
-            seed: q.get("seed")!,
-            substanceMaxCount: +(q.get("substanceMaxCount")!),
-            substanceCount: +(q.get("substanceCount")!),
-            ingredientCount: +(q.get("ingredientCount")!),
-            targets: q.getAll("targets"),
-        };
+        const problemKey = q.get("problem") ?? _throw("problem not set");
+        const problem = JSON.parse(problemKey);
+        assertDecoded(ProblemDecoder, problem);
         const stats = getStatsStub(getProblemCmp(problem), env);
         return json(await stats.getData());
     })

@@ -6,6 +6,7 @@ import * as D from "../utils/DecoderEx";
 
 export const SolutionDecoder = D.struct({
     problem: ProblemDecoder,
+    // make actors record by position
     actors: D.array(D.union(
         D.struct({
             position: D.tuple(D.number, D.number),

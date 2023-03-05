@@ -5,6 +5,7 @@ import { Env } from "./Env";
 import * as it from "../../src/utils/it";
 import { apipe } from "../../src/utils/apipe";
 import { tuple } from "../../src/utils/tuple";
+import { clientifyRoutedStub } from "./clientifyRoutedStub";
 
 // todo: where do we get stats from?
 type StatsKey = keyof State["stats"];
@@ -49,8 +50,10 @@ export class Stats {
         const key = "data";
         const def = () => ({} as StatsData);
         return {
-            get: async () => ((await storage().get<StatsData>(key)) ?? def()),
-            set: (value: StatsData) => storage().put(key, value).then(() => value),
+            get: async () => 
+                ((await storage().get<StatsData>(key)) ?? def()),
+            set: (value: StatsData) => 
+                storage().put(key, value).then(() => value),
         }
     })();
 
@@ -61,7 +64,8 @@ export class Stats {
             (async () => fromEntries(await apipe(
                 solutionStats,
                 entries,
-                entriesMap((_, key) => this.isSolutionRegistered.get(solutionId, key)),
+                entriesMap((_, key) => 
+                    this.isSolutionRegistered.get(solutionId, key)),
                 entriesPromisesAll(),
             )))(),
             this.data.get(),
@@ -71,19 +75,20 @@ export class Stats {
             const _key = key as StatsKey;
             if (!data[_key]) { data[_key] = {}; }
             if (!data[_key][stat]) { data[_key][stat] = { all: 0, unique: 0 }; }
-            
+
             data[_key][solutionStats[_key]].all++;
             if (!isSolutionRegistered[_key]) {
                 data[_key][solutionStats[_key]].unique++;
             }
-        
+
         }
 
         await Promise.all([
             (async () => fromEntries(await apipe(
                 solutionStats,
                 entries,
-                entriesMap((_, key) => this.isSolutionRegistered.set(solutionId, key)),
+                entriesMap((_, key) => 
+                    this.isSolutionRegistered.set(solutionId, key)),
                 entriesPromisesAll(),
             )))(),
             this.data.set(data),
@@ -91,7 +96,7 @@ export class Stats {
 
         return {
             isNotOriginal: isSolutionRegistered,
-            data
+            data,
         };
     }
 
@@ -103,7 +108,7 @@ export class Stats {
                 const { target } = request.params!;
                 const content = await request.json!();
                 const ret = await (this as any)[target].apply(this, content);
-                if (ret instanceof Response) { return ret; };
+                if (ret instanceof Response) { return ret; }
                 return json(ret);
             });
 
@@ -114,34 +119,8 @@ export class Stats {
                     console.error(err);
                     return error(500, err instanceof Error ? err.stack : err);
                 });
-    })()
+    })();
 }
 
-export function clientifyRoutedStub<TDurableObject>(
-    stub: DurableObjectStub
-) {
-    type GenericFunction<TS extends any[], R> = (...args: TS) => R
-    type UnpackedPromise<T> = T extends Promise<infer U> ? U : T
-    type Promisify<T> = {
-        [K in keyof T]: T[K] extends GenericFunction<infer TS, infer R>
-        ? (...args: TS) => Promise<UnpackedPromise<R>>
-        : never
-    }
-
-    return new Proxy(stub, {
-        get: (obj, prop) => {
-            if (typeof prop !== "string") { return; }
-            if (prop === "fetch") { return obj[prop]; }
-            return async (...args: any[]): Promise<unknown> => (await obj.fetch(
-                new Request(`https://durable/${prop}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(args)
-                }))).json();
-        }
-    }) as unknown as Promisify<TDurableObject & DurableObjectStub>;
-}
-
-export function clientifyStatsStub(stub: DurableObjectStub) {
-    return clientifyRoutedStub<Stats>(stub);
-}
+export const clientifyStatsStub = (stub: DurableObjectStub) =>
+    clientifyRoutedStub<Stats>(stub);
