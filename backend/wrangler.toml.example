@@ -1,7 +1,7 @@
 name = "gamma-quantum-backend"
 main = "./src/index.ts"
 
-compatibility_date = "2023-03-04"
+compatibility_date = "2023-03-06"
 
 account_id = "<fill in>"
 route = "<fill in>"

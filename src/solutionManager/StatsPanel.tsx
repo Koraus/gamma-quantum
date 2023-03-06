@@ -13,6 +13,7 @@ export function StatsPanel({
     const { currentSolution, confirmedSolutions } = 
         useRecoilValue(solutionManagerRecoil);
 
+    // todo: create problem-stats cache
     const cachedStats = isSolutionComplete(currentSolution)
         && (keyifySolution(currentSolution) in confirmedSolutions)
         && confirmedSolutions[keyifySolution(currentSolution)]

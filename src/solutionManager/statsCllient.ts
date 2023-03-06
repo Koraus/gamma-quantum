@@ -11,7 +11,7 @@ export type StatData = Record<number, {
 }>;
 export type StatsData = Record<StatsKey, StatData>;
 
-const useProdBackInDev = false;
+const useProdBackInDev = true;
 const backUrl = (useProdBackInDev || !import.meta.env.DEV)
     ? "https://gamma.x-pl.art/"
     : "http://127.0.0.1:8787/";
