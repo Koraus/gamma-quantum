@@ -47,7 +47,7 @@ export class StatsStorage extends RoutedDurableObject {
                 ((await storage().get<StatsData>(key)) ?? def()),
             set: (value: StatsData) => 
                 storage().put(key, value).then(() => value),
-        }
+        };
     })();
 
     async add(solutionId: string, solutionStats: Stats) {

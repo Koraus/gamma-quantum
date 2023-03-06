@@ -11,6 +11,7 @@ import { move } from "./move";
 import { World } from "./World";
 import { _throw } from "../../utils/_throw";
 import { particlesEnergy, particlesMomentum } from "../Particle";
+import { trustedEntries } from "../../utils/trustedRecord";
 
 export type { ParticleState, World } from "./World";
 
@@ -36,13 +37,6 @@ export const worldAtStep = memoize(
             ? init(solution)
             : step(worldAtStep(solution, x - 1)),
     { max: 5000 });
-
-export const trustedEntries =
-    <TRecord extends Partial<Record<keyof object, unknown>>>(obj: TRecord) =>
-        Object.entries(obj) as [
-            keyof TRecord,
-            NonNullable<TRecord[keyof TRecord]>
-        ][];
 
 export const isSolved = (world: World) =>
     trustedEntries(world.problem.demand)

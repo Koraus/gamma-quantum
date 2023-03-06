@@ -10,6 +10,8 @@ import { SolutionsList } from "./solutionManager/SolutionsList";
 import { CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
+import { StatsPanel } from "./solutionManager/StatsPanel";
+
 
 export function App() {
     return <div className={cx(
@@ -34,6 +36,7 @@ export function App() {
             inset: 0,
             pointerEvents: "none",
         }))}>
+            <StatsPanel />
             <WinPanel />
             <WorldInfoPanel
                 className={cx(css({

@@ -1,16 +1,18 @@
 import { Router } from "itty-router";
 import { error, json } from "itty-router-extras";
 import { Env } from "./Env";
-import { _never } from "../../src/utils/_never";
 
 
 export class RoutedDurableObject {
     fetch = (() => {
         const router = Router()
-            .post("/:target", async (request, env) => {
-                const { target } = (request.params ?? _never());
-                const args = (await (request.json ?? _never())());
+            .post("/:target", async (request) => {
+                /* eslint-disable */
+                const { target } = request.params!;
+                const args = await request.json!();
+                // @ts-ignore
                 const ret = await this[target](...args);
+                /* eslint-enable */
                 if (ret instanceof Response) { return ret; }
                 return json(ret);
             });

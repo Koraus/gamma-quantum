@@ -9,9 +9,9 @@ import { eqProblem, keyifyProblem, Problem } from "../puzzle/Problem";
 import { onChangeAtomEffect } from "../utils/onChangeAtomEffect";
 import * as solutions from "./hardcodedSoultions";
 import { SetStateAction } from "react";
+import { trustedKeys } from "../utils/trustedRecord";
+import { postSolution } from "./statsCllient";
 
-// todo: implement postSolution & statsClient
-const postSolution = (solution: Solution) => Promise.resolve(solution);
 
 const solutionManagerRecoilDefault = {
     // single current solution, loaded from saved or created empty
@@ -47,8 +47,26 @@ export const solutionManagerRecoil = atom({
             onChange: newProblem =>
                 amplitude.track("problem changed", newProblem),
         }),
+        onChangeAtomEffect({ // handle unknown complete solution
+            select: x => x.currentSolution,
+            onChange: (
+                nextCurrentSolution, _, next, __, isReset, { setSelf },
+            ) => {
+                if (isReset) { return; }
+                if (!isSolutionComplete(nextCurrentSolution)) { return; }
+                const isSolutionKnown =
+                    trustedKeys(next.knownSolutions)
+                        .some(ks => ks === keyifySolution(nextCurrentSolution));
+                if (isSolutionKnown) { return; }
+                setSelf(update(next, {
+                    knownSolutions: {
+                        [keyifySolution(nextCurrentSolution)]: { $set: true },
+                    },
+                }));
+            },
+        }),
         onChangeAtomEffect({ // stats submission effect
-            select: x => x.savedSolutions,
+            select: x => x.knownSolutions,
             onChange: (
                 newKnownSolutions, oldKnownSolutions, _, __, ___, { setSelf },
             ) => {
@@ -57,10 +75,9 @@ export const solutionManagerRecoil = atom({
                         ? {}
                         : oldKnownSolutions;
 
-                const addedSolutions = Object.keys(newKnownSolutions)
-                    .filter(solutionId => !(solutionId in oldKnownSolutions1))
-                    .map(solutionId => newKnownSolutions[solutionId])
-                    .filter(isSolutionComplete);
+                const addedSolutions = trustedKeys(newKnownSolutions)
+                    .filter(solutionKey => !(solutionKey in oldKnownSolutions1))
+                    .map(solutionId => parseSolution(solutionId));
 
                 for (const solution of addedSolutions) {
                     (async () => {
@@ -72,35 +89,28 @@ export const solutionManagerRecoil = atom({
                         }));
                     })(); // just run, do not await
                 }
-
             },
         }),
+
+        // todo: on init, repost known solution with unkonwn submission status
+
+        // todo handle erroneous submission
+        //     - network errors -- how?
+        //     - denial to accept the solution -- how?
     ],
 });
 
 export const useSetCurrentSolution = () => {
     const set = useSetRecoilState(solutionManagerRecoil);
-    return (xxxx: SetStateAction<SolutionDraft>) =>
+    return (_nextCurrentSolution: SetStateAction<SolutionDraft>) =>
         set((prev) => {
-            const nextCurrentSolution = "function" === typeof xxxx
-                ? xxxx(prev.currentSolution)
-                : xxxx;
-            let next = update(prev, {
+            const nextCurrentSolution =
+                "function" === typeof _nextCurrentSolution
+                    ? _nextCurrentSolution(prev.currentSolution)
+                    : _nextCurrentSolution;
+            return update(prev, {
                 currentSolution: { $set: nextCurrentSolution },
             });
-            if (isSolutionComplete(nextCurrentSolution)) {
-                // todo: make it effect
-                const isSolutionKnown = false; // todo
-                if (!isSolutionKnown) {
-                    const solutionId = keyifySolution(nextCurrentSolution);
-                    next = update(next, {
-                        knownSolutions: {
-                            [solutionId]: { $set: true },
-                        },
-                    });
-                }
-            }
-            return next;
         });
 };
 

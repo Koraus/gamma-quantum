@@ -3,6 +3,9 @@ import { atom, useRecoilState } from "recoil";
 import { useWorld } from "./useWorld";
 import { useEffect } from "react";
 import { isSolved } from "./puzzle/world";
+import { useSetSolution } from "./useSetSolution";
+import update from "immutability-helper";
+import { Solution, isSolutionComplete } from "./puzzle/Solution";
 
 export const winRecoil = atom({
     key: "win",
@@ -11,9 +14,30 @@ export const winRecoil = atom({
 
 export function WinPanel() {
     const [win, setWin] = useRecoilState(winRecoil);
-
+    const setSolution = useSetSolution();
     const world = useWorld();
-    useEffect(() => { if (!win && isSolved(world)) { setWin(true); }});
+
+    useEffect(() => {
+        if (!win && isSolved(world)) {
+            setWin(true);
+
+            // todo: is this a proper way and place to set solvedAtWorld?
+            setSolution(s => {
+                if (isSolutionComplete(s)) { return s; }
+                let solvedAtWorld = world;
+                while (
+                    solvedAtWorld.prev 
+                    && isSolved(solvedAtWorld.prev)
+                ) {
+                    solvedAtWorld = solvedAtWorld.prev;
+                }
+
+                return update(s as Solution, {
+                    solvedAtStep: { $set: solvedAtWorld.step },
+                });
+            });
+        }
+    }, [world]);
 
     if (!win) { return null; }
     return <div className={cx(

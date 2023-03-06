@@ -1,5 +1,5 @@
 import { playActionRecoil } from "./PlaybackPanel";
-import { SolutionDraft } from "./puzzle/Solution";
+import { Solution, SolutionDraft } from "./puzzle/Solution";
 import { cursorToolRecoil } from "./CursorToolSelectorPanel";
 import { winRecoil } from "./WinPanel";
 import { useRecoilValue, useResetRecoilState } from "recoil";
@@ -13,8 +13,9 @@ export function useSetSolution() {
     const resetWin = useResetRecoilState(winRecoil);
 
     const setSolutionAndResetPlayback = (
-        nextSolution: SolutionDraft |
-            ((prevSolution: SolutionDraft) => SolutionDraft),
+        nextSolution: (Solution | SolutionDraft) |
+            ((prevSolution: (Solution | SolutionDraft)) =>
+                (Solution | SolutionDraft)),
     ) => {
         const resolvedNextSolution = ("function" === typeof nextSolution)
             ? nextSolution(solution)
