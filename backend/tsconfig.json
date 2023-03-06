@@ -7,7 +7,10 @@
     "esModuleInterop": true,
     "rootDir": "../",
     "noEmit": true,
-    "types": ["@cloudflare/workers-types"]
+    "types": [
+      "@cloudflare/workers-types",
+      "@rauschma/iterator-helpers-polyfill/dist/src/install.d.ts"
+    ]
   },
-  "files": ["src/index.ts"]
+  "files": ["src/index.ts", "./src/RoutedDurableObject.ts"]
 }

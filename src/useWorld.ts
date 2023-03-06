@@ -2,8 +2,15 @@ import { useRecoilValue } from "recoil";
 import { nowPlaytime, playActionRecoil } from "./PlaybackPanel";
 import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
 import { useEffect, useState } from "react";
-import { getWorldAtPlaytime } from "./simulator";
+import { SolutionDraft } from "./puzzle/Solution";
+import { worldAtStep } from "./puzzle/world";
 
+
+export const getStepAtPlaytime = (playtime: number) =>
+    Math.max(0, Math.floor(playtime));
+
+export const getWorldAtPlaytime = (solution: SolutionDraft, playtime: number) =>
+    worldAtStep(solution, getStepAtPlaytime(playtime));
 
 export function useWorld() {
     const playAction = useRecoilValue(playActionRecoil);

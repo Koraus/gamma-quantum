@@ -1,4 +1,4 @@
 
 export interface Env {
-    STATS: DurableObjectNamespace;
+    STATS_STORAGE: DurableObjectNamespace;
 }

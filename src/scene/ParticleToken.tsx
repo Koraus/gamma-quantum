@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import { ParticleState } from "../puzzle/step";
+import { ParticleState } from "../puzzle/world";
 import { ParticleKind } from "../puzzle/Particle";
 import { directionOf } from "../reactionSandbox/ParticleText";
 import * as hg from "../utils/hg";

@@ -5,9 +5,12 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230228.0",
+    "@rauschma/iterator-helpers-polyfill": "^0.7.0",
     "@types/itty-router-extras": "^0.4.0",
+    "@types/memoizee": "^0.4.8",
     "io-ts": "^2.2.20",
     "itty-router": "^2.6.6",
-    "itty-router-extras": "^0.4.2"
+    "itty-router-extras": "^0.4.2",
+    "memoizee": "^0.4.15"
   }
 }

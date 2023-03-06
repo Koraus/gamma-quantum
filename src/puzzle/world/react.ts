@@ -1,41 +1,14 @@
-import { v2, v3 } from "../utils/v";
-import { directionVector, halfDirection2Vector } from "./direction";
-import { SolutionDraft } from "./Solution";
-import { keyifyParticleKind, Particle, ParticleKindKey, particleMomentum, particlesMomentum } from "./Particle";
-import * as hg from "../utils/hg";
-import { applyReactionsInPlace } from "./reactions";
+import { v2, v3 } from "../../utils/v";
+import { directionVector, halfDirection2Vector } from "../direction";
+import { keyifyParticleKind, particleMomentum } from "../Particle";
+import * as hg from "../../utils/hg";
+import { applyReactionsInPlace } from "../reactions";
 import update from "immutability-helper";
-import * as u from "../utils/u";
 import { pipe } from "fp-ts/lib/function";
+import { World } from "./World";
 
-export type ParticleState = Particle & {
-    position: v3,
-    isRemoved: boolean,
-}
 
-function move(world: World) {
-    const trappedMomentum = particlesMomentum(
-        world.particles
-            .filter(p => !p.isRemoved
-                && world.actors.some(a =>
-                    a.kind === "trap"
-                    && v3.eq(hg.axialToCube(a.position), p.position))));
-
-    return update(world, {
-        momentum: u.v3_add(trappedMomentum),
-        particles: Object.fromEntries(world.particles.map((p, i) => [i, {
-            position: u.v3_add(p.velocity),
-            ...(world.actors.some(a =>
-                a.kind === "trap"
-                && v3.eq(hg.axialToCube(a.position), p.position),
-            )
-                ? { velocity: { $set: v3.zero() } }
-                : {}),
-        }])),
-    });
-}
-
-function react(world: World) {
+export function react(world: World) {
     const reactedWorld = {
         ...world,
         consumed: { ...world.consumed },
@@ -119,54 +92,4 @@ function react(world: World) {
     }
 
     return reactedWorld;
-}
-
-export type World = SolutionDraft & ({
-    init: SolutionDraft;
-    prev?: never;
-    action: "init";
-    step: 0;
-} | {
-    prev: World;
-    action: "move" | "react";
-    step: number;
-}) & {
-    energy: number;
-    momentum: v3;
-    consumed: Partial<Record<ParticleKindKey, number>>;
-    particles: ParticleState[];
-};
-
-
-export const init = (solution: SolutionDraft): World => {
-    // todo: ensure solution is valid:
-    //  * all the actors have unique spots
-    //  * spawners and consumers match the promblem list
-    //--* +anything else?
-    return ({
-        ...solution,
-        init: solution,
-        action: "init",
-        step: 0,
-        energy: 0,
-        momentum: v3.zero(),
-        consumed: {},
-        particles: [],
-    });
-};
-
-const actions = { move, react };
-const transitionTable = {
-    init: "move",
-    move: "react",
-    react: "move",
-} as const;
-
-export function step(state: World) {
-    const action = transitionTable[state["action"]];
-    return update(actions[action](state), {
-        prev: { $set: state },
-        action: { $set: action },
-        step: u.inc,
-    });
 }

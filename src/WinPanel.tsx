@@ -2,7 +2,7 @@ import { css, cx } from "@emotion/css";
 import { atom, useRecoilState } from "recoil";
 import { useWorld } from "./useWorld";
 import { useEffect } from "react";
-import { isWin } from "./simulator";
+import { isSolved } from "./puzzle/world";
 
 export const winRecoil = atom({
     key: "win",
@@ -13,7 +13,7 @@ export function WinPanel() {
     const [win, setWin] = useRecoilState(winRecoil);
 
     const world = useWorld();
-    useEffect(() => { if (!win && isWin(world)) { setWin(true); }});
+    useEffect(() => { if (!win && isSolved(world)) { setWin(true); }});
 
     if (!win) { return null; }
     return <div className={cx(

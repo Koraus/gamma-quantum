@@ -96,7 +96,7 @@ const keyProjectActor = (actor: Actor): Actor => {
             };
         }
     }
-}; 
+};
 export const keyProjectSolutionDraft = ({
     problem,
     actors,
@@ -138,21 +138,10 @@ export const parseSolution = (x: SolutionKey) =>
 export const eqSolution = (a: Solution, b: Solution) =>
     keyifySolution(a) === keyifySolution(b);
 
-export const isSolutionComplete =
-    (s: Solution | SolutionDraft): s is Solution => {
-        if (!("solvedAtStep" in s)) { return false; }
-        // simulate and check?
-        // solution can come from:
-        //   at stats server context:
-        //     from post - not trusted, 
-        //       but should be validated, 
-        //       and simulation can be part of validation
-        //     from saved state - trusted
-        //   at client context
-        //     from saved solutions - trusted, why not
-        //     as current solution - trusted
-        return true;
-    };
+export const isSolutionComplete = (
+    s: Solution | SolutionDraft,
+): s is Solution =>
+    ("solvedAtStep" in s);
 
 // todo: can I merge
 // - type declaration + io-assertion -- merged using io-ts

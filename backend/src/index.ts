@@ -1,48 +1,45 @@
 import { Router } from "itty-router";
 import { json, error, withContent, status } from "itty-router-extras";
-import { isSolved } from "../../src/puzzle/actions";
-import { evaluate } from "../../src/puzzle/evaluate";
-import { ProblemDecoder, getProblemCmp } from "../../src/puzzle/problem";
-import { clientifyStatsStub } from "./Stats";
+import { assertSolved, solutionStats } from "../../src/puzzle/world";
+import { ProblemDecoder, keyifyProblem } from "../../src/puzzle/Problem";
+import { clientifyStatsStorageStub } from "./StatsStorage";
 import { Env } from "./Env";
 import SHA256 from "crypto-js/sha256";
 import Hex from "crypto-js/enc-hex";
-import { SolutionDecoder, keyifySolution } from "../../src/puzzle/solution";
+import { SolutionDecoder, keyifySolution } from "../../src/puzzle/Solution";
 import { _throw } from "../../src/utils/_throw";
-import { assertDecoded } from "../../src/utils/DecoderEx";
-export { Stats } from "./Stats";
+import { assert as assertDecoded } from "../../src/utils/DecoderEx";
 
 
-export function getStatsStub(
+export function getStatsStorageStub(
     name: string,
     env: Env,
 ) {
-    const id = env.STATS.idFromName(name);
-    const stub = env.STATS.get(id);
-    return clientifyStatsStub(stub);
+    const id = env.STATS_STORAGE.idFromName(name);
+    const stub = env.STATS_STORAGE.get(id);
+    return clientifyRoutedStub<StatsStorage>(stub);
 }
 
 const router = Router()
     .options("*", () => status(204))
     .get("/", async (req, env: Env) => {
-        const q = new URL(req.url).searchParams;
-        const problemKey = q.get("problem") ?? _throw("problem not set");
+        const problemKey = new URL(req.url).searchParams.get("problem") 
+            ?? _throw("problem not set");
         const problem = JSON.parse(problemKey);
         assertDecoded(ProblemDecoder, problem);
-        const stats = getStatsStub(getProblemCmp(problem), env);
-        return json(await stats.getData());
+        const statsStorage = getStatsStorageStub(
+            keyifyProblem(problem), env);
+        return json(await statsStorage.getData());
     })
     .post("/", withContent, async (req, env: Env) => {
         const solution = (req as { content: unknown } & Request).content;
         assertDecoded(SolutionDecoder, solution);
-        const finalState = evaluate(solution);
-        isSolved(finalState.state)
-            || _throw("the solution in not complete");
-
-        const stubStats = getStatsStub(getProblemCmp(solution.problem), env);
-        return json(await stubStats.add(
+        assertSolved(solution);
+        const statsStorage = getStatsStorageStub(
+            keyifyProblem(solution.problem), env);
+        return json(await statsStorage.add(
             SHA256(keyifySolution(solution)).toString(Hex),
-            finalState.state.stats));
+            solutionStats(solution)));
     });
 
 

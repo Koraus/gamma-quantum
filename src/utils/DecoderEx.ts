@@ -1,9 +1,9 @@
 import { pipe } from "fp-ts/lib/function";
-import { fold } from "fp-ts/Either";
 import * as E from "fp-ts/Either";
 import * as G from "io-ts/Guard";
 import * as D from "io-ts/Decoder";
 export * from "io-ts/Decoder";
+
 
 export const record2 = <Key extends string, A>(
     codomain: D.Decoder<unknown, A>,
@@ -28,18 +28,18 @@ export const record2 = <Key extends string, A>(
         D.compose(D.fromRecord(codomain)));
 };
 
-export const guardDecoded = <I, A extends I>(
+export const guard = <I, A extends I>(
     decoder: D.Decoder<I, A>, 
     x: I,
 ): x is A => E.isRight(decoder.decode(x));
 
-export function assertDecoded<I, A extends I>(
+export function assert<I, A extends I>(
     decoder: D.Decoder<I, A>,
     x: I,
 ): asserts x is A {
     return pipe(x,
         decoder.decode,
-        fold(
+        E.fold(
             e => { throw new Error(JSON.stringify(e)); },
             () => undefined,
         ),

@@ -2,8 +2,7 @@ import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { ReadonlyDeep } from "../utils/ReadonlyDeep";
 import { Stringify } from "../utils/Stringify";
-import * as D from "io-ts/Decoder";
-import { assertDecoded, guardDecoded } from "../utils/DecoderEx";
+import * as D from "../utils/DecoderEx";
 
 export const ParticleKindDecoder = D.struct({
     content: D.union(
@@ -16,6 +15,8 @@ export const ParticleKindDecoder = D.struct({
         }),
     ),
 });
+
+
 export type ParticleKind = D.TypeOf<typeof ParticleKindDecoder>;
 
 export const keyProjectParticleKind = ({
@@ -32,13 +33,13 @@ export const isParticleKindKey = (key: unknown): key is ParticleKindKey => {
         try { return JSON.parse(key); } catch { /* mute */ }
     })();
     if (!parsed) { return false; }
-    return guardDecoded(ParticleKindDecoder, parsed);
+    return D.guard(ParticleKindDecoder, parsed);
 };
 export const keyifyParticleKind = (x: ParticleKind) =>
     JSON.stringify(keyProjectParticleKind(x)) as ParticleKindKey;
 export const parsePartilceKind = (key: ParticleKindKey) => {
     const parsed = JSON.parse(key);
-    assertDecoded(ParticleKindDecoder, parsed);
+    D.assert(ParticleKindDecoder, parsed);
     return parsed;
 };
 export const eqParticleKind = (a: ParticleKind, b: ParticleKind) =>
