@@ -1,11 +1,12 @@
 import { playActionRecoil } from "./PlaybackPanel";
-import { Solution, SolutionDraft } from "./puzzle/Solution";
+import { Solution, SolutionDraft, eqSolutionDraft } from "./puzzle/Solution";
 import { cursorToolRecoil } from "./CursorToolSelectorPanel";
 import { winRecoil } from "./WinPanel";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { solutionManagerRecoil, useSetCurrentSolution } from "./solutionManager/solutionManagerRecoil";
 
 export function useSetSolution() {
+    // todo use transaction here? why? why not?
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const setSolution = useSetCurrentSolution();
     const resetPlayAction = useResetRecoilState(playActionRecoil);
@@ -22,9 +23,11 @@ export function useSetSolution() {
             : nextSolution;
         setSolution(resolvedNextSolution);
 
-        resetPlayAction();
-        resetWin();
-        resetCursorTool();
+        if (!eqSolutionDraft(resolvedNextSolution, solution)) {
+            resetPlayAction();
+            resetWin();
+            resetCursorTool();
+        }
     };
 
     return setSolutionAndResetPlayback;
