@@ -9,8 +9,7 @@ import { trustedKeys } from "../utils/trustedRecord";
 export const statsRecoil = atom({
     key: "stats",
     default: {
-        // all solutions known to be complete
-        // that were ever assigned to currentSolution
+        // every (complete) solution ever tracked
         knownSolutions: {} as Partial<Record<SolutionKey, true>>,
 
         // all known solutions
