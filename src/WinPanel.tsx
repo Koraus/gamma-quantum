@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useSetSolution } from "./useSetSolution";
 import update from "immutability-helper";
 import { Solution, isSolutionComplete } from "./puzzle/Solution";
+import { trustedEntries } from "./utils/trustedRecord";
 
 export const winRecoil = atom({
     key: "win",
@@ -33,13 +34,21 @@ export function WinPanel() {
         });
     }, [world]);
 
-    if (!win) { return null; }
-    return <div className={cx(
-        css({
-            fontWeight: "bold",
-            fontSize: "16px",
-            color: "green",
-            width: "fit-content",
-        }),
-    )}>  'Win' </div>;
+    const problemProgress =
+        trustedEntries(world.problem.demand)
+            .map(([key, val], i) => {
+                const vC = world.consumed[key] ?? 0;
+                return <div key={i}>{key} : {vC} / {val} </div>;
+            },
+            );
+
+    return <> Progress : {problemProgress}
+        {win && <div className={cx(
+            css({
+                fontWeight: "bold",
+                fontSize: "16px",
+                color: "green",
+                width: "fit-content",
+            }),
+        )}>  'Win' </div>} </>;
 }
