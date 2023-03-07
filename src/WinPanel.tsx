@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useSetSolution } from "./useSetSolution";
 import update from "immutability-helper";
 import { Solution, isSolutionComplete } from "./puzzle/Solution";
+import { trustedEntries } from "./utils/trustedRecord";
 
 export const winRecoil = atom({
     key: "win",
@@ -41,7 +42,7 @@ export function WinPanel() {
             },
         );
 
-    return <> Progress :  {problemProgress}
+    return <> Progress : {problemProgress}
         {win && <div className={cx(
             css({
                 fontWeight: "bold",
