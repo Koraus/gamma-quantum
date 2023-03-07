@@ -1,7 +1,7 @@
 import { v3 } from "../utils/v";
 import { generateReactionVariants } from "./generateReactionVariants";
 import { selectReactionVariant } from "./selectReactionVariant";
-import { ParticleState } from "./step";
+import { ParticleState } from "./world";
 import update from "immutability-helper";
 import { particleCount, ParticleKind } from "./Particle";
 

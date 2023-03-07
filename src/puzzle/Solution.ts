@@ -1,38 +1,102 @@
-import { keyProjectProblem, Problem } from "./Problem";
-import { v2 } from "../utils/v";
-import { ParticleKind } from "./Particle";
-import { DirectionId, HalfDirectionId } from "./direction";
+import { keyProjectProblem, ProblemDecoder } from "./Problem";
+import { keyProjectParticleKind, ParticleKindDecoder } from "./Particle";
 import { sortedByKey } from "../utils/sortedByKey";
 import memoize from "memoizee";
+import * as D from "../utils/DecoderEx";
 
-export type SpawnerActor = {
-    position: v2,
-    kind: "spawner",
-    direction: DirectionId,
-    output: ParticleKind,
+export const SolutionDecoder = D.struct({
+    problem: ProblemDecoder,
+    // make actors record by position
+    actors: D.array(D.union(
+        D.struct({
+            position: D.tuple(D.number, D.number),
+            kind: D.literal("spawner"),
+            direction: D.union(
+                D.literal(0),
+                D.literal(1),
+                D.literal(2),
+                D.literal(3),
+                D.literal(4),
+                D.literal(5),
+            ),
+            output: ParticleKindDecoder,
+        }),
+        D.struct({
+            position: D.tuple(D.number, D.number),
+            kind: D.literal("mirror"),
+            direction: D.union(
+                D.literal(0),
+                D.literal(1),
+                D.literal(2),
+                D.literal(3),
+                D.literal(4),
+                D.literal(5),
+                D.literal(6),
+                D.literal(7),
+                D.literal(8),
+                D.literal(9),
+                D.literal(10),
+                D.literal(11),
+            ),
+        }),
+        // D.struct({
+        //     position: D.tuple(D.number, D.number),
+        //     kind: D.literal("reactor"),
+        // }),
+        D.struct({
+            position: D.tuple(D.number, D.number),
+            kind: D.literal("trap"),
+        }),
+        D.struct({
+            position: D.tuple(D.number, D.number),
+            kind: D.literal("consumer"),
+            input: ParticleKindDecoder,
+        }),
+    )),
+    solvedAtStep: D.number,
+});
+
+export type Solution = D.TypeOf<typeof SolutionDecoder>;
+export type Actor = Solution["actors"][number];
+export type SpawnerActor = Extract<Actor, { kind: "spawner" }>;
+export type SolutionDraft = Omit<Solution, "solvedAtStep">;
+
+const keyProjectActor = (actor: Actor): Actor => {
+    switch (actor.kind) {
+        case "spawner": {
+            const { position, kind, direction, output } = actor;
+            return {
+                position: [position[0], position[1]],
+                kind,
+                direction,
+                output: keyProjectParticleKind(output),
+            };
+        }
+        case "mirror": {
+            const { position, kind, direction } = actor;
+            return {
+                position: [position[0], position[1]],
+                kind,
+                direction,
+            };
+        }
+        case "trap": {
+            const { position, kind } = actor;
+            return {
+                position: [position[0], position[1]],
+                kind,
+            };
+        }
+        case "consumer": {
+            const { position, kind, input } = actor;
+            return {
+                position: [position[0], position[1]],
+                kind,
+                input: keyProjectParticleKind(input),
+            };
+        }
+    }
 };
-
-export type Actor = {
-    position: v2,
-} & ({
-    kind: "mirror",
-    direction: HalfDirectionId,
-} | {
-    kind: "reactor",
-} | {
-    kind: "trap",
-} | {
-    kind: "consumer",
-    input: ParticleKind,
-}) | SpawnerActor;
-
-const keyProjectActor = (actor: Actor): Actor => actor; // todo: implement
-
-export type SolutionDraft = {
-    problem: Problem;
-    actors: Actor[];
-};
-
 export const keyProjectSolutionDraft = ({
     problem,
     actors,
@@ -51,7 +115,7 @@ export const parseSolutionDraft = (x: SolutionDraftKey) =>
 export const eqSolutionDraft = (a: SolutionDraft, b: SolutionDraft) =>
     keyifySolutionDraft(a) === keyifySolutionDraft(b);
 
-export type Solution = SolutionDraft & {
+export type Solution1 = SolutionDraft & {
     solvedAtStep: number;
 }
 export const keyProjectSolution = ({
@@ -74,18 +138,12 @@ export const parseSolution = (x: SolutionKey) =>
 export const eqSolution = (a: Solution, b: Solution) =>
     keyifySolution(a) === keyifySolution(b);
 
-export const isSolutionComplete =
-    (s: Solution | SolutionDraft): s is Solution => {
-        if (!("solvedAtStep" in s)) { return false; }
-        // simulate and check?
-        // solution can come from:
-        //   at stats server context:
-        //     from post - not trusted, 
-        //       but should be validated, 
-        //       and simulation can be part of validation
-        //     from saved state - trusted
-        //   at client context
-        //     from saved solutions - trusted, why not
-        //     as current solution - trusted
-        return true;
-    };
+export const isSolutionComplete = (
+    s: Solution | SolutionDraft,
+): s is Solution =>
+    ("solvedAtStep" in s);
+
+// todo: can I merge
+// - type declaration + io-assertion -- merged using io-ts
+// - keyification (specifically key-projection)
+// into a single source of truth?

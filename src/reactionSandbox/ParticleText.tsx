@@ -41,6 +41,11 @@ export const directionSymbol = [
     "\u2198",
 ] as Record<DirectionId, string>;
 
+export const directionSymbolFor = (v: v3) =>
+    (hg.cubeLen(v) > 0)
+        ? directionSymbol[directionOf(v)[0]]
+        : "\u2219";
+
 export function ParticleText({
     particle: p,
 }: {
@@ -48,9 +53,7 @@ export function ParticleText({
 }) {
     const velocitySymbol =
         ("velocity" in p)
-            ? (hg.cubeLen(p.velocity) > 0)
-                ? directionSymbol[directionOf(p.velocity)[0]]
-                : "\u2219"
+            ? directionSymbolFor(p.velocity)
             : "?";
     return <div className={css({
         border: `2px solid ${particleColor(p)}`,

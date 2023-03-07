@@ -1,29 +1,38 @@
 import { playActionRecoil } from "./PlaybackPanel";
-import { SolutionDraft } from "./puzzle/Solution";
+import { Solution, SolutionDraft, eqSolutionDraft, isSolutionComplete } from "./puzzle/Solution";
 import { cursorToolRecoil } from "./CursorToolSelectorPanel";
 import { winRecoil } from "./WinPanel";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { solutionManagerRecoil, useSetCurrentSolution } from "./solutionManager/solutionManagerRecoil";
+import { useTrackSolution } from "./stats/statsRecoil";
 
 export function useSetSolution() {
+    // todo use transaction here? why? why not?
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const setSolution = useSetCurrentSolution();
     const resetPlayAction = useResetRecoilState(playActionRecoil);
     const resetCursorTool = useResetRecoilState(cursorToolRecoil);
     const resetWin = useResetRecoilState(winRecoil);
+    const trackSolution = useTrackSolution();
 
     const setSolutionAndResetPlayback = (
-        nextSolution: SolutionDraft |
-            ((prevSolution: SolutionDraft) => SolutionDraft),
+        _nextSolution: (Solution | SolutionDraft) |
+            ((prevSolution: (Solution | SolutionDraft)) =>
+                (Solution | SolutionDraft)),
     ) => {
-        const resolvedNextSolution = ("function" === typeof nextSolution)
-            ? nextSolution(solution)
-            : nextSolution;
-        setSolution(resolvedNextSolution);
+        const nextSolution = ("function" === typeof _nextSolution)
+            ? _nextSolution(solution)
+            : _nextSolution;
 
-        resetPlayAction();
-        resetWin();
-        resetCursorTool();
+        setSolution(nextSolution);
+
+        if (isSolutionComplete(nextSolution)) { trackSolution(nextSolution); }
+
+        if (!eqSolutionDraft(nextSolution, solution)) {
+            resetPlayAction();
+            resetWin();
+            resetCursorTool();
+        }
     };
 
     return setSolutionAndResetPlayback;

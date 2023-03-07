@@ -3,7 +3,7 @@ import { keyifyParticleKind, keyProjectParticleKind, parsePartilceKind, Particle
 import { atom, useRecoilState, useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
 import { hasValueAtKey } from "ts-is-present";
-import { trustedEntries } from "./simulator";
+import { trustedEntries } from "./utils/trustedRecord";
 
 export type CursorTool = {
     kind: "none",

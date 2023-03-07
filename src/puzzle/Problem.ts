@@ -1,16 +1,27 @@
-import { sortKeys } from "../utils/sortKeys";
 import { Stringify } from "../utils/Stringify";
-import { ParticleKindKey } from "./Particle";
+import { isParticleKindKey } from "./Particle";
 import { puzzleId } from "./puzzleId";
 import memoize from "memoizee";
+import * as D from "../utils/DecoderEx";
 
 
-export type Problem = {
-    puzzleId: typeof puzzleId;
-    spawners: Partial<Record<ParticleKindKey, number>>;
-    consumers: Partial<Record<ParticleKindKey, number>>;
-    demand: Partial<Record<ParticleKindKey, number>>;
-};
+export const ProblemDecoder = D.struct({
+    puzzleId: D.literal(puzzleId),
+    spawners: D.record2(D.number, {
+        checkKeyOrder: true,
+        refineKey: isParticleKindKey,
+    }),
+    consumers: D.record2(D.number, {
+        checkKeyOrder: true,
+        refineKey: isParticleKindKey,
+    }),
+    demand: D.record2(D.number, {
+        checkKeyOrder: true,
+        refineKey: isParticleKindKey,
+    }),
+});
+
+export type Problem = D.TypeOf<typeof ProblemDecoder>;
 export const keyProjectProblem = ({
     puzzleId,
     spawners,
@@ -18,10 +29,15 @@ export const keyProjectProblem = ({
     demand,
 }: Problem): Problem => ({
     puzzleId,
-    // todo: should I filter out non-ParticleKindKey keys?
-    spawners: sortKeys(spawners),
-    consumers: sortKeys(consumers),
-    demand: sortKeys(demand),
+    spawners: Object.fromEntries(Object.entries(spawners)
+        .filter(([key]) => isParticleKindKey(key))
+        .sort((a, b) => a[0].localeCompare(b[0], "en"))),
+    consumers: Object.fromEntries(Object.entries(consumers)
+        .filter(([key]) => isParticleKindKey(key))
+        .sort((a, b) => a[0].localeCompare(b[0], "en"))),
+    demand: Object.fromEntries(Object.entries(demand)
+        .filter(([key]) => isParticleKindKey(key))
+        .sort((a, b) => a[0].localeCompare(b[0], "en"))),
 });
 export type ProblemKey = Stringify<Problem>;
 export const _keyifyProblem = (x: Problem) =>

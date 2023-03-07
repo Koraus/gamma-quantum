@@ -6,7 +6,7 @@ import { HexGrid } from "./HexGrid";
 import { StateProp } from "../utils/StateProp";
 import { Mesh, Vector3 } from "three";
 import { useRef, useState } from "react";
-import { apipe } from "../utils/apipe";
+import { pipe } from "fp-ts/lib/function";
 import update from "immutability-helper";
 import { CursorTool } from "../CursorToolSelectorPanel";
 
@@ -29,7 +29,7 @@ export function InteractiveBoard({
                 cursorEl.position.copy(ev.unprojectedPoint);
                 cursorEl.position
                     .addScaledVector(ev.ray.direction, ev.distance);
-                cursorEl.position.copy(apipe(
+                cursorEl.position.copy(pipe(
                     [cursorEl.position.x, cursorEl.position.z],
                     hg.flatCartToAxial,
                     hg.axialToCube,
@@ -46,7 +46,7 @@ export function InteractiveBoard({
                         + (cursorTool.kind === "mirror" ? 1 : 2));
                 }
                 if (ev.button === 0) {
-                    const hPos = apipe(
+                    const hPos = pipe(
                         ev.unprojectedPoint
                             .clone()
                             .addScaledVector(ev.ray.direction, ev.distance),

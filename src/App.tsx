@@ -6,10 +6,12 @@ import { appVersion } from "./appVersion";
 import { Canvas } from "@react-three/fiber";
 import { MainScene } from "./scene/MainScene";
 import { ReactionSandboxPanel } from "./ReactionSandboxPanel";
-import { SolutionsList } from "./solutionManager/SolutionsList";
+import { SolutionManagerPanel } from "./solutionManager/SolutionManagerPanel";
 import { CursorToolSelectorPanel } from "./CursorToolSelectorPanel";
 import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
+import { StatsPanel } from "./stats/StatsPanel";
+
 
 export function App() {
     return <div className={cx(
@@ -34,6 +36,7 @@ export function App() {
             inset: 0,
             pointerEvents: "none",
         }))}>
+            <StatsPanel />
             <WinPanel />
             <WorldInfoPanel
                 className={cx(css({
@@ -43,7 +46,7 @@ export function App() {
                 className={cx(css({
                     pointerEvents: "all",
                 }))} />
-            <SolutionsList
+            <SolutionManagerPanel
                 className={cx(css({
                     pointerEvents: "all",
                     width: "fit-content",

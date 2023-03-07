@@ -1,7 +1,7 @@
 import { css } from "@emotion/css";
 import { useState } from "react";
 import { ReactionSandbox } from "./reactionSandbox/ReactionSandbox";
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 
 export function ReactionSandboxPanel({
@@ -41,7 +41,7 @@ export function ReactionSandboxPanel({
                     top: "0",
                     right: "0",
                 })}
-                onClick={(e) => {
+                onClick={() => {
                     setIsOpen(false);
                 }}> X </button>
         </div>}

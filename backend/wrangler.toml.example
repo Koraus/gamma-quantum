@@ -1,0 +1,17 @@
+name = "gamma-quantum-backend"
+main = "./src/index.ts"
+
+compatibility_date = "2023-03-06"
+
+account_id = "<fill in>"
+route = "<fill in>"
+workers_dev = false
+
+node_compat = true
+
+[durable_objects]
+bindings = [{name = "STATS_STORAGE", class_name = "StatsStorage"}]
+
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["StatsStorage"]
