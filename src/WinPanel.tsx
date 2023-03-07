@@ -3,7 +3,7 @@ import { atom, useRecoilState } from "recoil";
 import { useWorld } from "./useWorld";
 import { useEffect } from "react";
 import { isWin } from "./simulator";
-
+import { trustedEntries } from "./simulator";
 export const winRecoil = atom({
     key: "win",
     default: false,
@@ -15,21 +15,15 @@ export function WinPanel() {
     const world = useWorld();
     useEffect(() => { if (!win && isWin(world)) { setWin(true); } });
 
-    const problemProgress = () => {
-        return Object.entries(world.problem.demand).map(
+    const problemProgress =
+        trustedEntries(world.problem.demand).map(
             ([key, val], i) => {
-                if (Object.entries(world.consumed).length > 0) {
-                    return Object.entries(world.consumed)
-                        .map(([kC, vC], iC) => {
-                            if (key === kC) {
-                                return <div key={i}>{key} : {vC} / {val} </div>;
-                            }
-                        });
-                } else return <div key={i}>{key} : 0 / {val} </div>;
+                const vC = world.consumed[key] ?? 0;
+                return <div key={i}>{key} : {vC} / {val} </div>;
             },
         );
-    };
-    return <> problemProgress :  {problemProgress()}
+
+    return <> Progress :  {problemProgress}
         {win && <div className={cx(
             css({
                 fontWeight: "bold",
