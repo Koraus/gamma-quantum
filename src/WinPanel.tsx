@@ -35,12 +35,12 @@ export function WinPanel() {
     }, [world]);
 
     const problemProgress =
-        trustedEntries(world.problem.demand).map(
-            ([key, val], i) => {
+        trustedEntries(world.problem.demand)
+            .map(([key, val], i) => {
                 const vC = world.consumed[key] ?? 0;
                 return <div key={i}>{key} : {vC} / {val} </div>;
             },
-        );
+            );
 
     return <> Progress : {problemProgress}
         {win && <div className={cx(
