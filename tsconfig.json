@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "jsx": "preserve",
-        "jsxImportSource": "react",
+        "jsxImportSource": "@emotion/react",
         "strict": true,
         "target": "ESNext",
         "module": "ESNext",

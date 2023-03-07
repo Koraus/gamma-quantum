@@ -1,17 +1,16 @@
-import { css, cx } from "@emotion/css";
-import { useState } from "react";
 import * as problems from "../puzzle/problems";
 import ProblemInSolutionList from "./ProblemInSolutionList";
 import { useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManagerRecoil";
 import { eqProblem } from "../puzzle/Problem";
 import { useSetSolution } from "../useSetSolution";
+import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 
 
 export function SolutionManagerPanel({
-    className,
+    css: cssProp,
     ...props
-}: JSX.IntrinsicElements["div"]) {
+}: EmotionJSX.IntrinsicElements["div"]) {
     const solutions = useRecoilValue(solutionManagerRecoil).savedSolutions;
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const setSolution = useSetSolution();
@@ -19,13 +18,13 @@ export function SolutionManagerPanel({
     const problemsList = Object.entries(problems)
         .map(([problemName, problem]) => <ul
             key={problemName}
-            className={cx(css({
+            css={{
                 padding: 0,
                 listStyle: "none",
                 background: eqProblem(solution.problem, problem)
                     ? "#303030b0"
                     : "#000000b0",
-            }))}
+            }}
         >
             {problemName}
             <ProblemInSolutionList
@@ -34,55 +33,27 @@ export function SolutionManagerPanel({
                 solutionState={[solution, setSolution]} />
         </ul>);
 
-    const [isShown, setIsShown] = useState(false);
-
     const currentSolutionKey = Object.entries(solutions)
         .find(([, s]) => s === solution)?.[0];
 
     return <div
-        className={cx(
-            css({
-                background: "#000000b0",
-                border: "1px solid #ffffffb0",
-            }),
-            className,
-        )}
+        css={[{
+            background: "#000000b0",
+            border: "1px solid #ffffffb0",
+        }, cssProp]}
         {...props}
     >
         <div
-            className={cx(
-                css({
-                    background: "#ff010Ab0",
-                    margin: "0 auto",
-                    padding: "2px",
-                    cursor: "pointer",
-                }),
-            )}
-            onClick={() => setIsShown(!isShown)}
+            css={{
+                background: "#ff010Ab0",
+                margin: "0 auto",
+                padding: "2px",
+            }}
         >
-            <span
-                className={cx(
-                    css({
-                        transform: isShown ? "rotate(90deg)" : "rotate(0deg)",
-                        display: "inline-block",
-                        transitionDuration: "0.1s",
-                        paddingRight: "1px",
-
-                    }),
-                )}
-            > &gt; </span>
             <span> Solutions: {currentSolutionKey ?? "*"} </span>
         </div>
 
-        {isShown
-            && <div className={cx(
-                css({
-                    margin: "2vmin",
-                }),
-            )}>
-                {problemsList}
-            </div>
-        }
+        <div css={{ margin: "2vmin" }}>{problemsList}</div>
 
         <button
             onClick={() => {
@@ -91,7 +62,7 @@ export function SolutionManagerPanel({
                     JSON.stringify(solution, undefined, 4));
             }}
         >
-            copy current solution json<br />into clipboard
+            copy current solution json into clipboard
         </button>
     </div>;
 }

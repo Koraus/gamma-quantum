@@ -11,6 +11,7 @@
     "@amplitude/analytics-browser": "^1.5.8",
     "@emotion/babel-plugin": "^11.10.5",
     "@emotion/css": "^11.10.5",
+    "@emotion/react": "^11.10.6",
     "@rauschma/iterator-helpers-polyfill": "^0.7.0",
     "@react-three/drei": "9.51.15",
     "@react-three/fiber": "^8.10.0",
