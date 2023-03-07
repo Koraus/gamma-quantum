@@ -18,7 +18,7 @@ const focusMeOnce = (el: HTMLElement | null) => el?.focus();
 
 export function App() {
     const [isSolutionManagerShown, setIsSolutionManagerShown] =
-        useState(false);
+        useState(true);
     const [isReactionSandboxShown, setIsReactionSandboxShown] =
         useState(false);
     const [isWorldInfoShown, setIsWorldInfoShown] =
