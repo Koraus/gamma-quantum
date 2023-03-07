@@ -12,6 +12,7 @@
     "@emotion/babel-plugin": "^11.10.5",
     "@emotion/css": "^11.10.5",
     "@emotion/react": "^11.10.6",
+    "@observablehq/plot": "^0.6.4",
     "@rauschma/iterator-helpers-polyfill": "^0.7.0",
     "@react-three/drei": "9.51.15",
     "@react-three/fiber": "^8.10.0",

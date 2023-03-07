@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useWorld } from "./useWorld";
 import { directionSymbolFor } from "./reactionSandbox/ParticleText";
-import { worldStats } from "./puzzle/world";
+import { solutionStats, worldStats } from "./puzzle/world";
+import { isSolutionComplete } from "./puzzle/Solution";
 
 
 export function WorldInfoPanel({
@@ -24,7 +25,7 @@ export function WorldInfoPanel({
     return <div {...props}>
         <div>step: {JSON.stringify(world.step)}</div>
         <div>energy: {JSON.stringify(world.energy)}</div>
-        <div>momentum: 
+        <div>momentum:
             {directionSymbolFor(world.momentum)}
             {JSON.stringify(world.momentum)}
         </div>
@@ -46,6 +47,10 @@ export function WorldInfoPanel({
             particle total momentum:
             {directionSymbolFor(particleTotalMomentum)}
             {JSON.stringify(particleTotalMomentum)}</div>
-        <div> stats: {JSON.stringify(stats)}</div>
-    </div>;
+        <div> resetStats: {JSON.stringify(stats)}</div>
+        {isSolutionComplete(world)
+            && <div>
+                solution stats: {JSON.stringify(solutionStats(world))}
+            </div>}
+    </div >;
 }

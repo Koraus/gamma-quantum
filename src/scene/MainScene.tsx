@@ -76,7 +76,7 @@ export function MainScene() {
         />
         <GizmoHelper
             alignment="bottom-right"
-            margin={[80, 80]}
+            margin={[80, 110]}
         >
             <GizmoViewport />
         </GizmoHelper>

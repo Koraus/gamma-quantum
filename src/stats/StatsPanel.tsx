@@ -1,16 +1,17 @@
-import { css, cx } from "@emotion/css";
 import { useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 import usePromise from "react-use-promise";
 import { isSolutionComplete, keyifySolution } from "../puzzle/Solution";
 import { getStats } from "./statsCllient";
 import { statsRecoil } from "./statsRecoil";
-
+import { Chart } from "./Chart";
+import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 
 
 export function StatsPanel({
-    className, ...props
-}: JSX.IntrinsicElements["div"]) {
+    css: cssProp,
+    ...props
+}: EmotionJSX.IntrinsicElements["div"]) {
     const { currentSolution } =
         useRecoilValue(solutionManagerRecoil);
     const { confirmedSolutions } =
@@ -29,12 +30,32 @@ export function StatsPanel({
     const stats = freshStats ?? cachedStats?.data;
 
     return <div
-        className={cx(
-            css({}),
-            className,
-        )}
+        css={[{
+            display: "flex",
+            flex: "row",
+        }, cssProp]}
         {...props}
     >
-        Stats: {JSON.stringify(stats)}
+        <Chart
+            css={{
+                border: "1px solid #fff3",
+            }}
+            width={250}
+            height={120}
+            currentValue={0}
+            bestValue={0}
+            data={stats?.energy ?? {}}
+        />
+
+        <Chart
+            css={{
+                border: "1px solid #fff3",
+            }}
+            width={250}
+            height={120}
+            currentValue={0}
+            bestValue={0}
+            data={stats?.solvedAtStep ?? {}}
+        />
     </div>;
 }
