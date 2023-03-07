@@ -1,5 +1,3 @@
-import "@rauschma/iterator-helpers-polyfill/install";
-
 import memoize from "memoizee";
 import update from "immutability-helper";
 import * as u from "../../utils/u";
@@ -73,4 +71,16 @@ export const solutionStats = (solution: Solution) => {
             + stats.particleTotalEnegry
             + hg.cubeLen(stats.particleTotalMomentum),
     };
+};
+
+export const solvedAtStep = (world: World) => {
+    if (!isSolved(world)) { return undefined; }
+    let solvedAtWorld = world;
+    while (
+        solvedAtWorld.prev
+        && isSolved(solvedAtWorld.prev)
+    ) {
+        solvedAtWorld = solvedAtWorld.prev;
+    }
+    return solvedAtWorld.step;
 };

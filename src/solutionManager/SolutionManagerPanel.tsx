@@ -8,7 +8,7 @@ import { eqProblem } from "../puzzle/Problem";
 import { useSetSolution } from "../useSetSolution";
 
 
-export function SolutionsList({
+export function SolutionManagerPanel({
     className,
     ...props
 }: JSX.IntrinsicElements["div"]) {
