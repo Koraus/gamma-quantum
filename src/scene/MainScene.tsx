@@ -71,9 +71,9 @@ export function MainScene() {
         <CameraControls
             mouseButtons={{
                 wheel: 0,
-                left: 1,
+                left: 2,
                 middle: 8,
-                right: 2,
+                right: 1,
             }} />
         <InteractiveBoard
             solutionState={solutionState}
