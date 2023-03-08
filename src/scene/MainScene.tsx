@@ -1,5 +1,5 @@
 import { v2, v3 } from "../utils/v";
-import { GizmoHelper, GizmoViewport, OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { GizmoHelper, GizmoViewport, PerspectiveCamera, CameraControls } from "@react-three/drei";
 import { axialToFlatCart } from "../utils/hg";
 import * as hg from "../utils/hg";
 import { tuple } from "../utils/tuple";
@@ -68,8 +68,13 @@ export function MainScene() {
             near={0.1}
             far={1000}
             position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)} />
-
-        <OrbitControls enableDamping={false} />
+        <CameraControls
+            mouseButtons={{
+                wheel: 0,
+                left: 1,
+                middle: 8,
+                right: 2,
+            }} />
         <InteractiveBoard
             solutionState={solutionState}
             cursorTool={cursorTool}
@@ -80,7 +85,7 @@ export function MainScene() {
         >
             <GizmoViewport />
         </GizmoHelper>
-
+            
 
         <directionalLight intensity={0.6} position={[-10, 30, 45]} />
         <ambientLight intensity={0.3} />
