@@ -14,7 +14,7 @@
     "@emotion/react": "^11.10.6",
     "@observablehq/plot": "^0.6.4",
     "@rauschma/iterator-helpers-polyfill": "^0.7.0",
-    "@react-three/drei": "9.51.15",
+    "@react-three/drei": "9.57.0",
     "@react-three/fiber": "^8.10.0",
     "@types/crypto-js": "^4.1.1",
     "@types/d3-ease": "^3.0.0",
