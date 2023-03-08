@@ -69,6 +69,7 @@ export function MainScene() {
             far={1000}
             position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)} />
         <CameraControls
+            draggingSmoothTime={0.05}
             mouseButtons={{
                 wheel: 0,
                 left: 2,
