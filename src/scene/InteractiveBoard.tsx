@@ -40,15 +40,9 @@ export function InteractiveBoard({
                 // cursorEl.scale.setScalar(ev.distance * 0.02);
             }}
             onWheel={(e) => {
-                if (e.deltaY < 0) {
-                    setCursorDirection(
-                        cursorDirection
-                        + (cursorTool.kind === "mirror" ? 1 : 2));
-                } else {
-                    setCursorDirection(
-                        cursorDirection
-                        - (cursorTool.kind === "mirror" ? 1 : 2));
-                }
+                const step = (cursorTool.kind === "mirror" ? 1 : 2);
+                setCursorDirection(
+                    cursorDirection + Math.sign(-e.deltaY) * step);
             }}
             onPointerUp={ev => {
                 if (ev.button === 0) {
