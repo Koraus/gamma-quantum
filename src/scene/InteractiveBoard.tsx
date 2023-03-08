@@ -39,12 +39,18 @@ export function InteractiveBoard({
                 ));
                 // cursorEl.scale.setScalar(ev.distance * 0.02);
             }}
-            onPointerUp={ev => {
-                if (ev.button === 2) {
+            onWheel={(e) => {
+                if (e.deltaY < 0) {
                     setCursorDirection(
                         cursorDirection
                         + (cursorTool.kind === "mirror" ? 1 : 2));
+                } else {
+                    setCursorDirection(
+                        cursorDirection
+                        - (cursorTool.kind === "mirror" ? 1 : 2));
                 }
+            }}
+            onPointerUp={ev => {
                 if (ev.button === 0) {
                     const hPos = pipe(
                         ev.unprojectedPoint
