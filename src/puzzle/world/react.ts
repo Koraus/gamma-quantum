@@ -1,6 +1,7 @@
 import { v2, v3 } from "../../utils/v";
 import { directionVector, halfDirection2Vector } from "../direction";
-import { keyifyParticleKind, particleMomentum } from "../terms/Particle";
+import { eqParticleKind, keyifyParticleKind } from "../terms/ParticleKind";
+import { particleMomentum } from "./Particle";
 import * as hg from "../../utils/hg";
 import { applyReactionsInPlace } from "../reactions";
 import update from "immutability-helper";
@@ -37,7 +38,7 @@ export function react(world: World) {
                     continue;
                 }
 
-                if (keyifyParticleKind(p) === keyifyParticleKind(a.input)) {
+                if (eqParticleKind(p, a.input)) {
                     reactedWorld.particles[i].isRemoved = true;
                     reactedWorld.consumed[keyifyParticleKind(p)] =
                         (reactedWorld.consumed[keyifyParticleKind(p)] ?? 0) + 1;

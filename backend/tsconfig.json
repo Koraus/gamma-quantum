@@ -1,16 +1,18 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ESNext"],
-    "strict": true,
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "rootDir": "../",
-    "noEmit": true,
-    "types": [
-      "@cloudflare/workers-types",
-      "@rauschma/iterator-helpers-polyfill/dist/src/install.d.ts"
+    "compilerOptions": {
+        "target": "ESNext",
+        "lib": ["ESNext"],
+        "strict": true,
+        "moduleResolution": "Node",
+        "esModuleInterop": true,
+        "rootDir": "../",
+        "noEmit": true,
+        "types": [
+            "@cloudflare/workers-types"
+        ]
+    },
+    "files": [
+        "./node_modules/@rauschma/iterator-helpers-polyfill/dist/src/install.d.ts",
+        "src/index.ts"
     ]
-  },
-  "files": ["src/index.ts", "./src/RoutedDurableObject.ts"]
 }

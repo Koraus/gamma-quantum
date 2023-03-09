@@ -1,4 +1,4 @@
-import { keyifyParticleKind } from "./terms/Particle";
+import { keyifyParticleKind } from "./terms/ParticleKind";
 import { Problem } from "./terms/Problem";
 import { puzzleId } from "./puzzleId";
 

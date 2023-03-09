@@ -1,4 +1,4 @@
-import { ParticleKind } from "../puzzle/terms/Particle";
+import { ParticleKind } from "../puzzle/terms/ParticleKind";
 
 export const particles = {
     // gamma-quantum

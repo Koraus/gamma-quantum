@@ -4,8 +4,9 @@ import { generateReactionVariants } from "../puzzle/generateReactionVariants";
 import { ReactionVariant } from "./ReactionVariant";
 import { ParticleText } from "./ParticleText";
 import { useState } from "react";
-import { ParticleKind, particlesMomentum, particlesEnergy } from "../puzzle/terms/Particle";
-import { Particle } from "../puzzle/terms/Particle";
+import { ParticleKind } from "../puzzle/terms/ParticleKind";
+import { particlesMomentum, particlesEnergy } from "../puzzle/world/Particle";
+import { Particle } from "../puzzle/world/Particle";
 import { selectReactionVariant } from "../puzzle/selectReactionVariant";
 
 export function ReactionForDirections({

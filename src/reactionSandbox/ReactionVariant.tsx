@@ -3,7 +3,7 @@ import { css, cx } from "@emotion/css";
 import { ParticleText } from "./ParticleText";
 import * as hg from "../utils/hg";
 import { ReactionIcon } from "./ReactionIcon";
-import { Particle } from "../puzzle/terms/Particle";
+import { Particle } from "../puzzle/world/Particle";
 
 export function ReactionVariant({
     reagents,

@@ -1,5 +1,5 @@
 import { Stringify } from "../../utils/Stringify";
-import { isParticleKindKey } from "./Particle";
+import { isParticleKindKey } from "../terms/ParticleKind";
 import { puzzleId } from "../puzzleId";
 import memoize from "memoizee";
 import * as D from "../../utils/DecoderEx";

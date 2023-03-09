@@ -8,7 +8,7 @@ import { react } from "./react";
 import { move } from "./move";
 import { World } from "./World";
 import { _throw } from "../../utils/_throw";
-import { particlesEnergy, particlesMomentum } from "../terms/Particle";
+import { particlesEnergy, particlesMomentum } from "./Particle";
 import { trustedEntries } from "../../utils/trustedRecord";
 
 export type { ParticleState, World } from "./World";

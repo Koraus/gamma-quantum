@@ -1,5 +1,4 @@
 import { pipe } from "fp-ts/lib/function";
-import * as E from "fp-ts/Either";
 import * as G from "io-ts/Guard";
 import * as D from "io-ts/Decoder";
 export * from "io-ts/Decoder";
@@ -36,24 +35,7 @@ export const record2 = <Key extends string, A>(
 
 export const integer: D.Decoder<unknown, number> = pipe(
     D.number,
-    D.refine((n): n is number => n % 1 === 0, "integer"),
+    D.refine((x): x is number => x % 1 === 0, "integer"),
 );
 
 
-export const guard = <I, A extends I>(
-    decoder: D.Decoder<I, A>,
-    x: I,
-): x is A => E.isRight(decoder.decode(x));
-
-export function assert<I, A extends I>(
-    decoder: D.Decoder<I, A>,
-    x: I,
-): asserts x is A {
-    return pipe(x,
-        decoder.decode,
-        E.fold(
-            e => { throw new Error(JSON.stringify(e)); },
-            () => undefined,
-        ),
-    );
-}

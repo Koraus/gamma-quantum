@@ -7,7 +7,7 @@ import update from "immutability-helper";
 import { Solution, isSolutionComplete } from "./puzzle/terms/Solution";
 import { trustedEntries } from "./utils/trustedRecord";
 import { particleKindText } from "./CursorToolSelectorPanel";
-import { ParticleKindKey, parsePartilceKind } from "./puzzle/terms/Particle";
+import { ParticleKindKey, parsePartilceKind } from "./puzzle/terms/ParticleKind";
 import { CardChecklist } from "@emotion-icons/bootstrap/CardChecklist";
 import { CheckmarkSquareOutline } from "@emotion-icons/evaicons-outline/CheckmarkSquareOutline";
 import { SquareOutline } from "@emotion-icons/evaicons-outline/SquareOutline";

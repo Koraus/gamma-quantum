@@ -1,9 +1,11 @@
-import { ParticleKindDecoder, keyProjectParticleKind } from "./Particle";
+import { ParticleKindDecoder, keyProjectParticleKind } from "../terms/ParticleKind";
 import * as D from "../../utils/DecoderEx";
+import { PositionDecoder, keyProjectPosition } from "./Position";
+import { decode } from "./keyifyUtils";
 
 export const ActorDecoder = D.union(
     D.struct({
-        position: D.tuple(D.number, D.number),
+        position: PositionDecoder,
         kind: D.literal("spawner"),
         direction: D.union(
             D.literal(0),
@@ -16,7 +18,7 @@ export const ActorDecoder = D.union(
         output: ParticleKindDecoder,
     }),
     D.struct({
-        position: D.tuple(D.number, D.number),
+        position: PositionDecoder,
         kind: D.literal("mirror"),
         direction: D.union(
             D.literal(0),
@@ -38,11 +40,11 @@ export const ActorDecoder = D.union(
     //     kind: D.literal("reactor"),
     // }),
     D.struct({
-        position: D.tuple(D.number, D.number),
+        position: PositionDecoder,
         kind: D.literal("trap"),
     }),
     D.struct({
-        position: D.tuple(D.number, D.number),
+        position: PositionDecoder,
         kind: D.literal("consumer"),
         input: ParticleKindDecoder,
     }),
@@ -50,39 +52,4 @@ export const ActorDecoder = D.union(
 export type Actor = D.TypeOf<typeof ActorDecoder>;
 export type SpawnerActor = Extract<Actor, { kind: "spawner" }>;
 
-export const keyProjectActor = (actor: Actor): Actor => {
-    switch (actor.kind) {
-        case "spawner": {
-            const { position, kind, direction, output } = actor;
-            return {
-                position: [position[0], position[1]],
-                kind,
-                direction,
-                output: keyProjectParticleKind(output),
-            };
-        }
-        case "mirror": {
-            const { position, kind, direction } = actor;
-            return {
-                position: [position[0], position[1]],
-                kind,
-                direction,
-            };
-        }
-        case "trap": {
-            const { position, kind } = actor;
-            return {
-                position: [position[0], position[1]],
-                kind,
-            };
-        }
-        case "consumer": {
-            const { position, kind, input } = actor;
-            return {
-                position: [position[0], position[1]],
-                kind,
-                input: keyProjectParticleKind(input),
-            };
-        }
-    }
-};
+export const keyProjectActor = decode(ActorDecoder);

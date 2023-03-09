@@ -1,3 +1,4 @@
+import "@rauschma/iterator-helpers-polyfill/install";
 import { Router } from "itty-router";
 import { json, error, withContent, status } from "itty-router-extras";
 import { assertSolved, solutionStats } from "../../src/puzzle/world";
@@ -8,7 +9,7 @@ import SHA256 from "crypto-js/sha256";
 import Hex from "crypto-js/enc-hex";
 import { SolutionDecoder, keyifySolution } from "../../src/puzzle/terms/Solution";
 import { _throw } from "../../src/utils/_throw";
-import { assert as assertDecoded } from "../../src/utils/DecoderEx";
+import { assert as assertDecoded } from "../../src/puzzle/terms/keyifyUtils";
 import { clientifyRoutedStub } from "./RoutedDurableObject";
 
 

@@ -1,6 +1,6 @@
 import { v3 } from "../utils/v";
 import { css } from "@emotion/css";
-import { Particle } from "../puzzle/terms/Particle";
+import { Particle } from "../puzzle/world/Particle";
 import { useState } from "react";
 import { ReactionMomentumGraph } from "./ReactionMomentumGraph";
 import { ReactionVariants } from "./ReactionVariants";

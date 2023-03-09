@@ -3,7 +3,8 @@ import { generateReactionVariants } from "./generateReactionVariants";
 import { selectReactionVariant } from "./selectReactionVariant";
 import { ParticleState } from "./world";
 import update from "immutability-helper";
-import { particleCount, ParticleKind } from "./terms/Particle";
+import { ParticleKind } from "./terms/ParticleKind";
+import { particleCount } from "./world/Particle";
 
 type Reaction =
     (p1: ParticleState) => (
