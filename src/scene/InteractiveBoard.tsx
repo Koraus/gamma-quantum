@@ -1,25 +1,99 @@
 import { v2 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { DirectionId, HalfDirectionId } from "../puzzle/direction";
-import { SolutionDraft } from "../puzzle/Solution";
+import { Solution, SolutionDraft } from "../puzzle/Solution";
 import { HexGrid } from "./HexGrid";
-import { StateProp } from "../utils/StateProp";
 import { Mesh, Vector3 } from "three";
 import { useRef, useState } from "react";
 import { pipe } from "fp-ts/lib/function";
 import update from "immutability-helper";
-import { CursorTool } from "../CursorToolSelectorPanel";
+import { cursorToolRecoil } from "../CursorToolSelectorPanel";
+import { useRecoilValue } from "recoil";
+import { useSetSolution } from "../useSetSolution";
+import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 
 
-export function InteractiveBoard({
-    cursorTool, solutionState: [solution, setSolution],
-}: {
-    cursorTool: CursorTool;
-    solutionState: StateProp<SolutionDraft>;
-}) {
-
+export function InteractiveBoard() {
+    const cursorTool = useRecoilValue(cursorToolRecoil);
+    const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
+    const _setSolution = useSetSolution();
+    const setSolution = (s: SolutionDraft | Solution) => _setSolution(
+        "solvedAtStep" in s
+            ? update(s, { $unset: ["solvedAtStep"] })
+            : s);
     const cursorRef = useRef<Mesh>(null);
     const [cursorDirection, setCursorDirection] = useState(0);
+
+    const applyCursor = (hPos: v2) => {
+
+        const i = solution.actors
+            .findIndex(a => v2.eq(a.position, hPos));
+
+        switch (cursorTool.kind) {
+            case "none": break;
+            case "spawner": {
+                if (i >= 0) { break; }
+                setSolution(update(solution, {
+                    actors: {
+                        $push: [{
+                            ...cursorTool,
+                            direction:
+                                Math.floor((cursorDirection % 12) / 2) as
+                                DirectionId,
+                            position: hPos,
+                        }],
+                    },
+                }));
+                break;
+            }
+            case "consumer": {
+                if (i >= 0) { break; }
+                setSolution(update(solution, {
+                    actors: {
+                        $push: [{
+                            ...cursorTool,
+                            position: hPos,
+                        }],
+                    },
+                }));
+                break;
+            }
+            case "mirror": {
+                if (i >= 0) { break; }
+                setSolution(update(solution, {
+                    actors: {
+                        $push: [{
+                            direction:
+                                (cursorDirection % 12) as
+                                HalfDirectionId,
+                            kind: "mirror",
+                            position: hPos,
+                        }],
+                    },
+                }));
+                break;
+            }
+            case "trap": {
+                if (i >= 0) { break; }
+                setSolution(update(solution, {
+                    actors: {
+                        $push: [{
+                            kind: "trap",
+                            position: hPos,
+                        }],
+                    },
+                }));
+                break;
+            }
+            case "remove": {
+                if (i < 0) { break; }
+                setSolution(update(solution, {
+                    actors: { $splice: [[i, 1]] },
+                }));
+                break;
+            }
+        }
+    };
 
     return <group>
         <HexGrid
@@ -57,70 +131,7 @@ export function InteractiveBoard({
                         ([x, y]) => [x, y] as v2,
                     );
 
-                    const i = solution.actors
-                        .findIndex(a => v2.eq(a.position, hPos));
-
-                    switch (cursorTool.kind) {
-                        case "none": break;
-                        case "spawner": {
-                            if (i >= 0) { break; }
-                            setSolution(update(solution, {
-                                actors: {
-                                    $push: [{
-                                        ...cursorTool,
-                                        direction:
-                                            Math.floor((cursorDirection % 12) / 2) as DirectionId,
-                                        position: hPos,
-                                    }],
-                                },
-                            }));
-                            break;
-                        }
-                        case "consumer": {
-                            if (i >= 0) { break; }
-                            setSolution(update(solution, {
-                                actors: {
-                                    $push: [{
-                                        ...cursorTool,
-                                        position: hPos,
-                                    }],
-                                },
-                            }));
-                            break;
-                        }
-                        case "mirror": {
-                            if (i >= 0) { break; }
-                            setSolution(update(solution, {
-                                actors: {
-                                    $push: [{
-                                        direction: (cursorDirection % 12) as HalfDirectionId,
-                                        kind: "mirror",
-                                        position: hPos,
-                                    }],
-                                },
-                            }));
-                            break;
-                        }
-                        case "trap": {
-                            if (i >= 0) { break; }
-                            setSolution(update(solution, {
-                                actors: {
-                                    $push: [{
-                                        kind: "trap",
-                                        position: hPos,
-                                    }],
-                                },
-                            }));
-                            break;
-                        }
-                        case "remove": {
-                            if (i < 0) { break; }
-                            setSolution(update(solution, {
-                                actors: { $splice: [[i, 1]] },
-                            }));
-                            break;
-                        }
-                    }
+                    applyCursor(hPos);
                 }
             }} />
         {cursorTool.kind !== "none" &&

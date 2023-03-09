@@ -9,13 +9,11 @@ import { nowPlaytime, playActionRecoil } from "../PlaybackPanel";
 import { Vector3 } from "three";
 import { GroupSync } from "../utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
-import { cursorToolRecoil } from "../CursorToolSelectorPanel";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
 import { useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 import { useWorld } from "../useWorld";
-import { useSetSolution } from "../useSetSolution";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -45,15 +43,10 @@ export const axialToFlatCartXz =
     };
 
 export function MainScene() {
-    const cursorTool = useRecoilValue(cursorToolRecoil);
-    const solutionState = tuple(
-        useRecoilValue(solutionManagerRecoil).currentSolution,
-        useSetSolution(),
-    );
     const world = useWorld();
     const playAction = useRecoilValue(playActionRecoil);
 
-    const [solution] = solutionState;
+    const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const particles = world.particles.map((p, i) => {
         const prev = world.prev?.particles[i];
         if (prev && prev.isRemoved) { return; }
@@ -76,10 +69,7 @@ export function MainScene() {
                 middle: 8,
                 right: 1,
             }} />
-        <InteractiveBoard
-            solutionState={solutionState}
-            cursorTool={cursorTool}
-        />
+        <InteractiveBoard />
         <GizmoHelper
             alignment="bottom-right"
             margin={[80, 110]}
