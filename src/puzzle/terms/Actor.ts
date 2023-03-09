@@ -1,6 +1,6 @@
-import { ParticleKindDecoder, keyProjectParticleKind } from "../terms/ParticleKind";
-import * as D from "../../utils/DecoderEx";
-import { PositionDecoder, keyProjectPosition } from "./Position";
+import { ParticleKindDecoder } from "../terms/ParticleKind";
+import * as D from "io-ts/Decoder";
+import { PositionDecoder } from "./Position";
 import { decode } from "./keyifyUtils";
 
 export const ActorDecoder = D.union(

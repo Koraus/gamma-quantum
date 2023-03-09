@@ -9,6 +9,7 @@ export const ParticleKindDecoder = D.struct({
     content: D.union(
         D.literal("gamma"),
         pipe(
+            // todo ensure key order
             D.struct({
                 red: pipe(
                     D.integer,
