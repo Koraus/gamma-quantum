@@ -1,7 +1,7 @@
 import { v3 } from "../utils/v";
 import * as hg from "../utils/hg";
-import { ParticleKind, particleMass, particlesEnergy, particlesMomentum } from "./Particle";
-import { Particle } from "./Particle";
+import { ParticleKind, particleMass, particlesEnergy, particlesMomentum } from "./terms/Particle";
+import { Particle } from "./terms/Particle";
 import { solveConservation } from "./solveConservation";
 import { tuple } from "../utils/tuple";
 

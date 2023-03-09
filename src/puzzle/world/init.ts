@@ -1,5 +1,5 @@
 import { v3 } from "../../utils/v";
-import { SolutionDraft } from "../Solution";
+import { SolutionDraft } from "../terms/Solution";
 import { World } from "./World";
 
 export const init = (solution: SolutionDraft): World => {

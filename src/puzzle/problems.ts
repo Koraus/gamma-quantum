@@ -1,5 +1,5 @@
-import { keyifyParticleKind } from "./Particle";
-import { Problem } from "./Problem";
+import { keyifyParticleKind } from "./terms/Particle";
+import { Problem } from "./terms/Problem";
 import { puzzleId } from "./puzzleId";
 
 
@@ -14,6 +14,9 @@ export const problem1: Problem = {
     demand: {
         [keyifyParticleKind({ content: { red: 2, green: 0, blue: 0 } })]: 10,
     },
+    positions: {},
+    positionsMode: "ban",
+    actors: {},
 };
 
 export const problem2: Problem = {
@@ -28,6 +31,9 @@ export const problem2: Problem = {
     demand: {
         [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 10,
     },
+    positions: {},
+    positionsMode: "ban",
+    actors: {},
 };
 
 
@@ -42,6 +48,9 @@ export const problem3: Problem = {
     demand: {
         [keyifyParticleKind({ content: { red: 4, green: 0, blue: 0 } })]: 10,
     },
+    positions: {},
+    positionsMode: "ban",
+    actors: {},
 };
 
 
@@ -56,6 +65,9 @@ export const problem4: Problem = {
     demand: {
         [keyifyParticleKind({ content: { red: 4, green: 0, blue: 0 } })]: 10,
     },
+    positions: {},
+    positionsMode: "ban",
+    actors: {},
 };
 
 export const problem5: Problem = {
@@ -72,6 +84,9 @@ export const problem5: Problem = {
         [keyifyParticleKind({ content: { red: 2, green: 0, blue: 0 } })]: 10,
         [keyifyParticleKind({ content: { red: 0, green: 2, blue: 0 } })]: 10,
     },
+    positions: {},
+    positionsMode: "ban",
+    actors: {},
 };
 
 export const sandbox: Problem = {
@@ -101,4 +116,7 @@ export const sandbox: Problem = {
     demand: {
         [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 9999,
     },
+    positions: {},
+    positionsMode: "ban",
+    actors: {},
 };

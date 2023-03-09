@@ -1,5 +1,5 @@
 import { v3 } from "../../utils/v";
-import { particlesMomentum } from "../Particle";
+import { particlesMomentum } from "../terms/Particle";
 import * as hg from "../../utils/hg";
 import update from "immutability-helper";
 import * as u from "../../utils/u";

@@ -1,5 +1,5 @@
-import { Problem, keyifyProblem } from "../puzzle/Problem";
-import { Solution, keyifySolution } from "../puzzle/Solution";
+import { Problem, keyifyProblem } from "../puzzle/terms/Problem";
+import { Solution, keyifySolution } from "../puzzle/terms/Solution";
 import { solutionStats } from "../puzzle/world";
 
 

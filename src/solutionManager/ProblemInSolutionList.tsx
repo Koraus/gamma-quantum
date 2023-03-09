@@ -1,5 +1,5 @@
-import { Problem, eqProblem } from "../puzzle/Problem";
-import { SolutionDraft, eqSolutionDraft } from "../puzzle/Solution";
+import { Problem, eqProblem } from "../puzzle/terms/Problem";
+import { SolutionDraft, eqSolutionDraft } from "../puzzle/terms/Solution";
 import { css, cx } from "@emotion/css";
 import { StateProp } from "../utils/StateProp";
 import { Save as SaveIcon } from "@emotion-icons/remix-fill/Save";

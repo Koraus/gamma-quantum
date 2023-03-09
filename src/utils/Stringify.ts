@@ -19,23 +19,31 @@ type ObjBody<
                     : Error<"StringifyObjectBody: Unknown 0">
             : Error<"StringifyObjectBody: Key is not string">
         : ""; // empty object
-type Obj<T extends object> = 
+type StringifyObject<T extends object> = 
     `{${ObjBody<T, Union.ListOf<keyof T>>}}`;
 
-// todo tuples
-type Arr<Element> = 
-    "[]" 
-    | `[${Stringify<Element>}]` 
-    | `[${Stringify<Element>},${string}${Stringify<Element>}]`;
+type StringifyArray<T> =
+    T extends [infer El1, infer El2, infer El3, infer El4]
+        ? `[${S<El1>},${S<El2>},${S<El3>},${S<El4>}]`
+        : T extends [infer El1, infer El2, infer El3]
+            ? `[${S<El1>},${S<El2>},${S<El3>}]`
+            : T extends [infer El1, infer El2]
+                ? `[${S<El1>},${S<El2>}]`
+                : T extends [infer El1]
+                    ? `[${S<El1>}]`
+                    : T extends (infer El)[] 
+                        ? "[]" | `[${S<El>}]` | `[${S<El>},${string}${S<El>}]`
+                        : Error<"StringifyArray: Not an array">;
 
-    
 export type Stringify<T> =
     T extends string
         ? `"${T}"`
         : T extends number | boolean | null
             ? `${T}`
-            : T extends (infer Element)[] 
-                ? Arr<Element>
+            : T extends unknown[]
+                ? `${StringifyArray<T>}`
                 : T extends object
-                    ? Obj<T>
+                    ? StringifyObject<T>
                     : Error<"Stringify: Type not supported">;
+
+type S<T> = Stringify<T>;

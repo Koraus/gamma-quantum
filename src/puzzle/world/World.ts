@@ -1,6 +1,6 @@
 import { v3 } from "../../utils/v";
-import { SolutionDraft } from "../Solution";
-import { ParticleKindKey, Particle } from "../Particle";
+import { SolutionDraft } from "../terms/Solution";
+import { ParticleKindKey, Particle } from "../terms/Particle";
 
 
 export type ParticleState = Particle & {

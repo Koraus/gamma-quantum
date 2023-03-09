@@ -1,5 +1,5 @@
 import { css, cx } from "@emotion/css";
-import { keyifyParticleKind, keyProjectParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/Particle";
+import { keyifyParticleKind, keyProjectParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/terms/Particle";
 import { atom, useRecoilState, useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
 import { hasValueAtKey } from "ts-is-present";

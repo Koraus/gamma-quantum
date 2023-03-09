@@ -6,8 +6,8 @@ import { groupReactionVariantsBySymmetries } from "../puzzle/groupReactionVarian
 import * as hg from "../utils/hg";
 import { particles } from "./particles";
 import { velocityVariants4 } from "../puzzle/generateReactionVariants";
-import { ParticleKind, particleMass } from "../puzzle/Particle";
-import { Particle } from "../puzzle/Particle";
+import { ParticleKind, particleMass } from "../puzzle/terms/Particle";
+import { Particle } from "../puzzle/terms/Particle";
 import { tuple } from "../utils/tuple";
 
 

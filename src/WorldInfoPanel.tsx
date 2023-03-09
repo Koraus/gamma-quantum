@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useWorld } from "./useWorld";
 import { directionSymbolFor } from "./reactionSandbox/ParticleText";
 import { solutionStats, worldStats } from "./puzzle/world";
-import { isSolutionComplete } from "./puzzle/Solution";
+import { isSolutionComplete } from "./puzzle/terms/Solution";
 
 
 export function WorldInfoPanel({

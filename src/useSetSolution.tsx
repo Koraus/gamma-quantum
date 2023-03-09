@@ -1,5 +1,5 @@
 import { playActionRecoil } from "./PlaybackPanel";
-import { Solution, SolutionDraft, eqSolutionDraft, isSolutionComplete } from "./puzzle/Solution";
+import { Solution, SolutionDraft, eqSolutionDraft, isSolutionComplete } from "./puzzle/terms/Solution";
 import { cursorToolRecoil } from "./CursorToolSelectorPanel";
 import { winRecoil } from "./WinPanel";
 import { useRecoilValue, useResetRecoilState } from "recoil";

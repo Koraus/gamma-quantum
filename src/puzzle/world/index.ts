@@ -2,13 +2,13 @@ import memoize from "memoizee";
 import update from "immutability-helper";
 import * as u from "../../utils/u";
 import * as hg from "../../utils/hg";
-import { Solution, SolutionDraft } from "../Solution";
+import { Solution, SolutionDraft } from "../terms/Solution";
 import { init } from "./init";
 import { react } from "./react";
 import { move } from "./move";
 import { World } from "./World";
 import { _throw } from "../../utils/_throw";
-import { particlesEnergy, particlesMomentum } from "../Particle";
+import { particlesEnergy, particlesMomentum } from "../terms/Particle";
 import { trustedEntries } from "../../utils/trustedRecord";
 
 export type { ParticleState, World } from "./World";

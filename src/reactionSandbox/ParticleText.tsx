@@ -2,8 +2,8 @@ import { css } from "@emotion/css";
 import * as hg from "../utils/hg";
 import { v3 } from "../utils/v";
 
-import { ParticleKind, particleMass } from "../puzzle/Particle";
-import { Particle } from "../puzzle/Particle";
+import { ParticleKind, particleMass } from "../puzzle/terms/Particle";
+import { Particle } from "../puzzle/terms/Particle";
 import { DirectionId } from "../puzzle/direction";
 
 export const particleColor = (p: ParticleKind) => {

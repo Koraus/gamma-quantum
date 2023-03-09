@@ -1,1 +1,1 @@
-export const puzzleId = "gamma-quantum@1" as const;
+export const puzzleId = "gamma-quantum@2" as const;

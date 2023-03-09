@@ -3,8 +3,8 @@ import * as hg from "../utils/hg";
 import _ from "lodash";
 import { tuple } from "../utils/tuple";
 import { groupReactionVariantsBySymmetries } from "./groupReactionVariantsBySymmetries";
-import { ParticleKind, particlesMomentum, particlesEnergy } from "./Particle";
-import { Particle } from "./Particle";
+import { ParticleKind, particlesMomentum, particlesEnergy } from "./terms/Particle";
+import { Particle } from "./terms/Particle";
 
 
 export function selectReactionVariant({

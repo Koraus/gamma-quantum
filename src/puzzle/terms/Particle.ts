@@ -1,8 +1,8 @@
-import { v3 } from "../utils/v";
-import * as hg from "../utils/hg";
-import { ReadonlyDeep } from "../utils/ReadonlyDeep";
-import { Stringify } from "../utils/Stringify";
-import * as D from "../utils/DecoderEx";
+import { v3 } from "../../utils/v";
+import * as hg from "../../utils/hg";
+import { ReadonlyDeep } from "../../utils/ReadonlyDeep";
+import { Stringify } from "../../utils/Stringify";
+import * as D from "../../utils/DecoderEx";
 
 export const ParticleKindDecoder = D.struct({
     content: D.union(

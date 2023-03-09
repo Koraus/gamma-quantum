@@ -2,7 +2,7 @@ import { useRecoilValue } from "recoil";
 import { nowPlaytime, playActionRecoil } from "./PlaybackPanel";
 import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
 import { useEffect, useState } from "react";
-import { SolutionDraft } from "./puzzle/Solution";
+import { SolutionDraft } from "./puzzle/terms/Solution";
 import { worldAtStep } from "./puzzle/world";
 
 

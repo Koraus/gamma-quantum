@@ -1,5 +1,5 @@
 import { DefaultValue, atom, useSetRecoilState } from "recoil";
-import { Solution, SolutionKey, keyifySolution, parseSolution } from "../puzzle/Solution";
+import { Solution, SolutionKey, keyifySolution, parseSolution } from "../puzzle/terms/Solution";
 import { postSolution } from "./statsCllient";
 import { localStorageAtomEffect } from "../utils/localStorageAtomEffect";
 import update from "immutability-helper";

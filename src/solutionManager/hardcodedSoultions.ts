@@ -1,5 +1,5 @@
 import { problem3, problem5, sandbox } from "../puzzle/problems";
-import { SolutionDraft } from "../puzzle/Solution";
+import { SolutionDraft } from "../puzzle/terms/Solution";
 
 
 

@@ -1,7 +1,7 @@
 import { v2 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { DirectionId, HalfDirectionId } from "../puzzle/direction";
-import { Solution, SolutionDraft } from "../puzzle/Solution";
+import { Solution, SolutionDraft } from "../puzzle/terms/Solution";
 import { HexGrid } from "./HexGrid";
 import { Mesh, Vector3 } from "three";
 import { useRef, useState } from "react";
