@@ -18,6 +18,7 @@ export const ActorDecoder = D.union(
     D.struct({
         kind: D.literal("mirror"),
         direction: D.union(
+            // todo: in fact, mirrors have olny 6 unique halfdirections
             D.literal(0),
             D.literal(1),
             D.literal(2),
