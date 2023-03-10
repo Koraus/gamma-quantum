@@ -3,10 +3,6 @@ import { SolutionDraft } from "../terms/Solution";
 import { World } from "./World";
 
 export const init = (solution: SolutionDraft): World => {
-    // todo: ensure solution is valid:
-    //  * all the actors have unique spots
-    //  * spawners and consumers match the promblem list
-    //--* +anything else?
     return ({
         ...solution,
         init: solution,

@@ -34,7 +34,7 @@ export default function ProblemInSolutionList({
                     css({
                         listStyle: "none",
                         cursor: "pointer",
-                        backgroundColor: 
+                        backgroundColor:
                             eqSolutionDraft(s, solution) ? "red" : "",
                     }),
                 )}
@@ -55,7 +55,7 @@ export default function ProblemInSolutionList({
             )}
             onClick={() => setSolution({
                 problem: problem,
-                actors: [],
+                actors: {},
             })}
         > [new solution] </li>
         {showCurrentSeparately

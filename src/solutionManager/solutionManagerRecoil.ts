@@ -6,7 +6,7 @@ import { Solution, SolutionDraft } from "../puzzle/terms/Solution";
 import { onChangeAtomEffect } from "../utils/onChangeAtomEffect";
 import * as solutions from "./hardcodedSoultions";
 import { SetStateAction } from "react";
-import { puzzleId } from "../puzzle/puzzleId";
+import { puzzleId } from "../puzzle/terms/puzzleId";
 
 
 const solutionManagerRecoilDefault = {

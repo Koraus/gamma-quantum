@@ -3,7 +3,7 @@ import { keyifyParticleKind, keyProjectParticleKind, parsePartilceKind, Particle
 import { atom, useRecoilState, useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
 import { hasValueAtKey } from "ts-is-present";
-import { trustedEntries } from "./utils/trustedRecord";
+import { trustedEntries, trustedValues } from "./utils/trustedRecord";
 
 export type CursorTool = {
     kind: "none",
@@ -47,8 +47,7 @@ export function CursorToolSelectorPanel({
         .map(([kind, count]) => ({
             kind: "spawner" as const,
             output: parsePartilceKind(kind as ParticleKindKey),
-            used:
-                solution.actors
+            used: trustedValues(solution.actors)
                     .filter(hasValueAtKey("kind", "spawner" as const))
                     .filter(a => kind === keyifyParticleKind(a.output))
                     .length,
@@ -58,8 +57,7 @@ export function CursorToolSelectorPanel({
         .map(([kind, count]) => ({
             kind: "consumer" as const,
             input: parsePartilceKind(kind as ParticleKindKey),
-            used:
-                solution.actors
+            used: trustedValues(solution.actors)
                     .filter(hasValueAtKey("kind", "consumer" as const))
                     .filter(a => kind === keyifyParticleKind(a.input))
                     .length,

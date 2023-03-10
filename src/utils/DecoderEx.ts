@@ -1,37 +1,27 @@
 import { pipe } from "fp-ts/lib/function";
-import * as G from "io-ts/Guard";
+import * as E from "fp-ts/Either";
 import * as D from "io-ts/Decoder";
 export * from "io-ts/Decoder";
 
 
-export const record2 = <Key extends string, A>(
+export const keyRefinedRecord = <Key extends string, A>(
+    domain: D.Decoder<unknown, Key>,
     codomain: D.Decoder<unknown, A>,
-    options?: {
-        checkKeyOrder?: boolean
-        refineKey?: (key: string) => key is Key,
-    },
-): D.Decoder<unknown, Partial<Record<Key, A>>> => {
-    if (!options) { return D.record(codomain); }
-    const { checkKeyOrder, refineKey } = options;
-    if (!checkKeyOrder && !refineKey) { return D.record(codomain); }
-    const expected = "Partial<Record<Key, unknown>> with " + [
-        checkKeyOrder ? " ordered keys" : "",
-        refineKey ? "refined keys" : "",
-    ].join(", ");
-    return pipe(
-        D.fromRefinement(
-            (u: unknown): u is Partial<Record<Key, unknown>> =>
-                G.UnknownRecord.is(u)
-                && (!refineKey || Object.keys(u)
-                    .every(refineKey))
-                && (!checkKeyOrder || Object.keys(u)
-                    .every((k, i, arr) =>
-                        i === 0 || (arr[i - 1].localeCompare(k, "en") <= 0))),
-            expected),
-        D.compose(D.fromRecord(codomain)));
-};
+): D.Decoder<unknown, Partial<Record<Key, A>>> => pipe(
+    D.UnknownRecord,
+    D.parse((x) => E.right(
+        Object.keys(x)
+            .filter((k): k is Key => E.isRight(domain.decode(k)))
+            .sort()
+            .reduce(
+                (acc, k) => (acc[k] = x[k], acc),
+                {} as Partial<Record<Key, unknown>>))),
+    D.compose(D.fromRecord(codomain)),
+);
 
-
+export const refinedSet = <Key extends string>(
+    domain: D.Decoder<unknown, Key>,
+) => keyRefinedRecord(domain, D.literal(true));
 
 export const integer: D.Decoder<unknown, number> = pipe(
     D.number,

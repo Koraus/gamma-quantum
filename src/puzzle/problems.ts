@@ -1,6 +1,6 @@
 import { keyifyParticleKind } from "./terms/ParticleKind";
 import { Problem } from "./terms/Problem";
-import { puzzleId } from "./puzzleId";
+import { puzzleId } from "./terms/puzzleId";
 
 
 export const problem1: Problem = {
