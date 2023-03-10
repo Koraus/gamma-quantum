@@ -3,6 +3,9 @@ import { ParticleState } from "../puzzle/world";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { directionOf } from "../reactionSandbox/ParticleText";
 import * as hg from "../utils/hg";
+import { SubparticleMesh } from "./SubparticleMesh";
+
+
 
 export const getParticleColors = (p: ParticleKind) =>
     p.content === "gamma"
@@ -18,7 +21,7 @@ export function ParticleToken({
 }: {
     particle: ParticleState;
 }) {
-    const colors = getParticleColors(p);
+    const cs = getParticleColors(p);
 
     // const transition = getTransition(playAction.startPlaytime);
 
@@ -31,68 +34,38 @@ export function ParticleToken({
         // todo: trigger render here
     });
 
-
+    const subparticles = (() => {
+        switch (cs.length) {
+            case 1: return <>
+                <SubparticleMesh position={[0, 0, 0]} color={cs[0]} />
+            </>;
+            case 2: return <>
+                <SubparticleMesh position={[0.07, 0, 0]} color={cs[0]} />
+                <SubparticleMesh position={[-0.07, 0, 0]} color={cs[1]} />
+            </>;
+            case 3: return <>
+                <SubparticleMesh position={[0.07, 0, 0]} color={cs[0]} />
+                <SubparticleMesh position={[-0.02, 0, 0.05]} color={cs[1]} />
+                <SubparticleMesh position={[-0.02, 0, -0.05]} color={cs[3]} />
+            </>;
+            case 4: return <>
+                <SubparticleMesh position={[0.07, 0, 0]} color={cs[0]} />
+                <SubparticleMesh position={[-0.07, 0, 0]} color={cs[1]} />
+                <SubparticleMesh position={[0, 0, 0.07]} color={cs[2]} />
+                <SubparticleMesh position={[0, 0, -0.07]} color={cs[3]} />
+            </>;
+            default: throw "not supproted";
+        }
+    })();
     return <group>
-        <mesh>
+        <mesh  >
             <cylinderGeometry args={[0.4, 0.4, 0.1]} />
             <meshPhongMaterial
                 color={"white"}
                 transparent
                 opacity={0.2} />
         </mesh>
-        {(() => {
-            switch (colors.length) {
-                case 1: return <>
-                    <mesh position={[0, 0, 0]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[0]} />
-                    </mesh>
-                </>;
-                case 2: return <>
-                    <mesh position={[0.07, 0, 0]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[0]} />
-                    </mesh>
-                    <mesh position={[-0.07, 0, 0]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[1]} />
-                    </mesh>
-                </>;
-                case 3: return <>
-                    <mesh position={[0.07, 0, 0]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[0]} />
-                    </mesh>
-                    <mesh position={[-0.02, 0, 0.05]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[1]} />
-                    </mesh>
-                    <mesh position={[-0.02, 0, -0.05]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[3]} />
-                    </mesh>
-                </>;
-                case 4: return <>
-                    <mesh position={[0.07, 0, 0]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[0]} />
-                    </mesh>
-                    <mesh position={[-0.07, 0, 0]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[1]} />
-                    </mesh>
-                    <mesh position={[0, 0, 0.07]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[2]} />
-                    </mesh>
-                    <mesh position={[0, 0, -0.07]}>
-                        <sphereGeometry args={[0.1]} />
-                        <meshPhongMaterial color={colors[3]} />
-                    </mesh>
-                </>;
-                default: throw "not supproted";
-            }
-        })()}
+        {subparticles}
         <group
             rotation={[0, -Math.PI / 3 * directionOf(p.velocity)[0], 0]}
         >
