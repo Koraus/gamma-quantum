@@ -1,8 +1,14 @@
 import { Plane } from "@react-three/drei";
+import { v2 } from "../utils/v";
 
 export function HexGrid({
+    positions,
+    positionsMode,
     ...props
-}: Parameters<typeof Plane>[0]) {
+}: {
+    positions: v2[],
+    positionsMode: "ban" | "allow",
+} & Parameters<typeof Plane>[0]) {
     return <Plane
         scale={[100, 100, 1]}
         rotation={[-Math.PI / 2, 0, 0]}
@@ -59,11 +65,15 @@ void main() {
     vec3 hr = cubeRound(_h);
     vec3 t = h - hr;
     vec3 at = abs(t);
-    gl_FragColor = vec4(
-        1.0,
-        1.0,
-        1.0,
-        0.1 * float((max3(at + vec3(at.y, at.z, at.x)) > 0.98)));
+    bool over = max3(at + vec3(at.y, at.z, at.x)) < 0.98;
+    ${ positionsMode === "allow" ? "" : "over = !over;" }
+    ${
+        positions
+            .map(([x, y]) => `vec2(${x}.0, ${y}.0)`)
+            .map(v => `if (hr.xy == ${v}) { over = !over; }`)
+            .join("\n")
+    }
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 0.1 * float(over));
 }
         `} />
     </Plane>;

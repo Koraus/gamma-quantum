@@ -1,7 +1,7 @@
 import { v2 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { DirectionId, HalfDirectionId } from "../puzzle/direction";
-import { Solution, SolutionDraft } from "../puzzle/terms/Solution";
+import { Solution, SolutionDraft, keyProjectSolutionDraft } from "../puzzle/terms/Solution";
 import { HexGrid } from "./HexGrid";
 import { Mesh, Vector3 } from "three";
 import { useRef, useState } from "react";
@@ -11,19 +11,29 @@ import { cursorToolRecoil } from "../CursorToolSelectorPanel";
 import { useRecoilValue } from "recoil";
 import { useSetSolution } from "../useSetSolution";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
-import { keyifyPosition } from "../puzzle/terms/Position";
+import { keyifyPosition, parsePosition } from "../puzzle/terms/Position";
+import { trustedKeys } from "../utils/trustedRecord";
+import { keyifyProblem } from "../puzzle/terms/Problem";
 
 
 export function InteractiveBoard() {
     const cursorTool = useRecoilValue(cursorToolRecoil);
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const _setSolution = useSetSolution();
-    const setSolution = (s: SolutionDraft | Solution) => _setSolution(
-        "solvedAtStep" in s
-            ? update(s, { $unset: ["solvedAtStep"] })
-            : s);
+    const setSolution = (s: SolutionDraft | Solution) => {
+        try {
+            const s1 = keyProjectSolutionDraft(s);
+            _setSolution(s1);
+        }
+        catch {
+            /* mute */
+        }
+    };
     const cursorRef = useRef<Mesh>(null);
     const [cursorDirection, setCursorDirection] = useState(0);
+    const normalizedDirection =
+        cursorDirection % 12
+        + ((cursorDirection < 0) ? 12 : 0);
 
     const applyCursor = (hPos: v2) => {
 
@@ -32,15 +42,13 @@ export function InteractiveBoard() {
         switch (cursorTool.kind) {
             case "none": break;
             case "spawner": {
-                if (solution.actors[hPosKey]) { return; }
-                if (solution.problem.actors[hPosKey]) { return; }
                 setSolution(update(solution, {
                     actors: {
                         [hPosKey]: {
                             $set: {
                                 ...cursorTool,
                                 direction:
-                                    Math.floor((cursorDirection % 12) / 2) as
+                                    Math.floor((normalizedDirection) / 2) as
                                     DirectionId,
                             },
                         },
@@ -49,8 +57,6 @@ export function InteractiveBoard() {
                 break;
             }
             case "consumer": {
-                if (solution.actors[hPosKey]) { return; }
-                if (solution.problem.actors[hPosKey]) { return; }
                 setSolution(update(solution, {
                     actors: {
                         [hPosKey]: {
@@ -63,16 +69,13 @@ export function InteractiveBoard() {
                 break;
             }
             case "mirror": {
-                if (solution.actors[hPosKey]) { return; }
-                if (solution.problem.actors[hPosKey]) { return; }
                 setSolution(update(solution, {
                     actors: {
                         [hPosKey]: {
                             $set: {
                                 ...cursorTool,
                                 direction:
-                                    (cursorDirection % 12) as
-                                    HalfDirectionId,
+                                    normalizedDirection as HalfDirectionId,
                             },
                         },
                     },
@@ -80,8 +83,6 @@ export function InteractiveBoard() {
                 break;
             }
             case "trap": {
-                if (solution.actors[hPosKey]) { return; }
-                if (solution.problem.actors[hPosKey]) { return; }
                 setSolution(update(solution, {
                     actors: {
                         [hPosKey]: {
@@ -104,6 +105,10 @@ export function InteractiveBoard() {
 
     return <group>
         <HexGrid
+            key={keyifyProblem(solution.problem)}
+            positions={trustedKeys(solution.problem.positions)
+                .map(parsePosition)}
+            positionsMode={solution.problem.positionsMode}
             onPointerMove={ev => {
                 const cursorEl = cursorRef.current;
                 if (!cursorEl) { return; }

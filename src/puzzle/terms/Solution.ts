@@ -29,6 +29,10 @@ export const SolutionDraftDecoder = pipe(
                 }
             }),
         "solution actors positions are allowed / not banned"),
+    D.refine(
+        (x): x is typeof x =>
+            true, // todo
+        "solution spawners and consumers do not exceed problem limits"),
 );
 export type SolutionDraft = D.TypeOf<typeof SolutionDraftDecoder>;
 export type SolutionDraftKey = ShallowStringify<SolutionDraft>;

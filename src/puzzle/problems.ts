@@ -1,7 +1,37 @@
 import { keyifyParticleKind } from "./terms/ParticleKind";
+import { keyifyPosition } from "./terms/Position";
 import { Problem } from "./terms/Problem";
 import { puzzleId } from "./terms/puzzleId";
 
+export const problem0: Problem = {
+    puzzleId,
+    spawners: {},
+    consumers: {},
+    demand: {
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 10,
+    },
+    positions: {
+        [keyifyPosition([0, 0])]: true,
+        [keyifyPosition([0, 1])]: true,
+        [keyifyPosition([0, -1])]: true,
+        [keyifyPosition([1, -1])]: true,
+        [keyifyPosition([1, 0])]: true,
+        [keyifyPosition([-1, 0])]: true,
+        [keyifyPosition([-1, 1])]: true,
+    },
+    positionsMode: "allow",
+    actors: {
+        [keyifyPosition([4, 0])]: {
+            kind: "spawner",
+            output: { content: { red: 1, green: 0, blue: 0 } },
+            direction: 2,
+        },
+        [keyifyPosition([-4, 1])]: {
+            kind: "consumer",
+            input: { content: { red: 1, green: 0, blue: 0 } },
+        },
+    },
+};
 
 export const problem1: Problem = {
     puzzleId,
