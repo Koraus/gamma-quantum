@@ -11,6 +11,7 @@ import { cursorToolRecoil } from "../CursorToolSelectorPanel";
 import { useRecoilValue } from "recoil";
 import { useSetSolution } from "../useSetSolution";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
+import { keyifyPosition } from "../puzzle/terms/Position";
 
 
 export function InteractiveBoard() {
@@ -26,69 +27,75 @@ export function InteractiveBoard() {
 
     const applyCursor = (hPos: v2) => {
 
-        const i = solution.actors
-            .findIndex(a => v2.eq(a.position, hPos));
+        const hPosKey = keyifyPosition(hPos);
 
         switch (cursorTool.kind) {
             case "none": break;
             case "spawner": {
-                if (i >= 0) { break; }
+                if (solution.actors[hPosKey]) { return; }
+                if (solution.problem.actors[hPosKey]) { return; }
                 setSolution(update(solution, {
                     actors: {
-                        $push: [{
-                            ...cursorTool,
-                            direction:
-                                Math.floor((cursorDirection % 12) / 2) as
-                                DirectionId,
-                            position: hPos,
-                        }],
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                                direction:
+                                    Math.floor((cursorDirection % 12) / 2) as
+                                    DirectionId,
+                            },
+                        },
                     },
                 }));
                 break;
             }
             case "consumer": {
-                if (i >= 0) { break; }
+                if (solution.actors[hPosKey]) { return; }
+                if (solution.problem.actors[hPosKey]) { return; }
                 setSolution(update(solution, {
                     actors: {
-                        $push: [{
-                            ...cursorTool,
-                            position: hPos,
-                        }],
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                            },
+                        },
                     },
                 }));
                 break;
             }
             case "mirror": {
-                if (i >= 0) { break; }
+                if (solution.actors[hPosKey]) { return; }
+                if (solution.problem.actors[hPosKey]) { return; }
                 setSolution(update(solution, {
                     actors: {
-                        $push: [{
-                            direction:
-                                (cursorDirection % 12) as
-                                HalfDirectionId,
-                            kind: "mirror",
-                            position: hPos,
-                        }],
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                                direction:
+                                    (cursorDirection % 12) as
+                                    HalfDirectionId,
+                            },
+                        },
                     },
                 }));
                 break;
             }
             case "trap": {
-                if (i >= 0) { break; }
+                if (solution.actors[hPosKey]) { return; }
+                if (solution.problem.actors[hPosKey]) { return; }
                 setSolution(update(solution, {
                     actors: {
-                        $push: [{
-                            kind: "trap",
-                            position: hPos,
-                        }],
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                            },
+                        },
                     },
                 }));
                 break;
             }
             case "remove": {
-                if (i < 0) { break; }
                 setSolution(update(solution, {
-                    actors: { $splice: [[i, 1]] },
+                    actors: { $unset: [hPosKey] },
                 }));
                 break;
             }

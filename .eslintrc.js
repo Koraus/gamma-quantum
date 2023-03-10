@@ -17,7 +17,6 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
     ],
     rules: {
-        "indent": ["warn", 4, { "SwitchCase": 1 }],
         // "linebreak-style": ["warn", "unix"], // enforced by git
         "quotes": ["warn", "double"],
         "semi": ["warn", "always"],

@@ -7,6 +7,8 @@ import { applyReactionsInPlace } from "../reactions";
 import update from "immutability-helper";
 import { pipe } from "fp-ts/lib/function";
 import { World } from "./World";
+import { trustedEntries } from "../../utils/trustedRecord";
+import { parsePosition } from "../terms/Position";
 
 
 export function react(world: World) {
@@ -19,12 +21,17 @@ export function react(world: World) {
 
     applyReactionsInPlace(reactedWorld.particles);
 
-    for (const a of world.actors) {
+    const actors = [
+        ...trustedEntries(world.actors),
+        ...trustedEntries(world.problem.actors),
+    ];
+    for (const [positionKey, a] of actors) {
+        const position = parsePosition(positionKey);
         if (a.kind === "spawner") {
             if (reactedWorld.step % 12 === 1) {
                 reactedWorld.particles.push({
                     ...a.output,
-                    position: v3.from(...hg.axialToCube(a.position)),
+                    position: v3.from(...hg.axialToCube(position)),
                     velocity: [...directionVector[a.direction]],
                     isRemoved: false,
                 });
@@ -34,7 +41,7 @@ export function react(world: World) {
             for (let i = reactedWorld.particles.length - 1; i >= 0; i--) {
                 const p = reactedWorld.particles[i];
                 if (!p || p.isRemoved) { continue; }
-                if (!v3.eq(hg.axialToCube(a.position), p.position)) {
+                if (!v3.eq(hg.axialToCube(position), p.position)) {
                     continue;
                 }
 
@@ -49,7 +56,7 @@ export function react(world: World) {
             for (let i = 0; i < reactedWorld.particles.length; i++) {
                 const p = reactedWorld.particles[i];
                 if (!p || p.isRemoved) { continue; }
-                if (!v3.eq(hg.axialToCube(a.position), p.position)) {
+                if (!v3.eq(hg.axialToCube(position), p.position)) {
                     continue;
                 }
 

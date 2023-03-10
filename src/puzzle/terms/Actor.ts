@@ -1,11 +1,9 @@
 import { ParticleKindDecoder } from "../terms/ParticleKind";
 import * as D from "io-ts/Decoder";
-import { PositionDecoder } from "./Position";
 import { decode } from "./keyifyUtils";
 
 export const ActorDecoder = D.union(
     D.struct({
-        position: PositionDecoder,
         kind: D.literal("spawner"),
         direction: D.union(
             D.literal(0),
@@ -18,7 +16,6 @@ export const ActorDecoder = D.union(
         output: ParticleKindDecoder,
     }),
     D.struct({
-        position: PositionDecoder,
         kind: D.literal("mirror"),
         direction: D.union(
             D.literal(0),
@@ -36,15 +33,12 @@ export const ActorDecoder = D.union(
         ),
     }),
     // D.struct({
-    //     position: D.tuple(D.number, D.number),
     //     kind: D.literal("reactor"),
     // }),
     D.struct({
-        position: PositionDecoder,
         kind: D.literal("trap"),
     }),
     D.struct({
-        position: PositionDecoder,
         kind: D.literal("consumer"),
         input: ParticleKindDecoder,
     }),

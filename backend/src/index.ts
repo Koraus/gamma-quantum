@@ -2,14 +2,13 @@ import "@rauschma/iterator-helpers-polyfill/install";
 import { Router } from "itty-router";
 import { json, error, withContent, status } from "itty-router-extras";
 import { assertSolved, solutionStats } from "../../src/puzzle/world";
-import { ProblemDecoder, keyifyProblem } from "../../src/puzzle/terms/Problem";
+import { keyifyProblem } from "../../src/puzzle/terms/Problem";
 import { StatsStorage } from "./StatsStorage";
 import { Env } from "./Env";
 import SHA256 from "crypto-js/sha256";
 import Hex from "crypto-js/enc-hex";
-import { SolutionDecoder, keyifySolution } from "../../src/puzzle/terms/Solution";
+import { keyProjectSolution, keyifySolution } from "../../src/puzzle/terms/Solution";
 import { _throw } from "../../src/utils/_throw";
-import { assert as assertDecoded } from "../../src/puzzle/terms/keyifyUtils";
 import { clientifyRoutedStub } from "./RoutedDurableObject";
 
 
@@ -28,7 +27,6 @@ const router = Router()
         const problemKey = new URL(req.url).searchParams.get("problem") 
             ?? _throw("problem not set");
         const problem = JSON.parse(problemKey);
-        assertDecoded(ProblemDecoder, problem);
         // todo what could go wrong if we just use problemKey as id here?
         // + this would allow getting stats form prev puzzleIds
         // + performance
@@ -41,8 +39,8 @@ const router = Router()
         return json(await statsStorage.getData());
     })
     .post("/", withContent, async (req, env: Env) => {
-        const solution = (req as { content: unknown } & Request).content;
-        assertDecoded(SolutionDecoder, solution);
+        const { content } = (req as { content: unknown } & Request);
+        const solution = keyProjectSolution(content);
         assertSolved(solution);
         const statsStorage = getStatsStorageStub(
             keyifyProblem(solution.problem), env);

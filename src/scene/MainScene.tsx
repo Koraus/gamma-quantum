@@ -12,8 +12,9 @@ import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
 import { useRecoilValue } from "recoil";
-import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 import { useWorld } from "../useWorld";
+import { trustedEntries } from "../utils/trustedRecord";
+import { parsePosition } from "../puzzle/terms/Position";
 
 export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
     if (radius === 0) {
@@ -46,13 +47,17 @@ export function MainScene() {
     const world = useWorld();
     const playAction = useRecoilValue(playActionRecoil);
 
-    const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const particles = world.particles.map((p, i) => {
         const prev = world.prev?.particles[i];
         if (prev && prev.isRemoved) { return; }
         if (!prev && p.isRemoved) { return; }
         return { i, prev, p };
     }).filter(<T,>(x: T): x is NonNullable<T> => !!x);
+
+    const actors = [
+        ...trustedEntries(world.actors),
+        ...trustedEntries(world.problem.actors),
+    ];
 
     return <>
         <PerspectiveCamera
@@ -76,7 +81,7 @@ export function MainScene() {
         >
             <GizmoViewport />
         </GizmoHelper>
-            
+
 
         <directionalLight intensity={0.6} position={[-10, 30, 45]} />
         <ambientLight intensity={0.3} />
@@ -119,16 +124,17 @@ export function MainScene() {
                 </GroupSync>;
             }))
         }
-        {solution.actors.map((a, i) => {
+        {actors.map(([positionKey, a], i) => {
+            const position = parsePosition(positionKey);
             if (a.kind === "spawner") {
                 return <SpawnerToken
                     actor={a}
                     key={i}
-                    position={axialToFlatCartXz(a.position)}
+                    position={axialToFlatCartXz(position)}
                 />;
             }
             if (a.kind === "consumer") {
-                return <group key={i} position={axialToFlatCartXz(a.position)}>
+                return <group key={i} position={axialToFlatCartXz(position)}>
                     <mesh rotation={[Math.PI / 2, 0, 0]}>
                         <torusGeometry args={[0.5, 0.01]} />
                         <meshPhongMaterial color={"grey"} />
@@ -139,7 +145,7 @@ export function MainScene() {
                 return <group
                     key={i}
                     rotation={[0, -Math.PI / 6 * a.direction, 0]}
-                    position={axialToFlatCartXz(a.position)}
+                    position={axialToFlatCartXz(position)}
                 >
                     <mesh rotation={[0, 0, 0]}>
                         <boxGeometry args={[1, 0.5, 0.03]} />
@@ -150,7 +156,7 @@ export function MainScene() {
             if (a.kind === "trap") {
                 return <group
                     key={i}
-                    position={axialToFlatCartXz(a.position)}
+                    position={axialToFlatCartXz(position)}
                 >
                     <mesh rotation={[0, Math.PI / 4, 0]}>
                         <boxGeometry args={[0.5, 0.01, 0.1]} />

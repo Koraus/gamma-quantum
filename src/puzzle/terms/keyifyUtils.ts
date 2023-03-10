@@ -11,16 +11,6 @@ export const decode = <I, A extends I>(d: D.Decoder<I, A>) =>
     (x: I) =>
         E.getOrElseW(e => { throw new Error(JSON.stringify(e)); })(d.decode(x));
 
-export function assert<I, A extends I>(
-    d: D.Decoder<I, A>,
-    x: I,
-): asserts x is A {
-    return E.fold(
-        e => { throw new Error(JSON.stringify(e)); },
-        () => undefined,
-    )(d.decode(x));
-}
-
 export const guardKey = <I, A extends I, Key extends string = Stringify<A>>(
     d: D.Decoder<I, A>,
 ) => {
