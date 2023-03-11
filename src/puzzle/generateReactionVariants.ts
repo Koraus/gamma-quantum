@@ -1,5 +1,5 @@
-import { v3 } from "../utils/v";
-import * as hg from "../utils/hg";
+import { v2 } from "../utils/v";
+import * as hax from "../utils/hax";
 import { ParticleKind } from "./terms/ParticleKind";
 import { particleMass, particlesEnergy, particlesMomentum } from "./world/Particle";
 import { Particle } from "./world/Particle";
@@ -8,8 +8,8 @@ import { tuple } from "../utils/tuple";
 
 
 export const velocityVariants = [
-    v3.zero(),
-    ...hg.direction.flat60.itCwFromSouth,
+    v2.zero(),
+    ...hax.direction.flat60.itCwFromSouth,
 ];
 export const velocityVariants1 = velocityVariants
     .map(vel => tuple(vel));
@@ -26,7 +26,7 @@ export const velocityVariantsArr = [
     velocityVariants4, velocityVariants4,
 ] as const;
 
-const gamma = (d: Readonly<v3>) => ({
+const gamma = (d: Readonly<v2>) => ({
     content: "gamma",
     velocity: d,
 } as Particle);
@@ -49,7 +49,7 @@ export function generateReactionVariants({
             reagents,
             products: products
                 .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
-                .filter(p => particleMass(p) > 0 || hg.cubeLen(p.velocity) > 0),
+                .filter(p => particleMass(p) > 0 || hax.len(p.velocity) > 0),
         }))
         .flatMap(resolvedReaction => {
             const productsMomentum =
@@ -58,11 +58,11 @@ export function generateReactionVariants({
                 particlesEnergy(resolvedReaction.products);
 
 
-            const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
+            const deltaMomentum = v2.sub(productsMomentum, reagentsMomentum);
             const deltaEnergy = productsEnergy - reagentsEnergy;
 
             return [...solveConservation({
-                extraMomentum: v3.negate(deltaMomentum),
+                extraMomentum: v2.negate(deltaMomentum),
                 extraEnergy: -deltaEnergy,
             })].map(ds => ({
                 reagents,

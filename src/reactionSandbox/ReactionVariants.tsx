@@ -1,10 +1,10 @@
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
 import { css } from "@emotion/css";
 import { useState } from "react";
 import { ReactionForDirections } from "./ReactionForDirections";
 import { groupReactionVariantsBySymmetries } from "../puzzle/groupReactionVariantsBySymmetries";
-import * as hg from "../utils/hg";
-import { particles } from "./particles";
+import * as hax from "../utils/hax";
+import { particles } from "./reactions";
 import { velocityVariants4 } from "../puzzle/generateReactionVariants";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { Particle, particleMass } from "../puzzle/world/Particle";
@@ -21,7 +21,7 @@ const prepareReactionRequests = ({ reagents, products }: {
         // particles.g
     ].slice(0, 4)
         .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
-        .filter(p => particleMass(p) > 0 || hg.cubeLen(p.velocity) > 0),
+        .filter(p => particleMass(p) > 0 || hax.len(p.velocity) > 0),
     products: [],
 }))).map(vars => ({
     ...vars[0],
@@ -29,7 +29,7 @@ const prepareReactionRequests = ({ reagents, products }: {
 }));
 
 export function ReactionVariants({
-    title, reaction, setSelectedReactionVariant,
+    title, reaction, setSelectedReactionVariant, showImpossibleReactions,
 }: {
     title: string;
     reaction: {
@@ -38,10 +38,11 @@ export function ReactionVariants({
     setSelectedReactionVariant: (x: {
         reagents: Particle[];
         products: Particle[];
-        deltaMomentum: v3;
+        deltaMomentum: v2;
         deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>;
     }) => void;
+    showImpossibleReactions: boolean;
 }) {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -58,7 +59,9 @@ export function ReactionVariants({
                 .map((reaction, i) => <ReactionForDirections
                     key={i}
                     {...reaction}
-                    setSelectedReactionVariant={setSelectedReactionVariant} />)}
+                    setSelectedReactionVariant={setSelectedReactionVariant}
+                    showImpossibleReactions={showImpossibleReactions}
+                />)}
         </div>}
     </div>;
 }

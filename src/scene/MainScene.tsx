@@ -1,7 +1,6 @@
 import { v2, v3 } from "../utils/v";
 import { GizmoHelper, GizmoViewport, PerspectiveCamera, CameraControls } from "@react-three/drei";
-import { axialToFlatCart } from "../utils/hg";
-import * as hg from "../utils/hg";
+import { toFlatCart } from "../utils/hax";
 import { tuple } from "../utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
@@ -16,30 +15,12 @@ import { useWorld } from "../useWorld";
 import { trustedEntries } from "../utils/trustedRecord";
 import { parsePosition } from "../puzzle/terms/Position";
 
-export function* hgCircleDots(radius: number, center: v3 = [0, 0, 0]) {
-    if (radius === 0) {
-        yield center;
-    } else {
-        for (let j = 0; j < radius; j++) {
-            const ps = [
-                [radius, -j] as [number, number],
-                [radius - j, -radius] as [number, number],
-                [radius - j - 1, j + 1] as [number, number],
-            ].map(hg.axialToCube);
-            for (const p of ps) {
-                yield p;
-                yield v3.negate(p);
-            }
-        }
-    }
-}
-
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
 
 
 export const axialToFlatCartXz =
-    (...args: Parameters<typeof axialToFlatCart>) => {
-        const v = axialToFlatCart(...args);
+    (...args: Parameters<typeof toFlatCart>) => {
+        const v = toFlatCart(...args);
         return [v[0], 0, v[1]] as v3;
     };
 
@@ -96,26 +77,26 @@ export function MainScene() {
                         if (!prev) {
                             // appear
                             g.scale.setScalar(easeBackOut(t));
-                            g.position.set(...x0y(axialToFlatCart(p.position)));
+                            g.position.set(...x0y(toFlatCart(p.position)));
                         } else if (p.isRemoved) {
                             // disappear
                             g.scale.setScalar(1 - easeBackIn(t));
-                            g.position.set(...x0y(axialToFlatCart(p.position)));
+                            g.position.set(...x0y(toFlatCart(p.position)));
                         } else {
                             // move
                             g.scale.setScalar(1);
                             g.position.set(
-                                ...x0y(axialToFlatCart(prev.position)));
+                                ...x0y(toFlatCart(prev.position)));
                             g.position.lerp(
                                 new Vector3(
-                                    ...x0y(axialToFlatCart(p.position))),
+                                    ...x0y(toFlatCart(p.position))),
                                 easeSinInOut(t));
                             g.position.y = 0.1 + j * 0.2;
                         }
 
                     }}
                     position={v3.add(
-                        x0y(axialToFlatCart((prev ?? p).position)),
+                        x0y(toFlatCart((prev ?? p).position)),
                         [0, 0.1 + j * 0.2, 0])}
                 >
                     <ParticleToken

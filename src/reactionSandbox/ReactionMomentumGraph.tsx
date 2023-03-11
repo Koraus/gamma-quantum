@@ -1,12 +1,11 @@
-import { hgDiscDots } from "./ReactionIcon";
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
 import { css, cx } from "@emotion/css";
 import { ArrowHeadMarker } from "./ArrowHeadMarker";
 import { cxy, xy1, xy2 } from "./misc";
 import { particlesEnergy, particleMomentum, particlesMomentum } from "../puzzle/world/Particle";
 import { Particle } from "../puzzle/world/Particle";
 import { directionOf, directionSymbol, particleColor, ParticleText } from "./ParticleText";
-import * as hg from "../utils/hg";
+import * as hax from "../utils/hax";
 import { ReactionIcon } from "./ReactionIcon";
 
 
@@ -85,15 +84,15 @@ export function ReactionMomentumGraph({
             <div>&nbsp;</div>
 
             <div>
-                {(hg.cubeLen(v3.sub(productsMomentum, reagentsMomentum)) !== 0)
+                {(hax.len(v2.sub(productsMomentum, reagentsMomentum)) !== 0)
                     && <span className={css({ color: "yellow" })}>⚠</span>}
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>Δp</span>
                 &nbsp;
-                {hg.cubeLen(v3.sub(productsMomentum, reagentsMomentum))}
+                {hax.len(v2.sub(productsMomentum, reagentsMomentum))}
                 &nbsp;
                 <span className={css({ opacity: 0.4 })}>{
-                    JSON.stringify(v3.sub(productsMomentum, reagentsMomentum))
+                    JSON.stringify(v2.sub(productsMomentum, reagentsMomentum))
                 }</span>
                 <br />
                 {(productsEnergy - reagentsEnergy !== 0)
@@ -121,16 +120,16 @@ export function ReactionMomentumGraph({
             {colors.map((color, i) =>
                 <ArrowHeadMarker key={i} color={color} />)}
 
-            {[...hgDiscDots(5)].map((pos, i) =>
+            {[...hax.disc(5)].map((pos, i) =>
                 <circle key={i} {...cxy(pos)} r=".03" fill="white" />)}
 
             {reagents
-                .map(((offset: v3) => particle => {
+                .map(((offset: v2) => particle => {
                     const v = particleMomentum(particle);
                     const ret = { offset, v, particle };
-                    offset = v3.add(offset, v);
+                    offset = v2.add(offset, v);
                     return ret;
-                })(v3.zero()))
+                })(v2.zero()))
                 .map(({ offset, v, particle }, i) => <g key={i}>
                     <line
                         className={cx(css`& {
@@ -139,16 +138,16 @@ export function ReactionMomentumGraph({
                         marker-end: url(#arrowHeadMarker-${particleColor(particle)})
                     }`)}
                         {...xy1(offset)}
-                        {...xy2(v3.add(offset, v))} />
+                        {...xy2(v2.add(offset, v))} />
                 </g>)}
 
             {products
-                .map(((offset: v3) => particle => {
+                .map(((offset: v2) => particle => {
                     const v = particleMomentum(particle);
                     const ret = { offset, v, particle };
-                    offset = v3.add(offset, v);
+                    offset = v2.add(offset, v);
                     return ret;
-                })(v3.zero()))
+                })(v2.zero()))
                 .map(({ offset, v, particle }, i) => <g key={i}>
                     <line
                         className={cx(css`& {
@@ -157,7 +156,7 @@ export function ReactionMomentumGraph({
                         marker-end: url(#arrowHeadMarker-${particleColor(particle)})
                     }`)}
                         {...xy1(offset)}
-                        {...xy2(v3.add(offset, v))} />
+                        {...xy2(v2.add(offset, v))} />
                 </g>)}
         </svg>
     </div>;

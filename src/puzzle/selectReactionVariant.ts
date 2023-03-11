@@ -1,5 +1,5 @@
-import { v3 } from "../utils/v";
-import * as hg from "../utils/hg";
+import { v2 } from "../utils/v";
+import * as hax from "../utils/hax";
 import _ from "lodash";
 import { tuple } from "../utils/tuple";
 import { groupReactionVariantsBySymmetries } from "./groupReactionVariantsBySymmetries";
@@ -30,10 +30,10 @@ export function selectReactionVariant({
         const productsMomentum = particlesMomentum(mainProducts);
         const productsEnergy = particlesEnergy(mainProducts);
 
-        const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
+        const deltaMomentum = v2.sub(productsMomentum, reagentsMomentum);
         const deltaEnergy = productsEnergy - reagentsEnergy;
 
-        return -100 * deltaEnergy + hg.cubeLen(deltaMomentum);
+        return -100 * deltaEnergy + hax.len(deltaMomentum);
     }))
         .map(([k, v]) => tuple(k, groupReactionVariantsBySymmetries(v)));
 

@@ -2,31 +2,28 @@ import { keyifyParticleKind } from "./terms/ParticleKind";
 import { keyifyPosition } from "./terms/Position";
 import { Problem } from "./terms/Problem";
 import { puzzleId } from "./terms/puzzleId";
+import * as hax from "../utils/hax";
 
 export const problem0: Problem = {
     puzzleId,
     spawners: {},
     consumers: {},
     demand: {
-        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 10,
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 3,
     },
     positions: {
-        [keyifyPosition([0, 0])]: true,
-        [keyifyPosition([0, 1])]: true,
-        [keyifyPosition([0, -1])]: true,
-        [keyifyPosition([1, -1])]: true,
-        [keyifyPosition([1, 0])]: true,
-        [keyifyPosition([-1, 0])]: true,
-        [keyifyPosition([-1, 1])]: true,
+        ...Object.fromEntries(
+            hax.disc(3)[Symbol.iterator]()
+                .map(h => [keyifyPosition(h), true])),
     },
     positionsMode: "allow",
     actors: {
-        [keyifyPosition([4, 0])]: {
+        [keyifyPosition([6, -1])]: {
             kind: "spawner",
             output: { content: { red: 1, green: 0, blue: 0 } },
             direction: 2,
         },
-        [keyifyPosition([-4, 1])]: {
+        [keyifyPosition([-6, 1])]: {
             kind: "consumer",
             input: { content: { red: 1, green: 0, blue: 0 } },
         },

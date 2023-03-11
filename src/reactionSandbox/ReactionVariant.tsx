@@ -1,7 +1,7 @@
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
 import { css, cx } from "@emotion/css";
 import { ParticleText } from "./ParticleText";
-import * as hg from "../utils/hg";
+import * as hax from "../utils/hax";
 import { ReactionIcon } from "./ReactionIcon";
 import { Particle } from "../puzzle/world/Particle";
 
@@ -16,7 +16,7 @@ export function ReactionVariant({
 }: {
     reagents: Particle[];
     products: Particle[];
-    deltaMomentum: v3;
+    deltaMomentum: v2;
     deltaEnergy: number;
     twins: Array<{ reagents: Particle[]; products: Particle[]; }>
 } & JSX.IntrinsicElements["div"]) {
@@ -45,7 +45,7 @@ export function ReactionVariant({
             &nbsp;
             <div>
                 ~p {JSON.stringify(deltaMomentum)}<br />
-                ~p_len {hg.cubeLen(deltaMomentum)}<br />
+                ~p_len {hax.len(deltaMomentum)}<br />
                 ~E {deltaEnergy}<br />
                 {twins.length > 0
                     && <span className={css({ color: "yellow" })}>

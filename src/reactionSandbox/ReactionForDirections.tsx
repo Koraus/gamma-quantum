@@ -1,4 +1,4 @@
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
 import { css } from "@emotion/css";
 import { generateReactionVariants } from "../puzzle/generateReactionVariants";
 import { ReactionVariant } from "./ReactionVariant";
@@ -10,17 +10,18 @@ import { Particle } from "../puzzle/world/Particle";
 import { selectReactionVariant } from "../puzzle/selectReactionVariant";
 
 export function ReactionForDirections({
-    reagents, products, setSelectedReactionVariant,
+    reagents, products, setSelectedReactionVariant, showImpossibleReactions,
 }: {
     reagents: Particle[];
     products: ParticleKind[];
     setSelectedReactionVariant: (x: {
         reagents: Particle[];
         products: Particle[];
-        deltaMomentum: v3;
+        deltaMomentum: v2;
         deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }) => void;
+    showImpossibleReactions: boolean;
 }) {
     const reagentsMomentum = particlesMomentum(reagents);
     const reagentsEnergy = particlesEnergy(reagents);
@@ -35,6 +36,8 @@ export function ReactionForDirections({
         requestedReaction: { reagents, products },
         variants,
     });
+
+    if (noVariants && !showImpossibleReactions) { return null; }
 
     const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -97,7 +100,7 @@ export function ReactionForDirections({
                             particlesMomentum(mainProducts);
                         const productsEnergy = particlesEnergy(mainProducts);
 
-                        const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
+                        const deltaMomentum = v2.sub(productsMomentum, reagentsMomentum);
                         const deltaEnergy = productsEnergy - reagentsEnergy;
 
                         const twins = symGroup.filter(v => v !== variant);

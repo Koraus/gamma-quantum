@@ -1,4 +1,4 @@
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
 import { generateReactionVariants } from "./generateReactionVariants";
 import { selectReactionVariant } from "./selectReactionVariant";
 import { ParticleState } from "./world";
@@ -94,7 +94,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                     for (const p2 of particles) {
                         if (p2.isRemoved) { continue; }
                         if (p1 === p2) { continue; }
-                        if (!v3.eqStrict(p1.position, p2.position)) { continue; }
+                        if (!v2.eqStrict(p1.position, p2.position)) { continue; }
 
                         const r2 = r1(p2);
                         if (!r2) { continue; }
@@ -103,8 +103,8 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                                 if (p3.isRemoved) { continue; }
                                 if (p1 === p3) { continue; }
                                 if (p2 === p3) { continue; }
-                                if (!v3.eqStrict(p1.position, p3.position)) { continue; }
-                                if (!v3.eqStrict(p2.position, p3.position)) { continue; }
+                                if (!v2.eqStrict(p1.position, p3.position)) { continue; }
+                                if (!v2.eqStrict(p2.position, p3.position)) { continue; }
 
                                 const r3 = r2(p3);
                                 if (!r3) { continue; }

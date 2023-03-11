@@ -1,11 +1,11 @@
-import { v3 } from "../../utils/v";
+import { v2 } from "../../utils/v";
 import { SolutionDraft } from "../terms/Solution";
 import { ParticleKindKey } from "../terms/ParticleKind";
 import { Particle } from "./Particle";
 
 
 export type ParticleState = Particle & {
-    position: v3;
+    position: v2;
     isRemoved: boolean;
 };
 
@@ -20,7 +20,7 @@ export type World = SolutionDraft & ({
     step: number;
 }) & {
     energy: number;
-    momentum: v3;
+    momentum: v2;
     consumed: Partial<Record<ParticleKindKey, number>>;
     particles: ParticleState[];
 };

@@ -1,10 +1,10 @@
 const dir = [
-    [0, 1, -1], // ↓
-    [-1, 1, 0], // ↙
-    [-1, 0, 1], // ↖
-    [0, -1, 1], // ↑
-    [1, -1, 0], // ↗
-    [1, 0, -1], // ↘
+    [0, 1], // = [0, 1, -1], ↓
+    [-1, 1], // = [-1, 1, 0], ↙
+    [-1, 0], // = [-1, 0, 1], ↖
+    [0, -1], // = [0, -1, 1], ↑
+    [1, -1], // = [1, -1, 0], ↗
+    [1, 0], // = [1, 0, -1], ↘
 ] as const;
 
 const solution = (
@@ -26,7 +26,7 @@ const solution = (
 export function* solveConservation({
     extraMomentum, extraEnergy,
 }: {
-    extraMomentum: [number, number] | [number, number, number];
+    extraMomentum: [number, number];
     extraEnergy: number;
 }) {
     const [px, py] = extraMomentum;

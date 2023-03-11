@@ -1,14 +1,15 @@
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
+import * as hax from "../utils/hax";
 import { tuple } from "../utils/tuple";
 import { Particle, particleMass } from "./world/Particle";
 
 export const mirrorTransforms = tuple(
-    ([q, r, s]: v3) => [-q, -s, -r] as v3,
-    ([q, r, s]: v3) => [s, r, q] as v3,
-    ([q, r, s]: v3) => [-s, -r, -q] as v3,
-    ([q, r, s]: v3) => [r, q, s] as v3,
-    ([q, r, s]: v3) => [-r, -q, -s] as v3,
-    ([q, r, s]: v3) => [q, s, r] as v3,
+    (h: v2) => [-hax.q(h), -hax.s(h)] as v2,
+    (h: v2) => [hax.s(h), hax.r(h)] as v2,
+    (h: v2) => [-hax.s(h), -hax.r(h)] as v2,
+    (h: v2) => [hax.r(h), hax.q(h)] as v2,
+    (h: v2) => [-hax.r(h), -hax.q(h)] as v2,
+    (h: v2) => [hax.q(h), hax.s(h)] as v2,
 );
 
 const getParticleKey = (p: Particle) =>
