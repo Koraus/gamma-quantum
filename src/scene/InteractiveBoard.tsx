@@ -4,7 +4,7 @@ import { DirectionId, HalfDirectionId } from "../puzzle/direction";
 import { Solution, SolutionDraft, SolutionDraftDecoder } from "../puzzle/terms/Solution";
 import { HexGrid } from "./HexGrid";
 import { Mesh, Vector3 } from "three";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { pipe } from "fp-ts/lib/function";
 import update from "immutability-helper";
 import { cursorToolRecoil } from "../CursorToolSelectorPanel";
@@ -101,6 +101,19 @@ export function InteractiveBoard() {
             }
         }
     };
+
+    useEffect(() => {
+        const step = (cursorTool.kind === "mirror" ? 1 : 2);
+        const changeCursorDirection = (e: KeyboardEvent) => {
+            if (e.code === "KeyR") {
+                setCursorDirection(
+                    cursorDirection + (e.shiftKey ? (-1) : 1) * step,
+                );}};
+        window.addEventListener("keydown", changeCursorDirection);
+        return () => {
+            window.removeEventListener("keydown", changeCursorDirection);
+        };
+    });
 
     return <group>
         <HexGrid
