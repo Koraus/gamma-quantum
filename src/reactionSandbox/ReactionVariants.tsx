@@ -1,9 +1,9 @@
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
 import { css } from "@emotion/css";
 import { useState } from "react";
 import { ReactionForDirections } from "./ReactionForDirections";
 import { groupReactionVariantsBySymmetries } from "../puzzle/groupReactionVariantsBySymmetries";
-import * as hg from "../utils/hg";
+import * as hax from "../utils/hax";
 import { particles } from "./particles";
 import { velocityVariants4 } from "../puzzle/generateReactionVariants";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
@@ -21,7 +21,7 @@ const prepareReactionRequests = ({ reagents, products }: {
         // particles.g
     ].slice(0, 4)
         .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
-        .filter(p => particleMass(p) > 0 || hg.cubeLen(p.velocity) > 0),
+        .filter(p => particleMass(p) > 0 || hax.len(p.velocity) > 0),
     products: [],
 }))).map(vars => ({
     ...vars[0],
@@ -38,7 +38,7 @@ export function ReactionVariants({
     setSelectedReactionVariant: (x: {
         reagents: Particle[];
         products: Particle[];
-        deltaMomentum: v3;
+        deltaMomentum: v2;
         deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>;
     }) => void;

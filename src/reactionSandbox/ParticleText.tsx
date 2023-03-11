@@ -1,6 +1,6 @@
 import { css } from "@emotion/css";
-import * as hg from "../utils/hg";
-import { v3 } from "../utils/v";
+import * as hax from "../utils/hax";
+import { v2 } from "../utils/v";
 
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { Particle, particleMass } from "../puzzle/world/Particle";
@@ -15,16 +15,16 @@ export const particleColor = (p: ParticleKind) => {
     throw "unexpected particle content";
 };
 
-export function directionOf(v: v3) {
-    const [x, y] = hg.axialToFlatCart(v);
+export function directionOf(h: v2) {
+    const [x, y] = hax.toFlatCart(h);
     const { PI } = Math;
     const a = Math.atan2(y, x) - PI / 2;
     const a1 = (a + PI * 2) % (2 * PI); // [0..2PI)
     const d = a1 / (PI * 2) * 6;
 
-    const isAmbiguous = ((v) =>
-        (v[0] === v[1]) || (v[0] === v[2]) || (v[1] === v[2])
-    )(v);
+    const isAmbiguous = ((h) =>
+        (hax.q(h) === hax.r(h)) || (hax.q(h) === hax.s(h)) || (hax.r(h) === hax.s(h))
+    )(h);
 
     return (isAmbiguous
         ? [Math.floor(d), Math.ceil(d) % 6]
@@ -41,9 +41,9 @@ export const directionSymbol = [
     "\u2198",
 ] as Record<DirectionId, string>;
 
-export const directionSymbolFor = (v: v3) =>
-    (hg.cubeLen(v) > 0)
-        ? directionSymbol[directionOf(v)[0]]
+export const directionSymbolFor = (h: v2) =>
+    (hax.len(h) > 0)
+        ? directionSymbol[directionOf(h)[0]]
         : "\u2219";
 
 export function ParticleText({

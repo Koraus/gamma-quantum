@@ -1,4 +1,4 @@
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
 import { css } from "@emotion/css";
 import { Particle } from "../puzzle/world/Particle";
 import { useState } from "react";
@@ -67,7 +67,7 @@ export function ReactionSandbox() {
     const [selectedReaction, setSelectedReaction] = useState<{
         reagents: Particle[];
         products: Particle[];
-        deltaMomentum: v3;
+        deltaMomentum: v2;
         deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }>();

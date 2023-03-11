@@ -1,7 +1,7 @@
 import memoize from "memoizee";
 import update from "immutability-helper";
 import * as u from "../../utils/u";
-import * as hg from "../../utils/hg";
+import * as hax from "../../utils/hax";
 import { Solution, SolutionDraft } from "../terms/Solution";
 import { init } from "./init";
 import { react } from "./react";
@@ -67,9 +67,9 @@ export const solutionStats = (solution: Solution) => {
         solvedAtStep: solution.solvedAtStep,
         energy:
             world.energy
-            + hg.cubeLen(world.momentum)
+            + hax.len(world.momentum)
             + stats.particleTotalEnegry
-            + hg.cubeLen(stats.particleTotalMomentum),
+            + hax.len(stats.particleTotalMomentum),
     };
 };
 

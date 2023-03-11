@@ -2,7 +2,7 @@ import { useFrame } from "@react-three/fiber";
 import { ParticleState } from "../puzzle/world";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { directionOf } from "../reactionSandbox/ParticleText";
-import * as hg from "../utils/hg";
+import * as hax from "../utils/hax";
 import { SubparticleMesh } from "./SubparticleMesh";
 
 
@@ -69,7 +69,7 @@ export function ParticleToken({
         <group
             rotation={[0, -Math.PI / 3 * directionOf(p.velocity)[0], 0]}
         >
-            {hg.cubeLen(p.velocity) > 0 &&
+            {hax.len(p.velocity) > 0 &&
                 <mesh
                     position={[0, 0, 0.55]}
                     rotation={[Math.PI / 2, 0, 0]}

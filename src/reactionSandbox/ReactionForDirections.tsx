@@ -1,4 +1,4 @@
-import { v3 } from "../utils/v";
+import { v2 } from "../utils/v";
 import { css } from "@emotion/css";
 import { generateReactionVariants } from "../puzzle/generateReactionVariants";
 import { ReactionVariant } from "./ReactionVariant";
@@ -17,7 +17,7 @@ export function ReactionForDirections({
     setSelectedReactionVariant: (x: {
         reagents: Particle[];
         products: Particle[];
-        deltaMomentum: v3;
+        deltaMomentum: v2;
         deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }) => void;
@@ -97,7 +97,7 @@ export function ReactionForDirections({
                             particlesMomentum(mainProducts);
                         const productsEnergy = particlesEnergy(mainProducts);
 
-                        const deltaMomentum = v3.sub(productsMomentum, reagentsMomentum);
+                        const deltaMomentum = v2.sub(productsMomentum, reagentsMomentum);
                         const deltaEnergy = productsEnergy - reagentsEnergy;
 
                         const twins = symGroup.filter(v => v !== variant);

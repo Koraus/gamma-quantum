@@ -1,4 +1,4 @@
-import { v3 } from "../../utils/v";
+import { v2 } from "../../utils/v";
 import { SolutionDraft } from "../terms/Solution";
 import { World } from "./World";
 
@@ -9,7 +9,7 @@ export const init = (solution: SolutionDraft): World => {
         action: "init",
         step: 0,
         energy: 0,
-        momentum: v3.zero(),
+        momentum: v2.zero(),
         consumed: {},
         particles: [],
     });

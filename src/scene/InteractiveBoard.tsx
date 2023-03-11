@@ -1,7 +1,7 @@
 import { v2 } from "../utils/v";
-import * as hg from "../utils/hg";
+import * as hax from "../utils/hax";
 import { DirectionId, HalfDirectionId } from "../puzzle/direction";
-import { Solution, SolutionDecoder, SolutionDraft, SolutionDraftDecoder, keyProjectSolutionDraft } from "../puzzle/terms/Solution";
+import { Solution, SolutionDraft, SolutionDraftDecoder } from "../puzzle/terms/Solution";
 import { HexGrid } from "./HexGrid";
 import { Mesh, Vector3 } from "three";
 import { useRef, useState } from "react";
@@ -116,10 +116,9 @@ export function InteractiveBoard() {
                     .addScaledVector(ev.ray.direction, ev.distance);
                 cursorEl.position.copy(pipe(
                     [cursorEl.position.x, cursorEl.position.z],
-                    hg.flatCartToAxial,
-                    hg.axialToCube,
-                    hg.cubeRound,
-                    hg.axialToFlatCart,
+                    hax.fromFlatCart,
+                    hax.round,
+                    hax.toFlatCart,
                     ([x, y]) => new Vector3(x, 0, y),
                 ));
                 // cursorEl.scale.setScalar(ev.distance * 0.02);
@@ -136,9 +135,8 @@ export function InteractiveBoard() {
                             .clone()
                             .addScaledVector(ev.ray.direction, ev.distance),
                         ({ x, z }) => [x, z] as v2,
-                        hg.flatCartToAxial,
-                        hg.axialToCube,
-                        hg.cubeRound,
+                        hax.fromFlatCart,
+                        hax.round,
                         ([x, y]) => [x, y] as v2,
                     );
 

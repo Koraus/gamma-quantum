@@ -1,11 +1,11 @@
-import { v3 } from "../../utils/v";
-import * as hg from "../../utils/hg";
+import { v2 } from "../../utils/v";
+import * as hax from "../../utils/hax";
 import { ReadonlyDeep } from "../../utils/ReadonlyDeep";
 import { ParticleKind } from "../terms/ParticleKind";
 
 
 export type Particle = ParticleKind & {
-    velocity: v3;
+    velocity: v2;
 };
 
 export const particleCount = (p: ReadonlyDeep<ParticleKind>) => {
@@ -24,15 +24,15 @@ export const particleMass = (p: ReadonlyDeep<ParticleKind>) => {
 };
 
 export const particleMomentum = (p: ReadonlyDeep<Particle>) =>
-    v3.scale(p.velocity, (particleMass(p) || 1) * hg.cubeLen(p.velocity));
+    v2.scale(p.velocity, (particleMass(p) || 1) * hax.len(p.velocity));
 
 export const particlesMomentum = (ps: Iterable<ReadonlyDeep<Particle>>) =>
     ps[Symbol.iterator]()
         .map(particleMomentum)
-        .reduce(...v3.sumReducer());
+        .reduce(...v2.sumReducer());
 
 export const particleEnergy = (p: ReadonlyDeep<Particle>) =>
-    particleMass(p) + hg.cubeLen(particleMomentum(p));
+    particleMass(p) + hax.len(particleMomentum(p));
 
 export const particlesEnergy = (ps: Iterable<ReadonlyDeep<Particle>>) =>
     ps[Symbol.iterator]()

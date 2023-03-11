@@ -1,21 +1,21 @@
-import { v2, v3 } from "../utils/v";
-import * as hg from "../utils/hg";
+import { v2 } from "../utils/v";
+import * as hax from "../utils/hax";
 
-export const cxy = (v: v2 | v3) => {
-    const [x, y] = hg.axialToFlatCart(v);
+export const cxy = (h: v2) => {
+    const [x, y] = hax.toFlatCart(h);
     return { cx: x, cy: y };
 };
 
-export const xy1 = (v: v2 | v3) => {
-    const [x, y] = hg.axialToFlatCart(v);
+export const xy1 = (h: v2) => {
+    const [x, y] = hax.toFlatCart(h);
     return { x1: x, y1: y };
 };
 
-export const xy2 = (v: v2 | v3) => {
-    const [x, y] = hg.axialToFlatCart(v);
+export const xy2 = (h: v2) => {
+    const [x, y] = hax.toFlatCart(h);
     return { x2: x, y2: y };
 };
 
-export const xy12 = (v1: v2 | v3, v2: v2 | v3) => {
-    return { ...xy1(v1), ...xy2(v2) };
+export const xy12 = (h1: v2, h2: v2) => {
+    return { ...xy1(h1), ...xy2(h2) };
 };
