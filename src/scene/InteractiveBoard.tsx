@@ -1,7 +1,7 @@
 import { v2 } from "../utils/v";
 import * as hg from "../utils/hg";
 import { DirectionId, HalfDirectionId } from "../puzzle/direction";
-import { Solution, SolutionDraft, keyProjectSolutionDraft } from "../puzzle/terms/Solution";
+import { Solution, SolutionDecoder, SolutionDraft, SolutionDraftDecoder, keyProjectSolutionDraft } from "../puzzle/terms/Solution";
 import { HexGrid } from "./HexGrid";
 import { Mesh, Vector3 } from "three";
 import { useRef, useState } from "react";
@@ -14,6 +14,7 @@ import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil"
 import { keyifyPosition, parsePosition } from "../puzzle/terms/Position";
 import { trustedKeys } from "../utils/trustedRecord";
 import { keyifyProblem } from "../puzzle/terms/Problem";
+import { isLeft } from "fp-ts/Either";
 
 
 export function InteractiveBoard() {
@@ -21,13 +22,11 @@ export function InteractiveBoard() {
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const _setSolution = useSetSolution();
     const setSolution = (s: SolutionDraft | Solution) => {
-        try {
-            const s1 = keyProjectSolutionDraft(s);
-            _setSolution(s1);
-        }
-        catch {
-            /* mute */
-        }
+        if (isLeft(SolutionDraftDecoder.decode(s))) { return; }
+        _setSolution(
+            "solvedAtStep" in s
+                ? update(s, { $unset: ["solvedAtStep"] })
+                : s);
     };
     const cursorRef = useRef<Mesh>(null);
     const [cursorDirection, setCursorDirection] = useState(0);
