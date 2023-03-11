@@ -1,13 +1,13 @@
 import { v2 } from "../utils/v";
 import { css } from "@emotion/css";
-import { generateReactionVariants } from "../puzzle/generateReactionVariants";
+import { generateReactionVariants } from "../puzzle/reactions/generateReactionVariants";
 import { ReactionVariant } from "./ReactionVariant";
 import { ParticleText } from "./ParticleText";
 import { useState } from "react";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { particlesMomentum, particlesEnergy } from "../puzzle/world/Particle";
 import { Particle } from "../puzzle/world/Particle";
-import { selectReactionVariant } from "../puzzle/selectReactionVariant";
+import { selectReactionVariant } from "../puzzle/reactions/selectReactionVariant";
 
 export function ReactionForDirections({
     reagents, products, setSelectedReactionVariant, showImpossibleReactions,

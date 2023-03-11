@@ -1,9 +1,9 @@
 import { v2 } from "../../utils/v";
-import { directionVector, halfDirection2Vector } from "../direction";
+import { directionVector, halfDirection2Vector } from "./direction";
 import { eqParticleKind, keyifyParticleKind } from "../terms/ParticleKind";
 import { particleMomentum } from "./Particle";
 import * as hax from "../../utils/hax";
-import { applyReactionsInPlace } from "../reactions";
+import { applyReactionsInPlace } from "../reactions/applyReactions";
 import update from "immutability-helper";
 import { pipe } from "fp-ts/lib/function";
 import { World } from "./World";
@@ -11,7 +11,7 @@ import { trustedEntries } from "../../utils/trustedRecord";
 import { parsePosition } from "../terms/Position";
 
 
-export function react(world: World) {
+export function interact(world: World) {
     const reactedWorld = {
         ...world,
         consumed: { ...world.consumed },

@@ -1,11 +1,11 @@
-import { v2 } from "../utils/v";
-import * as hax from "../utils/hax";
+import { v2 } from "../../utils/v";
+import * as hax from "../../utils/hax";
 import _ from "lodash";
-import { tuple } from "../utils/tuple";
+import { tuple } from "../../utils/tuple";
 import { groupReactionVariantsBySymmetries } from "./groupReactionVariantsBySymmetries";
-import { ParticleKind } from "./terms/ParticleKind";
-import { particlesMomentum, particlesEnergy } from "./world/Particle";
-import { Particle } from "./world/Particle";
+import { ParticleKind } from "../terms/ParticleKind";
+import { particlesMomentum, particlesEnergy } from "../world/Particle";
+import { Particle } from "../world/Particle";
 
 
 export function selectReactionVariant({

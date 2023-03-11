@@ -1,10 +1,10 @@
-import { v2 } from "../utils/v";
-import * as hax from "../utils/hax";
-import { ParticleKind } from "./terms/ParticleKind";
-import { particleMass, particlesEnergy, particlesMomentum } from "./world/Particle";
-import { Particle } from "./world/Particle";
+import { v2 } from "../../utils/v";
+import * as hax from "../../utils/hax";
+import { ParticleKind } from "../terms/ParticleKind";
+import { particleMass, particlesEnergy, particlesMomentum } from "../world/Particle";
+import { Particle } from "../world/Particle";
 import { solveConservation } from "./solveConservation";
-import { tuple } from "../utils/tuple";
+import { tuple } from "../../utils/tuple";
 
 
 export const velocityVariants = [

@@ -1,5 +1,5 @@
-import { v2 } from "../utils/v";
-import * as hax from "../utils/hax";
+import { v2 } from "../../utils/v";
+import * as hax from "../../utils/hax";
 
 export const directionVector = hax.direction.flat60.itCwFromSouth;
 

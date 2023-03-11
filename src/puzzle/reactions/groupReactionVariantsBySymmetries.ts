@@ -1,7 +1,7 @@
-import { v2 } from "../utils/v";
-import * as hax from "../utils/hax";
-import { tuple } from "../utils/tuple";
-import { Particle, particleMass } from "./world/Particle";
+import { v2 } from "../../utils/v";
+import * as hax from "../../utils/hax";
+import { tuple } from "../../utils/tuple";
+import { Particle, particleMass } from "../world/Particle";
 
 export const mirrorTransforms = tuple(
     (h: v2) => [-hax.q(h), -hax.s(h)] as v2,
