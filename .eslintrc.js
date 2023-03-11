@@ -27,5 +27,7 @@ module.exports = {
         }],
         "comma-dangle": ["warn", "always-multiline"],
         "no-warning-comments": ["warn"],
+        "no-console": ["warn", { allow: ["warn", "error"] }]
+
     },
 };
