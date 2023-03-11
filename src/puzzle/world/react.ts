@@ -28,7 +28,7 @@ export function react(world: World) {
     for (const [positionKey, a] of actors) {
         const position = parsePosition(positionKey);
         if (a.kind === "spawner") {
-            if (reactedWorld.step % 12 === 1) {
+            if (reactedWorld.step % 6 === 1) {
                 reactedWorld.particles.push({
                     ...a.output,
                     position,

@@ -9,7 +9,7 @@ export const problem0: Problem = {
     spawners: {},
     consumers: {},
     demand: {
-        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 10,
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 3,
     },
     positions: {
         ...Object.fromEntries(
