@@ -23,7 +23,9 @@ export function directionOf(h: v2) {
     const d = a1 / (PI * 2) * 6;
 
     const isAmbiguous = ((h) =>
-        (hax.q(h) === hax.r(h)) || (hax.q(h) === hax.s(h)) || (hax.r(h) === hax.s(h))
+        (hax.q(h) === hax.r(h)) 
+        || (hax.q(h) === hax.s(h)) 
+        || (hax.r(h) === hax.s(h))
     )(h);
 
     return (isAmbiguous

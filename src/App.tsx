@@ -148,7 +148,7 @@ export function App() {
                         pointerEvents: "all",
                         position: "absolute",
                         inset: "5vmin",
-                        background: "#000000b0",
+                        background: "#000000f0",
                         border: "1px solid #ffffffb0",
                         padding: "2vmin",
                         zIndex: 100,

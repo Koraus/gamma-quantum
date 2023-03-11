@@ -10,7 +10,7 @@ import { Particle } from "../puzzle/world/Particle";
 import { selectReactionVariant } from "../puzzle/selectReactionVariant";
 
 export function ReactionForDirections({
-    reagents, products, setSelectedReactionVariant,
+    reagents, products, setSelectedReactionVariant, showImpossibleReactions,
 }: {
     reagents: Particle[];
     products: ParticleKind[];
@@ -21,6 +21,7 @@ export function ReactionForDirections({
         deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }) => void;
+    showImpossibleReactions: boolean;
 }) {
     const reagentsMomentum = particlesMomentum(reagents);
     const reagentsEnergy = particlesEnergy(reagents);
@@ -35,6 +36,8 @@ export function ReactionForDirections({
         requestedReaction: { reagents, products },
         variants,
     });
+
+    if (noVariants && !showImpossibleReactions) { return null; }
 
     const [isCollapsed, setIsCollapsed] = useState(true);
 

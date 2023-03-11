@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ReactionForDirections } from "./ReactionForDirections";
 import { groupReactionVariantsBySymmetries } from "../puzzle/groupReactionVariantsBySymmetries";
 import * as hax from "../utils/hax";
-import { particles } from "./particles";
+import { particles } from "./reactions";
 import { velocityVariants4 } from "../puzzle/generateReactionVariants";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { Particle, particleMass } from "../puzzle/world/Particle";
@@ -29,7 +29,7 @@ const prepareReactionRequests = ({ reagents, products }: {
 }));
 
 export function ReactionVariants({
-    title, reaction, setSelectedReactionVariant,
+    title, reaction, setSelectedReactionVariant, showImpossibleReactions,
 }: {
     title: string;
     reaction: {
@@ -42,6 +42,7 @@ export function ReactionVariants({
         deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>;
     }) => void;
+    showImpossibleReactions: boolean;
 }) {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -58,7 +59,9 @@ export function ReactionVariants({
                 .map((reaction, i) => <ReactionForDirections
                     key={i}
                     {...reaction}
-                    setSelectedReactionVariant={setSelectedReactionVariant} />)}
+                    setSelectedReactionVariant={setSelectedReactionVariant}
+                    showImpossibleReactions={showImpossibleReactions}
+                />)}
         </div>}
     </div>;
 }
