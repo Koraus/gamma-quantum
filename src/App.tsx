@@ -162,7 +162,9 @@ export function App() {
                         }
                     }}
                 >
-                    <ReactionSandbox />
+                    <ReactionSandbox css={{
+                        height: "100%",
+                    }} />
                     <button
                         css={{
                             position: "absolute",
