@@ -1,5 +1,3 @@
-import { v2 } from "../utils/v";
-import { css } from "@emotion/css";
 import { enumerateProductVelocities } from "../puzzle/reactions/enumerateProductVelocities";
 import { ReactionVariant } from "./ReactionVariant";
 import { ParticleText } from "./ParticleText";
@@ -9,7 +7,7 @@ import { Particle } from "../puzzle/world/Particle";
 import { selectReactionVariant } from "../puzzle/reactions/selectReactionVariant";
 
 function WarnSign() {
-    return <span className={css({ color: "yellow" })}>⚠</span>;
+    return <span css={{ color: "yellow" }}>⚠</span>;
 }
 
 export function ReactionForDirections({
@@ -30,9 +28,7 @@ export function ReactionForDirections({
         allGrouppedVariants,
         selectedVariant,
         noVariants,
-    } = selectReactionVariant({
-        variants,
-    });
+    } = selectReactionVariant(variants);
 
     if (noVariants && !showImpossibleReactions) { return null; }
 
@@ -51,7 +47,7 @@ export function ReactionForDirections({
         if (noVariants) {
             return <>
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
-                &nbsp;<span className={css({ color: "crimson" })}>⇏</span>&nbsp;
+                &nbsp;<span css={{ color: "crimson" }}>⇏</span>&nbsp;
                 {products.length > 0
                     ? products.map((p, i) =>
                         <ParticleText key={i} particle={p} />)
@@ -61,7 +57,7 @@ export function ReactionForDirections({
         }
 
         return <>
-            <span className={css({ color: "yellow" })}>⚠&nbsp;</span>
+            <span css={{ color: "yellow" }}>⚠&nbsp;</span>
             {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
             &nbsp;⇒&nbsp;
             {products.length > 0
@@ -75,7 +71,7 @@ export function ReactionForDirections({
         <div css={{ padding: 1 }}>
             <div
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className={css({ display: "flex", flexDirection: "row" })}
+                css={{ display: "flex", flexDirection: "row" }}
             >
                 <button>{isCollapsed ? ">" : "⌄"}</button>
                 &nbsp;
@@ -99,19 +95,19 @@ export function ReactionForDirections({
                             &nbsp;sym group, size {symGroup.length}
                             <div
                                 key={i}
-                                className={css({
+                                css={{
                                     display: "flex",
                                     flexDirection: "row",
-                                })}
+                                }}
                             >
                                 <ReactionVariant
-                                    className={css({
+                                    css={{
                                         border: "1px solid",
                                         borderColor:
                                             variant === selectedVariant
                                                 ? "#ffffff"
                                                 : "#ffffff30",
-                                    })}
+                                    }}
                                     reagents={reagents}
                                     products={products}
                                     twins={twins} />

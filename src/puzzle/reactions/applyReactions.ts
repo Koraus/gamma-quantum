@@ -122,9 +122,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                                 const variants = enumerateProductVelocities(requestedReaction);
                                 const {
                                     selectedVariant,
-                                } = selectReactionVariant({
-                                    variants,
-                                });
+                                } = selectReactionVariant(variants);
                                 if (selectedVariant) {
                                     particles[particles.indexOf(p1)] = update(p1, {
                                         isRemoved: { $set: true },
@@ -155,9 +153,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                         const variants = enumerateProductVelocities(requestedReaction);
                         const {
                             selectedVariant,
-                        } = selectReactionVariant({
-                            variants,
-                        });
+                        } = selectReactionVariant(variants);
                         if (selectedVariant) {
                             particles[particles.indexOf(p1)] = update(p1, {
                                 isRemoved: { $set: true },
