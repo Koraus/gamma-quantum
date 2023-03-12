@@ -4,7 +4,7 @@ import { v2 } from "../utils/v";
 
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { Particle, particleMass } from "../puzzle/world/Particle";
-import { DirectionId } from "../puzzle/direction";
+import { DirectionId } from "../puzzle/world/direction";
 
 export const particleColor = (p: ParticleKind) => {
     if (p.content === "gamma") { return "white"; }

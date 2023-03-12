@@ -1,6 +1,6 @@
 import { v2 } from "../utils/v";
 import * as hax from "../utils/hax";
-import { DirectionId, HalfDirectionId } from "../puzzle/direction";
+import { DirectionId, HalfDirectionId } from "../puzzle/world/direction";
 import { Solution, SolutionDraft, SolutionDraftDecoder } from "../puzzle/terms/Solution";
 import { HexGrid } from "./HexGrid";
 import { Mesh, Vector3 } from "three";

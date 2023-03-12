@@ -16,7 +16,7 @@ export type World = SolutionDraft & ({
     step: 0;
 } | {
     prev: World;
-    action: "move" | "react";
+    action: "move" | "interact";
     step: number;
 }) & {
     energy: number;

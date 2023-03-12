@@ -1,10 +1,10 @@
-import { v2 } from "../utils/v";
-import { generateReactionVariants } from "./generateReactionVariants";
+import { v2 } from "../../utils/v";
+import { enumerateProductVelocities } from "./enumerateProductVelocities";
 import { selectReactionVariant } from "./selectReactionVariant";
-import { ParticleState } from "./world";
+import { ParticleState } from "../world";
 import update from "immutability-helper";
-import { ParticleKind } from "./terms/ParticleKind";
-import { particleCount } from "./world/Particle";
+import { ParticleKind } from "../terms/ParticleKind";
+import { particleCount } from "../world/Particle";
 
 type Reaction =
     (p1: ParticleState) => (
@@ -119,13 +119,10 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                                     reagents: [p1, p2, p3],
                                     products: r3,
                                 };
-                                const variants = generateReactionVariants(requestedReaction);
+                                const variants = enumerateProductVelocities(requestedReaction);
                                 const {
                                     selectedVariant,
-                                } = selectReactionVariant({
-                                    requestedReaction,
-                                    variants,
-                                });
+                                } = selectReactionVariant(variants);
                                 if (selectedVariant) {
                                     particles[particles.indexOf(p1)] = update(p1, {
                                         isRemoved: { $set: true },
@@ -153,13 +150,10 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                             reagents: [p1, p2],
                             products: r2,
                         };
-                        const variants = generateReactionVariants(requestedReaction);
+                        const variants = enumerateProductVelocities(requestedReaction);
                         const {
                             selectedVariant,
-                        } = selectReactionVariant({
-                            requestedReaction,
-                            variants,
-                        });
+                        } = selectReactionVariant(variants);
                         if (selectedVariant) {
                             particles[particles.indexOf(p1)] = update(p1, {
                                 isRemoved: { $set: true },

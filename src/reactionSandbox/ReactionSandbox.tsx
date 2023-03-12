@@ -5,25 +5,38 @@ import { Particle } from "../puzzle/world/Particle";
 import { useState } from "react";
 import { ReactionMomentumGraph } from "./ReactionMomentumGraph";
 import { ReactionVariants } from "./ReactionVariants";
+import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 
 
-export function ReactionSandbox() {
+export function ReactionSandbox({
+    standalone,
+    css: cssProp,
+    ...props
+}: {
+    standalone?: boolean
+} & EmotionJSX.IntrinsicElements["div"]) {
     const [showImpossibleReactions, setShowImpossibleReactions] =
-        useState(false);
+        useState(true);
 
     const [selectedReaction, setSelectedReaction] = useState<{
         reagents: Particle[];
         products: Particle[];
-        deltaMomentum: v2;
-        deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }>();
 
-    return <div className={css({
-        display: "flex",
-        flexDirection: "row",
-        height: "100%",
-    })}>
+    return <div
+        css={[
+            {
+                display: "flex",
+                flexDirection: "row",
+            },
+            standalone && {
+                fontFamily: "monospace",
+            },
+            cssProp,
+        ]}
+        {...props}
+    >
         <div className={css({
             overflow: "scroll",
             paddingRight: 20,

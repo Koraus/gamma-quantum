@@ -4,7 +4,7 @@ import * as u from "../../utils/u";
 import * as hax from "../../utils/hax";
 import { Solution, SolutionDraft } from "../terms/Solution";
 import { init } from "./init";
-import { react } from "./react";
+import { interact } from "./interact";
 import { move } from "./move";
 import { World } from "./World";
 import { _throw } from "../../utils/_throw";
@@ -13,11 +13,11 @@ import { trustedEntries } from "../../utils/trustedRecord";
 
 export type { ParticleState, World } from "./World";
 
-const actions = { move, react };
+const actions = { move, interact };
 const transitionTable = {
     init: "move",
-    move: "react",
-    react: "move",
+    move: "interact",
+    interact: "move",
 } as const;
 
 export function step(state: World) {
