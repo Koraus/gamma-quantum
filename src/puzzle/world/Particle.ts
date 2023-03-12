@@ -24,7 +24,7 @@ export const particleMass = (p: ReadonlyDeep<ParticleKind>) => {
 };
 
 export const particleMomentum = (p: ReadonlyDeep<Particle>) =>
-    v2.scale(p.velocity, (particleMass(p) || 1) * hax.len(p.velocity));
+    v2.scale(p.velocity, particleMass(p) || 1);
 
 export const particlesMomentum = (ps: Iterable<ReadonlyDeep<Particle>>) =>
     ps[Symbol.iterator]()
@@ -38,3 +38,12 @@ export const particlesEnergy = (ps: Iterable<ReadonlyDeep<Particle>>) =>
     ps[Symbol.iterator]()
         .map(particleEnergy)
         .reduce((acc, v) => acc + v, 0);
+
+
+export const particleDirectedMass = (p: ReadonlyDeep<Particle>) =>
+    v2.scale(p.velocity, particleMass(p));
+
+export const particlesDirectedMass = (ps: Iterable<ReadonlyDeep<Particle>>) =>
+    ps[Symbol.iterator]()
+        .map(particleDirectedMass)
+        .reduce(...v2.sumReducer());

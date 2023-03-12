@@ -1,11 +1,10 @@
-import { v2 } from "../utils/v";
 import { css } from "@emotion/css";
 import { useState } from "react";
 import { ReactionForDirections } from "./ReactionForDirections";
 import { groupReactionVariantsBySymmetries } from "../puzzle/reactions/groupReactionVariantsBySymmetries";
 import * as hax from "../utils/hax";
 import { particles } from "./reactions";
-import { velocityVariants4 } from "../puzzle/reactions/generateReactionVariants";
+import { velocityVariants4 } from "../puzzle/reactions/enumerateProductVelocities";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { Particle, particleMass } from "../puzzle/world/Particle";
 import { tuple } from "../utils/tuple";
@@ -18,7 +17,7 @@ const prepareReactionRequests = ({ reagents, products }: {
     reagents: [
         ...reagents,
         particles.g,
-        // particles.g
+        particles.g
     ].slice(0, 4)
         .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
         .filter(p => particleMass(p) > 0 || hax.len(p.velocity) > 0),
@@ -38,13 +37,11 @@ export function ReactionVariants({
     setSelectedReactionVariant: (x: {
         reagents: Particle[];
         products: Particle[];
-        deltaMomentum: v2;
-        deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>;
     }) => void;
     showImpossibleReactions: boolean;
 }) {
-    const [isCollapsed, setIsCollapsed] = useState(true);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     return <div>
         <div

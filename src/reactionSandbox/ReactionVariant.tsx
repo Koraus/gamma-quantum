@@ -1,40 +1,25 @@
-import { v2 } from "../utils/v";
-import { css, cx } from "@emotion/css";
 import { ParticleText } from "./ParticleText";
-import * as hax from "../utils/hax";
 import { ReactionIcon } from "./ReactionIcon";
 import { Particle } from "../puzzle/world/Particle";
 
 export function ReactionVariant({
     reagents,
     products,
-    deltaMomentum,
-    deltaEnergy,
-    className,
     twins,
     ...props
 }: {
     reagents: Particle[];
     products: Particle[];
-    deltaMomentum: v2;
-    deltaEnergy: number;
     twins: Array<{ reagents: Particle[]; products: Particle[]; }>
 } & JSX.IntrinsicElements["div"]) {
     return <div
-        className={cx(
-            css({}),
-            className,
-        )}
         {...props}
     >
-        <div className={css({
+        <div css={{
             display: "flex",
             flexDirection: "row",
-        })}>
-            <ReactionIcon
-                reagents={reagents}
-                products={products} />
-
+        }}>
+            <ReactionIcon reagents={reagents} products={products} />
             <div>
                 {reagents.map((p, i) => <ParticleText key={i} particle={p} />)}
             </div>
@@ -42,16 +27,13 @@ export function ReactionVariant({
             <div>
                 {products.map((p, i) => <ParticleText key={i} particle={p} />)}
             </div>
-            &nbsp;
+
+            <div css={{ border: "1px solid grey" }}></div>
             <div>
-                ~p {JSON.stringify(deltaMomentum)}<br />
-                ~p_len {hax.len(deltaMomentum)}<br />
-                ~E {deltaEnergy}<br />
-                {twins.length > 0
-                    && <span className={css({ color: "yellow" })}>
-                        ⚠&nbsp;
-                    </span>}
-                tw {twins.length}
+                {twins.map((t, i) => <ReactionIcon
+                    key={i}
+                    reagents={t.reagents}
+                    products={t.products} />)}
             </div>
         </div>
     </div>;

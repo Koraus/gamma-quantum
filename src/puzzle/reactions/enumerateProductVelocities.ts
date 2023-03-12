@@ -1,10 +1,10 @@
 import { v2 } from "../../utils/v";
 import * as hax from "../../utils/hax";
 import { ParticleKind } from "../terms/ParticleKind";
-import { particleMass, particlesEnergy, particlesMomentum } from "../world/Particle";
-import { Particle } from "../world/Particle";
-import { solveConservation } from "./solveConservation";
+import { Particle, particleMass, particlesEnergy, particlesMomentum } from "../world/Particle"; import { solveConservation } from "./solveConservation";
 import { tuple } from "../../utils/tuple";
+import { Stringify } from "../../utils/Stringify";
+import { trustedKeys } from "../../utils/trustedRecord";
 
 
 export const velocityVariants = [
@@ -31,7 +31,57 @@ const gamma = (d: Readonly<v2>) => ({
     velocity: d,
 } as Particle);
 
-export function generateReactionVariants({
+const keyifyReaction = ({
+    reagents, products,
+}: {
+    reagents: Particle[];
+    products: Particle[];
+}) => {
+    type ReactionParticle = {
+        mass: number, // zero or positive integer
+        velocity: [number, number] // [integer, integer]
+    };
+    type ReactionParticleKey = Stringify<ReactionParticle>;
+    type ReactionSide = Partial<Record< // key-sorted
+        ReactionParticleKey,
+        number // non-zero positiove integer
+    >>;
+
+    const r1 = reagents.reduce((acc, p) => {
+        const pk = JSON.stringify({
+            mass: particleMass(p),
+            velocity: p.velocity,
+        }) as ReactionParticleKey;
+        acc[pk] = (acc[pk] ?? 0) + 1;
+        return acc;
+    }, {} as ReactionSide);
+    const r2 = trustedKeys(r1)
+        .sort()
+        .reduce(
+            (acc, k) => (acc[k] = r1[k], acc),
+            {} as ReactionSide);
+
+    const p1 = products.reduce((acc, p) => {
+        const pk = JSON.stringify({
+            mass: particleMass(p),
+            velocity: p.velocity,
+        }) as ReactionParticleKey;
+        acc[pk] = (acc[pk] ?? 0) + 1;
+        return acc;
+    }, {} as ReactionSide);
+    const p2 = trustedKeys(p1)
+        .sort()
+        .reduce(
+            (acc, k) => (acc[k] = p1[k], acc),
+            {} as ReactionSide);
+
+    return JSON.stringify({
+        reagents: r2,
+        products: p2,
+    });
+};
+
+export function enumerateProductVelocities({
     reagents, products,
 }: {
     reagents: Particle[];
@@ -44,7 +94,7 @@ export function generateReactionVariants({
     const reagentsMomentum = particlesMomentum(reagents);
     const reagentsEnergy = particlesEnergy(reagents);
 
-    return velocityVariantsArr[products.length]
+    const rs = velocityVariantsArr[products.length]
         .map((vels) => ({
             reagents,
             products: products
@@ -71,5 +121,12 @@ export function generateReactionVariants({
                     ...ds.map(gamma),
                 ],
             }));
-        });
+        })
+        .reduce(
+            (acc, r) => (acc[keyifyReaction(r)] = r, acc),
+            {} as Record<string, {
+                reagents: Particle[],
+                products: Particle[],
+            }>);
+    return Object.values(rs);
 }

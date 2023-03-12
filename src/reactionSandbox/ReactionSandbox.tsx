@@ -16,13 +16,11 @@ export function ReactionSandbox({
     standalone?: boolean
 } & EmotionJSX.IntrinsicElements["div"]) {
     const [showImpossibleReactions, setShowImpossibleReactions] =
-        useState(false);
+        useState(true);
 
     const [selectedReaction, setSelectedReaction] = useState<{
         reagents: Particle[];
         products: Particle[];
-        deltaMomentum: v2;
-        deltaEnergy: number;
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }>();
 

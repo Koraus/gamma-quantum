@@ -13,3 +13,8 @@ export const trustedEntries =
             keyof TRecord,
             NonNullable<TRecord[keyof TRecord]>
         ][];
+
+export const trustedFromEntries = 
+    <Key extends PropertyKey, T>(entries: Iterable<readonly [Key, T]>) =>
+        Object.fromEntries(entries) as Partial<Record<Key, T>>;
+    
