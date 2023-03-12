@@ -83,14 +83,15 @@ export function CursorToolSelectorPanel({
             if (digits.includes(e.code)) {
                 if (e.shiftKey) {
                     const i = digits.indexOf(e.code);
-                    const val = availableTools
+                    const tool = availableTools
                         .filter(
                             (el) => (el.kind === "spawner"
                                 || el.kind === "consumer"))[i];
-                    if (val) { setCursor(val);}
+                    if (tool && ("used" in tool && tool.used < tool.count)) {
+                        setCursor(tool);
+                    }
                 }
             }
-
             if (e.code === "Escape") { setCursor({ kind: "none" }); }
             if (e.code === "Digit1" && !e.shiftKey) {
                 setCursor({ kind: "remove" });
