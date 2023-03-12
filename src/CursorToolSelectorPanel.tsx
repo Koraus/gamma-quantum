@@ -83,15 +83,24 @@ export function CursorToolSelectorPanel({
             if (digits.includes(e.code)) {
                 if (e.shiftKey) {
                     const i = digits.indexOf(e.code);
-                    setCursor(availableTools
-                        .filter((el) => (el.kind === "spawner"))[i],
-                    );
+                    const val = availableTools
+                        .filter(
+                            (el) => (el.kind === "spawner"
+                                || el.kind === "consumer"))[i];
+                    if (val) { setCursor(val);}
                 }
             }
+
             if (e.code === "Escape") { setCursor({ kind: "none" }); }
-            if (e.code === "Digit1") { setCursor({ kind: "remove" }); }
-            if (e.code === "Digit2") { setCursor({ kind: "mirror" }); }
-            if (e.code === "Digit3") { setCursor({ kind: "trap" }); }
+            if (e.code === "Digit1" && !e.shiftKey) {
+                setCursor({ kind: "remove" });
+            }
+            if (e.code === "Digit2" && !e.shiftKey) {
+                setCursor({ kind: "mirror" });
+            }
+            if (e.code === "Digit3" && !e.shiftKey) {
+                setCursor({ kind: "trap" });
+            }
         };
         window.addEventListener("keydown", selectCursor);
         return () => { window.removeEventListener("keydown", selectCursor); };
@@ -100,7 +109,7 @@ export function CursorToolSelectorPanel({
     useEffect(() => {
         const selectCursor = () => { setCursor({ kind: "none" }); };
         window.addEventListener("contextmenu", selectCursor);
-        return () => { window.removeEventListener("contextmenu", selectCursor)};
+        return () => { window.removeEventListener("contextmenu", selectCursor) };
     });
 
     return <div
@@ -120,6 +129,13 @@ export function CursorToolSelectorPanel({
                     onChange={() => setCursor(tool)}
                     disabled={"used" in tool && tool.used >= tool.count}
                 />
+                {tool.kind === "none" && "[esc] "}
+                {tool.kind === "remove" && "[1] "}
+                {tool.kind === "mirror" && "[2] "}
+                {tool.kind === "trap" && "[3] "}
+                {(tool.kind === "spawner" && i < 11) && `[s${i < 10 ? i : 0}]`}
+                {(tool.kind === "consumer" && i < 11) && `[s${i < 10 ? i : 0}]`}
+
                 {tool.kind}
                 {tool.kind === "spawner"
                     && (`: ${tool.used}/${tool.count}`
