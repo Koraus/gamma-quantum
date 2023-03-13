@@ -19,9 +19,14 @@ export const velocityVariants4 = velocityVariants3
     .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
 export const velocityVariants5 = velocityVariants4
     .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
+export const velocityVariants6 = velocityVariants5
+    .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
+export const velocityVariants7 = velocityVariants6
+    .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
 export const velocityVariantsArr = [
     [], velocityVariants1, velocityVariants2, velocityVariants3,
-    velocityVariants4, velocityVariants4,
+    velocityVariants4, velocityVariants5, velocityVariants6,
+    velocityVariants7,
 ] as const;
 
 const gamma = (d: Readonly<v2>) => ({

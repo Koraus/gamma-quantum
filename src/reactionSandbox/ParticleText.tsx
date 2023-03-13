@@ -1,10 +1,10 @@
 import { css } from "@emotion/css";
 import * as hax from "../utils/hax";
 import { v2 } from "../utils/v";
-
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { Particle, particleMass } from "../puzzle/world/Particle";
 import { DirectionId } from "../puzzle/world/direction";
+import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 
 export const particleColor = (p: ParticleKind) => {
     if (p.content === "gamma") { return "white"; }
@@ -23,8 +23,8 @@ export function directionOf(h: v2) {
     const d = a1 / (PI * 2) * 6;
 
     const isAmbiguous = ((h) =>
-        (hax.q(h) === hax.r(h)) 
-        || (hax.q(h) === hax.s(h)) 
+        (hax.q(h) === hax.r(h))
+        || (hax.q(h) === hax.s(h))
         || (hax.r(h) === hax.s(h))
     )(h);
 
@@ -50,20 +50,25 @@ export const directionSymbolFor = (h: v2) =>
 
 export function ParticleText({
     particle: p,
+    css: cssProp,
+    ...props
 }: {
     particle: ParticleKind | Particle;
-}) {
+} & EmotionJSX.IntrinsicElements["div"]) {
     const velocitySymbol =
         ("velocity" in p)
             ? directionSymbolFor(p.velocity)
             : "?";
-    return <div className={css({
-        border: `2px solid ${particleColor(p)}`,
-        padding: "1px 2px",
-        borderRadius: 6,
-        margin: "0px 2px",
-        color: particleColor(p),
-    })}>
+    return <div
+        css={[{
+            border: `2px solid ${particleColor(p)}`,
+            padding: "1px 2px",
+            borderRadius: 6,
+            margin: "0px 2px",
+            color: particleColor(p),
+        }, cssProp]}
+        {...props}
+    >
         {velocitySymbol}
         &nbsp;
         <span className={css({ opacity: 0.3 })}>m</span>{particleMass(p)}

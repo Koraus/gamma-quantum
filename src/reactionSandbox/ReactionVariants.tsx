@@ -8,6 +8,7 @@ import { velocityVariants4 } from "../puzzle/reactions/enumerateProductVelocitie
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { Particle, particleMass } from "../puzzle/world/Particle";
 import { tuple } from "../utils/tuple";
+import { ResolvedReaction } from "../puzzle/reactions/Reaction";
 
 
 const prepareReactionRequests = ({ reagents, products }: {
@@ -16,8 +17,8 @@ const prepareReactionRequests = ({ reagents, products }: {
 }) => groupReactionVariantsBySymmetries(velocityVariants4.map((vels) => ({
     reagents: [
         ...reagents,
-        particles.g,
-        particles.g
+        // particles.g,
+        // particles.g
     ].slice(0, 4)
         .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
         .filter(p => particleMass(p) > 0 || hax.len(p.velocity) > 0),
@@ -34,14 +35,12 @@ export function ReactionVariants({
     reaction: {
         reagents: ParticleKind[]; products: ParticleKind[];
     };
-    setSelectedReactionVariant: (x: {
-        reagents: Particle[];
-        products: Particle[];
-        twins: Array<{ reagents: Particle[]; products: Particle[]; }>;
+    setSelectedReactionVariant: (x: ResolvedReaction & {
+        twins: Array<ResolvedReaction>;
     }) => void;
     showImpossibleReactions: boolean;
 }) {
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
     return <div>
         <div

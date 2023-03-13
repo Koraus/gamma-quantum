@@ -18,6 +18,18 @@ export const particles = {
 };
 
 export const reactions = [{
+    title: "Elastic collision with gamma",
+    reaction: {
+        reagents: [particles.q],
+        products: [particles.q],
+    },
+},{
+    title: "Elastic collision",
+    reaction: {
+        reagents: [particles.q, particles.q],
+        products: [particles.q, particles.q],
+    },
+},{
     title: "Annihilation (q-m1 + q-m1 => g-m0)",
     reaction: {
         reagents: [particles.q, particles.q],
