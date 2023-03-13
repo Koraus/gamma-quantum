@@ -44,6 +44,14 @@ export function CursorToolSelectorPanel({
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const [cursor, setCursor] = useRecoilState(cursorToolRecoil);
 
+    const availableTools = [
+        { kind: "none" },
+        { kind: "remove" },
+        { kind: "mirror" },
+        { kind: "trap" },
+        // { kind: "reactor" },
+    ] as const;
+
     const availableSpawners = trustedEntries(solution.problem.spawners)
         .map(([kind, count]) => ({
             kind: "spawner" as const,
@@ -65,42 +73,31 @@ export function CursorToolSelectorPanel({
             count,
         }));
 
-    const availableTools = [
-        { kind: "none" },
+    const availableShiftTools = [
         ...availableSpawners,
         ...availableConsumers,
-        { kind: "mirror" },
-        // { kind: "reactor" },
-        { kind: "trap" },
-        { kind: "remove" },
-    ] as const;
+    ];
 
     useEffect(() => {
         const selectCursor = (e: KeyboardEvent) => {
-            const digits = ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5",
-                "Digit6", "Digit7", "Digit8", "Digit9", "Digit0"];
+            if (e.code === "Escape") { setCursor({ kind: "none" }); }
 
-            if (digits.includes(e.code)) {
-                if (e.shiftKey) {
+            if (e.shiftKey) {
+                const digits = [
+                    "Digit1", "Digit2", "Digit3", "Digit4", "Digit5",
+                    "Digit6", "Digit7", "Digit8", "Digit9", "Digit0"];
+
+                if (digits.includes(e.code)) {
                     const i = digits.indexOf(e.code);
-                    const tool = availableTools
-                        .filter(
-                            (el) => (el.kind === "spawner"
-                                || el.kind === "consumer"))[i];
+                    const tool = availableShiftTools[i];
                     if (tool && ("used" in tool && tool.used < tool.count)) {
                         setCursor(tool);
                     }
                 }
-            }
-            if (e.code === "Escape") { setCursor({ kind: "none" }); }
-            if (e.code === "Digit1" && !e.shiftKey) {
-                setCursor({ kind: "remove" });
-            }
-            if (e.code === "Digit2" && !e.shiftKey) {
-                setCursor({ kind: "mirror" });
-            }
-            if (e.code === "Digit3" && !e.shiftKey) {
-                setCursor({ kind: "trap" });
+            } else {
+                if (e.code === "Digit1") { setCursor({ kind: "remove" }); }
+                if (e.code === "Digit2") { setCursor({ kind: "mirror" }); }
+                if (e.code === "Digit3") { setCursor({ kind: "trap" }); }
             }
         };
         window.addEventListener("keydown", selectCursor);
@@ -110,7 +107,9 @@ export function CursorToolSelectorPanel({
     useEffect(() => {
         const selectCursor = () => { setCursor({ kind: "none" }); };
         window.addEventListener("contextmenu", selectCursor);
-        return () => { window.removeEventListener("contextmenu", selectCursor) };
+        return () => {
+            window.removeEventListener("contextmenu", selectCursor);
+        };
     });
 
     return <div
@@ -128,22 +127,35 @@ export function CursorToolSelectorPanel({
                     radioGroup="cursorTool"
                     checked={JSON.stringify(cursor) === JSON.stringify(tool)}
                     onChange={() => setCursor(tool)}
-                    disabled={"used" in tool && tool.used >= tool.count}
                 />
                 {tool.kind === "none" && "[esc] "}
                 {tool.kind === "remove" && "[1] "}
                 {tool.kind === "mirror" && "[2] "}
                 {tool.kind === "trap" && "[3] "}
-                {(tool.kind === "spawner" && i < 11) && `[s${i < 10 ? i : 0}]`}
-                {(tool.kind === "consumer" && i < 11) && `[s${i < 10 ? i : 0}]`}
-
                 {tool.kind}
-                {tool.kind === "spawner"
-                    && (`: ${tool.used}/${tool.count}`
-                        + ` x ${particleKindText(tool.output)}`)}
-                {tool.kind === "consumer"
-                    && (`: ${tool.used}/${tool.count}`
-                        + ` x ${particleKindText(tool.input)}`)}
+            </label>
+        </div>)}
+        {availableShiftTools.map((tool, i) => <div key={i}>
+            <label>
+                <input
+                    type="radio"
+                    radioGroup="cursorTool"
+                    checked={JSON.stringify(cursor) === JSON.stringify(tool)}
+                    onChange={() => setCursor(tool)}
+                    disabled={"used" in tool && tool.used >= tool.count}
+                />
+                {(i < 9) && `[⇧${i + 1}] `}
+                {(i === 9) && "(⇧0) "}
+                {tool.kind === "spawner" && <>
+                    ⊙🞂-({particleKindText(tool.output)})
+                </>}
+                {tool.kind === "consumer" && <>
+                    ({particleKindText(tool.input)})-🞂⊗
+                </>}
+                &nbsp;
+                <span css={{ color: "grey" }}>
+                    {(tool.count - tool.used)}/{tool.count}
+                </span>
             </label>
         </div>)}
     </div>;
