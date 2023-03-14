@@ -14,6 +14,8 @@ import { useRecoilValue } from "recoil";
 import { useWorld } from "../useWorld";
 import { trustedEntries } from "../utils/trustedRecord";
 import { parsePosition } from "../puzzle/terms/Position";
+import { useEffect, useRef, useState } from "react";
+import { A } from "ts-toolbelt";
 
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
 
@@ -40,6 +42,31 @@ export function MainScene() {
         ...trustedEntries(world.problem.actors),
     ];
 
+    const ref = useRef<CameraControls>(null);
+    useEffect(() => {
+        const moveCamera = (e: KeyboardEvent) => {
+            const step = 1;         
+            if (ref !== null) {
+                if (e.code === "KeyD") {
+                    ref.current.truck(step, 0, true);
+                }
+                if (e.code === "KeyA") {
+                    ref.current.truck(-step, 0, true);
+                }
+                if (e.code === "KeyW") {
+                    ref.current.forward(step, true);
+                }
+                if (e.code === "KeyS") {
+                    ref.current.forward(-step, true);
+                }
+            }
+        };
+        window.addEventListener("keydown", moveCamera);
+        return () => {
+            window.removeEventListener("keydown", moveCamera);
+        };
+    });
+
     return <>
         <PerspectiveCamera
             makeDefault
@@ -48,6 +75,7 @@ export function MainScene() {
             far={1000}
             position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)} />
         <CameraControls
+            ref={ref}
             draggingSmoothTime={0.05}
             mouseButtons={{
                 wheel: 0,
