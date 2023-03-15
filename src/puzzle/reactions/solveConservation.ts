@@ -23,12 +23,10 @@ const solution = (
     ...Array.from({ length: f }, () => dir[5]),
 ];
 
-export function* solveConservation({
-    extraMomentum, extraEnergy,
-}: {
-    extraMomentum: [number, number];
-    extraEnergy: number;
-}) {
+export function* solveConservation(
+    extraMomentum: [number, number],
+    extraEnergy: number,
+) {
     const [px, py] = extraMomentum;
     const E = extraEnergy;
 

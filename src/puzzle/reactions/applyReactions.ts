@@ -119,7 +119,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                                     reagents: [p1, p2, p3],
                                     products: r3,
                                 };
-                                const variants = enumerateProductVelocities(requestedReaction);
+                                const variants = [...enumerateProductVelocities(requestedReaction)];
                                 const {
                                     selectedVariant,
                                 } = selectReactionVariant(variants);
@@ -150,7 +150,7 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
                             reagents: [p1, p2],
                             products: r2,
                         };
-                        const variants = enumerateProductVelocities(requestedReaction);
+                        const variants = [...enumerateProductVelocities(requestedReaction)];
                         const {
                             selectedVariant,
                         } = selectReactionVariant(variants);
