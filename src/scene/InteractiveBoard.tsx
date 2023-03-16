@@ -15,6 +15,7 @@ import { keyifyPosition, parsePosition } from "../puzzle/terms/Position";
 import { trustedKeys } from "../utils/trustedRecord";
 import { keyifyProblem } from "../puzzle/terms/Problem";
 import { isLeft } from "fp-ts/Either";
+import { useWindowKeyDown } from "../utils/useWindowKeyDown";
 
 
 export function InteractiveBoard() {
@@ -102,18 +103,17 @@ export function InteractiveBoard() {
         }
     };
 
-    useEffect(() => {
+   
+    const changeCursorDirection = (e: KeyboardEvent) => {
         const step = (cursorTool.kind === "mirror" ? 1 : 2);
-        const changeCursorDirection = (e: KeyboardEvent) => {
-            if (e.code === "KeyR") {
-                setCursorDirection(
-                    cursorDirection + (e.shiftKey ? (-1) : 1) * step,
-                );}};
-        window.addEventListener("keydown", changeCursorDirection);
-        return () => {
-            window.removeEventListener("keydown", changeCursorDirection);
-        };
-    });
+        if (e.code === "KeyR") {
+            setCursorDirection(
+                cursorDirection + (e.shiftKey ? (-1) : 1) * step,
+            );
+        }
+    };
+
+    useWindowKeyDown(changeCursorDirection);
 
     return <group>
         <HexGrid
