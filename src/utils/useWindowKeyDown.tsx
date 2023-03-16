@@ -1,12 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, DependencyList } from "react";
 
-export default 
-function useWindowKeyDown(keyCode: string, handler:  () => void) {
+export function useWindowKeyDown(
+    handler: (e: KeyboardEvent) => void, depends: DependencyList) {
     useEffect(() => {
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (e.code === keyCode) handler();
-        };
-        window.addEventListener("keydown", onKeyDown);
-        return () => window.removeEventListener("keydown", onKeyDown);
-    },[]);
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, depends);
 }

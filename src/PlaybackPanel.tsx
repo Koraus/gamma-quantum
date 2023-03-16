@@ -8,7 +8,7 @@ import { PlaySkipForward } from "@emotion-icons/ionicons-solid/PlaySkipForward";
 import { PlayForward } from "@emotion-icons/ionicons-solid/PlayForward";
 import { CaretBack } from "@emotion-icons/ionicons-solid/CaretBack";
 import { atom, useRecoilState } from "recoil";
-
+import { useWindowKeyDown } from "./utils/useWindowKeyDown";
 
 export type PlayAction = {
     startRealtime: number;
@@ -71,6 +71,39 @@ export function PlaybackPanel({
         return () => cancelAnimationFrame(handler);
     }, [playAction, stepRef.current, rangeRef.current, rangeFullRef]);
 
+
+    const controlPlayer = (e: KeyboardEvent)  =>  {
+        if (e.shiftKey) {
+            if (e.code === "Space") {
+                setPlayAction({
+                    startPlaytime: 0,
+                    playtimeSpeed: 0,
+                    startRealtime: performance.now() / 1000,
+                });}
+        } else if (e.code === "Space") {
+            setPlayAction({
+                startPlaytime: nowPlaytime(playAction),
+                playtimeSpeed:
+                    playAction.playtimeSpeed === defalutPlaytimeSpeed
+                        ? 0
+                        : defalutPlaytimeSpeed,
+                startRealtime: performance.now() / 1000,
+            });}
+        if (e.code === "Period") {
+            setPlayAction({
+                startPlaytime: Math.floor(nowPlaytime(playAction)) + 1,
+                playtimeSpeed: 0,
+                startRealtime: performance.now() / 1000,
+            });}
+        if (e.code === "Comma") {
+            setPlayAction({
+                startPlaytime:
+                    Math.max(0, Math.floor(nowPlaytime(playAction)) - 1),
+                playtimeSpeed: 0,
+                startRealtime: performance.now() / 1000,
+            });}};
+
+    useWindowKeyDown( controlPlayer , [playAction]);
 
     return <div
         className={cx(
