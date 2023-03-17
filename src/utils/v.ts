@@ -1,3 +1,40 @@
+
+export type v2 = [number, number];
+export type rv2 = readonly [number, number];
+export const v2 = {
+    from: (x: number, y: number): v2 => [x, y],
+    zero: (): v2 => [0, 0],
+    ones: (): v2 => [1, 1],
+    one: (i: 0 | 1 = 0): v2 => i === 0 ? [1, 0] : [0, 1],
+
+    add: ([ax, ay]: rv2, [bx, by]: rv2): v2 => [ax + bx, ay + by],
+    scale: ([ax, ay]: rv2, b: number): v2 => [ax * b, ay * b],
+    dot: ([ax, ay]: rv2, [bx, by]: rv2) => ax * bx + ay * by,
+    eqStrict: ([ax, ay]: rv2, [bx, by]: rv2) => ax === bx && ay === by,
+
+    negate:([ax, ay]: rv2): v2 => [-ax, -ay],
+    sub:  ([ax, ay]: rv2, [bx, by]: rv2): v2 => [ax - bx, ay - by],
+    lenSq: ([ax, ay]: rv2) => ax * ax + ay * ay,
+    len: ([ax, ay]: rv2) => Math.sqrt(ax * ax + ay * ay),
+    norm: ([ax, ay]: rv2): v2 => {
+        const iLen = 1 / Math.sqrt(ax * ax + ay * ay);
+        return [ax * iLen, ay * iLen];
+    },
+    distSq: (a: rv2, b: rv2) => v2.lenSq(v2.sub(b, a)),
+    dist: (a: rv2, b: rv2) => v2.len(v2.sub(b, a)),
+    eq: (a: rv2, b: rv2, eps = 0) => v2.dist(a, b) <= eps,
+
+    sumReducer: () => [
+        (acc: rv2, v: rv2) => v2.add(acc, v),
+        v2.zero(),
+    ] as const,
+
+    r: {
+        zero: [0, 0] as const,
+    },
+};
+
+
 type _TupleOf<T, N extends number, R extends unknown[]> = 
     R["length"] extends N 
         ? R 
@@ -37,7 +74,7 @@ export function v<D extends 1 | 2 | 3 | 4 | 5 | 6 | 7>(d: D) {
         eq: (a: rvd, b: rvd, eps = 0) => vd.dist(a, b) <= eps,
 
         sumReducer: () => [
-            (acc: rvd, v: rvd) => vd.add(acc, v), 
+            (acc: rvd, v: rvd) => vd.add(acc, v),
             vd.zero(),
         ] as const,
     };
@@ -45,7 +82,5 @@ export function v<D extends 1 | 2 | 3 | 4 | 5 | 6 | 7>(d: D) {
 }
 
 
-export type v2 = v<2>;
-export const v2 = v(2);
 export type v3 = v<3>;
 export const v3 = v(3);

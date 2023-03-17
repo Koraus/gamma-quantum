@@ -24,7 +24,7 @@ const solution = (
 ];
 
 export function* solveConservation(
-    extraMomentum: [number, number],
+    extraMomentum: readonly [number, number],
     extraEnergy: number,
 ) {
     const [px, py] = extraMomentum;

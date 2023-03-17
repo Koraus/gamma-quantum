@@ -4,12 +4,16 @@ import { ReactionForDirections } from "./ReactionForDirections";
 import { groupReactionVariantsBySymmetries } from "../puzzle/reactions/groupReactionVariantsBySymmetries";
 import * as hax from "../utils/hax";
 import { particles } from "./reactions";
-import { velocityVariants } from "../puzzle/reactions/enumerateProductVelocities";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { Particle, particleMass } from "../puzzle/world/Particle";
 import { tuple } from "../utils/tuple";
 import { ResolvedReaction } from "../puzzle/reactions/Reaction";
+import { v2 } from "../utils/v";
 
+export const velocityVariants = [
+    v2.zero(),
+    ...hax.direction.flat60.itCwFromSouth,
+];
 
 function* enumerateReagentRequests(
     reagents: (ParticleKind | Particle)[],
@@ -69,7 +73,7 @@ export function ReactionVariants({
     }) => void;
     showImpossibleReactions: boolean;
 }) {
-    const [isCollapsed, setIsCollapsed] = useState(true);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     return <div>
         <div
