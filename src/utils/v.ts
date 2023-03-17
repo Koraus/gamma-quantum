@@ -26,7 +26,7 @@ export const v2 = {
 
     sumReducer: () => [
         (acc: rv2, v: rv2) => v2.add(acc, v),
-        v2.zero(),
+        v2.r.zero,
     ] as const,
 
     r: {
