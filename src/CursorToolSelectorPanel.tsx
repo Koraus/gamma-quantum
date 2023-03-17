@@ -5,6 +5,7 @@ import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
 import { hasValueAtKey } from "ts-is-present";
 import { trustedEntries, trustedValues } from "./utils/trustedRecord";
 import { useEffect } from "react";
+import { useWindowKeyDown } from "./utils/useWindowKeyDown";
 
 export type CursorTool = {
     kind: "none",
@@ -78,31 +79,29 @@ export function CursorToolSelectorPanel({
         ...availableConsumers,
     ];
 
-    useEffect(() => {
-        const selectCursor = (e: KeyboardEvent) => {
-            if (e.code === "Escape") { setCursor({ kind: "none" }); }
+    const selectCursor = (e: KeyboardEvent) => {
+        if (e.code === "Escape") { setCursor({ kind: "none" }); }
 
-            if (e.shiftKey) {
-                const digits = [
-                    "Digit1", "Digit2", "Digit3", "Digit4", "Digit5",
-                    "Digit6", "Digit7", "Digit8", "Digit9", "Digit0"];
+        if (e.shiftKey) {
+            const digits = [
+                "Digit1", "Digit2", "Digit3", "Digit4", "Digit5",
+                "Digit6", "Digit7", "Digit8", "Digit9", "Digit0"];
 
-                if (digits.includes(e.code)) {
-                    const i = digits.indexOf(e.code);
-                    const tool = availableShiftTools[i];
-                    if (tool && ("used" in tool && tool.used < tool.count)) {
-                        setCursor(tool);
-                    }
+            if (digits.includes(e.code)) {
+                const i = digits.indexOf(e.code);
+                const tool = availableShiftTools[i];
+                if (tool && ("used" in tool && tool.used < tool.count)) {
+                    setCursor(tool);
                 }
-            } else {
-                if (e.code === "Digit1") { setCursor({ kind: "remove" }); }
-                if (e.code === "Digit2") { setCursor({ kind: "mirror" }); }
-                if (e.code === "Digit3") { setCursor({ kind: "trap" }); }
             }
-        };
-        window.addEventListener("keydown", selectCursor);
-        return () => { window.removeEventListener("keydown", selectCursor); };
-    });
+        } else {
+            if (e.code === "Digit1") { setCursor({ kind: "remove" }); }
+            if (e.code === "Digit2") { setCursor({ kind: "mirror" }); }
+            if (e.code === "Digit3") { setCursor({ kind: "trap" }); }
+        }
+    };
+
+    useWindowKeyDown(selectCursor);
 
     useEffect(() => {
         const selectCursor = () => { setCursor({ kind: "none" }); };

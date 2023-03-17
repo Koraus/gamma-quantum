@@ -16,6 +16,7 @@ import { trustedEntries } from "../utils/trustedRecord";
 import { parsePosition } from "../puzzle/terms/Position";
 import { useEffect, useRef, useState } from "react";
 import { A } from "ts-toolbelt";
+import { useWindowKeyDown } from "../utils/useWindowKeyDown";
 
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
 
@@ -43,30 +44,24 @@ export function MainScene() {
     ];
 
     const ref = useRef<CameraControls>(null);
-    useEffect(() => {
-        const moveCamera = (e: KeyboardEvent) => {
-            const step = 1;         
-            if (ref !== null) {
-                if (e.code === "KeyD") {
-                    ref.current.truck(step, 0, true);
-                }
-                if (e.code === "KeyA") {
-                    ref.current.truck(-step, 0, true);
-                }
-                if (e.code === "KeyW") {
-                    ref.current.forward(step, true);
-                }
-                if (e.code === "KeyS") {
-                    ref.current.forward(-step, true);
-                }
+    const moveCamera = (e: KeyboardEvent) => {
+        const step = 1;
+        if (ref !== null) {
+            if (e.code === "KeyD") {
+                ref.current.truck(step, 0, true);
             }
-        };
-        window.addEventListener("keydown", moveCamera);
-        return () => {
-            window.removeEventListener("keydown", moveCamera);
-        };
-    });
-
+            if (e.code === "KeyA") {
+                ref.current.truck(-step, 0, true);
+            }
+            if (e.code === "KeyW") {
+                ref.current.forward(step, true);
+            }
+            if (e.code === "KeyS") {
+                ref.current.forward(-step, true);
+            }
+        }
+    };
+    useWindowKeyDown(moveCamera);
     return <>
         <PerspectiveCamera
             makeDefault
