@@ -200,7 +200,8 @@ export function App() {
             </button>
             <SolutionManagerPanel css={{
                 pointerEvents: "all",
-                transitionDuration: "0.92s",
+                transitionDuration: "0.2s",
+                overflow: "hidden",
                 flex: isSolutionManagerShown
                     ? "0 0 33vmin"
                     : "0 0 0vmin",
