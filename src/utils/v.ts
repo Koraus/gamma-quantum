@@ -25,8 +25,12 @@ export const v2 = {
     eq: (a: rv2, b: rv2, eps = 0) => v2.dist(a, b) <= eps,
 
     sumReducer: () => [
-        (acc: rv2, v: rv2) => v2.add(acc, v),
-        v2.r.zero,
+        (acc: v2, [x, y]: rv2) => {
+            acc[0] += x;
+            acc[1] += y;
+            return acc;
+        },
+        v2.zero(),
     ] as const,
 
     r: {
