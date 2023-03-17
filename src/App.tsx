@@ -200,13 +200,16 @@ export function App() {
             </button>
             <SolutionManagerPanel css={{
                 pointerEvents: "all",
-                transitionDuration: "0.2s",
+                transitionDuration: "0.92s",
                 flex: isSolutionManagerShown
                     ? "0 0 33vmin"
                     : "0 0 0vmin",
                 maxWidth: isSolutionManagerShown
                     ? "33vmin"
                     : "0vmin",
+                transform: isSolutionManagerShown
+                    ? "scale3d(1, 1, 1)"
+                    : "scale3d(0, 1, 1)",
                 margin: isSolutionManagerShown
                     ? "0px 1px 1px 0px"
                     : "1px -0.5px",

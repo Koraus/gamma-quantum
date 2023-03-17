@@ -46,7 +46,7 @@ export function MainScene() {
     const ref = useRef<CameraControls>(null);
     const moveCamera = (e: KeyboardEvent) => {
         const step = 1;
-        if (ref !== null) {
+        if (ref.current !== null) {
             if (e.code === "KeyD") {
                 ref.current.truck(step, 0, true);
             }
