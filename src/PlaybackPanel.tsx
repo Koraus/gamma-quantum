@@ -72,14 +72,15 @@ export function PlaybackPanel({
     }, [playAction, stepRef.current, rangeRef.current, rangeFullRef]);
 
 
-    const controlPlayer = (e: KeyboardEvent)  =>  {
+    useWindowKeyDown((e) => {
         if (e.shiftKey) {
             if (e.code === "Space") {
                 setPlayAction({
                     startPlaytime: 0,
                     playtimeSpeed: 0,
                     startRealtime: performance.now() / 1000,
-                });}
+                });
+            }
         } else if (e.code === "Space") {
             setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
@@ -88,22 +89,24 @@ export function PlaybackPanel({
                         ? 0
                         : defalutPlaytimeSpeed,
                 startRealtime: performance.now() / 1000,
-            });}
+            });
+        }
         if (e.code === "Period") {
             setPlayAction({
                 startPlaytime: Math.floor(nowPlaytime(playAction)) + 1,
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
-            });}
+            });
+        }
         if (e.code === "Comma") {
             setPlayAction({
                 startPlaytime:
                     Math.max(0, Math.floor(nowPlaytime(playAction)) - 1),
                 playtimeSpeed: 0,
                 startRealtime: performance.now() / 1000,
-            });}};
-
-    useWindowKeyDown( controlPlayer , [playAction]);
+            });
+        }
+    }, [playAction]);
 
     return <div
         className={cx(
