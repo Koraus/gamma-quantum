@@ -24,8 +24,8 @@ export function socreResolvedReaction({
 
     return [
         massAtRest,
-        ...momentaByDirectionSorted,
         inertiaConservationScore,
+        ...momentaByDirectionSorted,
     ]
         .map(x => x.toString().padStart(2, "0"))
         .join(",");
