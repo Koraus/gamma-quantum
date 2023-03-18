@@ -4,7 +4,7 @@ import { DirectionId, HalfDirectionId } from "../puzzle/world/direction";
 import { Solution, SolutionDraft, SolutionDraftDecoder } from "../puzzle/terms/Solution";
 import { HexGrid } from "./HexGrid";
 import { Mesh, Vector3 } from "three";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { pipe } from "fp-ts/lib/function";
 import update from "immutability-helper";
 import { cursorToolRecoil } from "../CursorToolSelectorPanel";

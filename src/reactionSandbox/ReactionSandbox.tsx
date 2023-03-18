@@ -11,6 +11,7 @@ import { ReagentEditor } from "./ReagentEditor";
 import update from "immutability-helper";
 import { ParticleText } from "./ParticleText";
 import * as hax from "../utils/hax";
+import { _never } from "../utils/_never";
 
 export function ReactionSandbox({
     standalone,
@@ -50,11 +51,11 @@ export function ReactionSandbox({
         .filter(py => py !== "")
         .map(py => py.split(",").map(s => ({
             content: [...s].reduce((acc, v) => {
-                acc[{
+                acc[({
                     r: "red",
                     g: "green",
                     b: "blue",
-                }[v]]++;
+                } as const)[v] ?? _never()]++;
                 return acc;
             }, {
                 red: 0,
@@ -147,7 +148,7 @@ export function ReactionSandbox({
                         velocity: [...hax.direction.flat60["↓"]],
                     }, {
                         content: { red: 1, green: 0, blue: 0 },
-                        velocity: [...hax.direction.flat60["↑"]]
+                        velocity: [...hax.direction.flat60["↑"]],
                     }]);
                 }}
             >

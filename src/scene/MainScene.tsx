@@ -14,7 +14,7 @@ import { useRecoilValue } from "recoil";
 import { useWorld } from "../useWorld";
 import { trustedEntries } from "../utils/trustedRecord";
 import { parsePosition } from "../puzzle/terms/Position";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useWindowKeyDown } from "../utils/useWindowKeyDown";
 
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);

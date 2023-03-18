@@ -43,4 +43,6 @@ const biuldTimeStr = ((date: Date) => {
 export const appVersion = "0.1.0-alpha"
     + `+${biuldTimeStr}-${buildGitRevSha}`
     + (import.meta.env.PROD ? "" : ("-" + import.meta.env.MODE));
+
+// eslint-disable-next-line no-console 
 console.log("appVersion", appVersion);

@@ -57,6 +57,7 @@ export function SolutionManagerPanel({
 
         <button
             onClick={() => {
+                // eslint-disable-next-line no-console
                 console.log(solution);
                 navigator.clipboard.writeText(
                     JSON.stringify(solution, undefined, 4));
