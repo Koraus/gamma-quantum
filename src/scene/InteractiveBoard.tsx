@@ -103,17 +103,14 @@ export function InteractiveBoard() {
         }
     };
 
-   
-    const changeCursorDirection = (e: KeyboardEvent) => {
+    useWindowKeyDown((e) => {
         const step = (cursorTool.kind === "mirror" ? 1 : 2);
         if (e.code === "KeyR") {
             setCursorDirection(
                 cursorDirection + (e.shiftKey ? (-1) : 1) * step,
             );
         }
-    };
-
-    useWindowKeyDown(changeCursorDirection);
+    });
 
     return <group>
         <HexGrid

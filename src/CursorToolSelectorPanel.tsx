@@ -78,10 +78,9 @@ export function CursorToolSelectorPanel({
         ...availableSpawners,
         ...availableConsumers,
     ];
-
-    const selectCursor = (e: KeyboardEvent) => {
+    
+    useWindowKeyDown((e) => {
         if (e.code === "Escape") { setCursor({ kind: "none" }); }
-
         if (e.shiftKey) {
             const digits = [
                 "Digit1", "Digit2", "Digit3", "Digit4", "Digit5",
@@ -99,9 +98,7 @@ export function CursorToolSelectorPanel({
             if (e.code === "Digit2") { setCursor({ kind: "mirror" }); }
             if (e.code === "Digit3") { setCursor({ kind: "trap" }); }
         }
-    };
-
-    useWindowKeyDown(selectCursor);
+    });
 
     useEffect(() => {
         const selectCursor = () => { setCursor({ kind: "none" }); };

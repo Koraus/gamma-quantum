@@ -15,7 +15,6 @@ import { useWorld } from "../useWorld";
 import { trustedEntries } from "../utils/trustedRecord";
 import { parsePosition } from "../puzzle/terms/Position";
 import { useEffect, useRef, useState } from "react";
-import { A } from "ts-toolbelt";
 import { useWindowKeyDown } from "../utils/useWindowKeyDown";
 
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
@@ -44,9 +43,10 @@ export function MainScene() {
     ];
 
     const ref = useRef<CameraControls>(null);
-    const moveCamera = (e: KeyboardEvent) => {
+
+    useWindowKeyDown((e) => {
         const step = 1;
-        if (ref !== null) {
+        if (ref.current !== null) {
             if (e.code === "KeyD") {
                 ref.current.truck(step, 0, true);
             }
@@ -60,8 +60,7 @@ export function MainScene() {
                 ref.current.forward(-step, true);
             }
         }
-    };
-    useWindowKeyDown(moveCamera);
+    });
     return <>
         <PerspectiveCamera
             makeDefault
