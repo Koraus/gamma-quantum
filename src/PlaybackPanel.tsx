@@ -28,7 +28,7 @@ export const playActionRecoil = atom<PlayAction>({
 export const nowPlaytime = (
     { startRealtime, startPlaytime, playtimeSpeed }: PlayAction,
     nowRealtime = performance.now() / 1000,
-) => startPlaytime + playtimeSpeed * (nowRealtime - startRealtime);
+) => Math.max(0, startPlaytime + playtimeSpeed * (nowRealtime - startRealtime));
 
 const toFixedFloor = (x: number, digits: number) =>
     (Math.floor(x * 10 ** digits) / 10 ** digits).toFixed(digits);
@@ -57,6 +57,7 @@ export function PlaybackPanel({
         const rangeFullEl = rangeFullRef.current;
         if (!rangeFullEl) { return; }
 
+
         const render = () => {
             stepEl.innerText = nowPlaytimeText(playAction);
             rangeEl.valueAsNumber =
@@ -68,7 +69,7 @@ export function PlaybackPanel({
             handler = requestAnimationFrame(render);
         };
         let handler = requestAnimationFrame(render);
-        return () => cancelAnimationFrame(handler);
+        return () => { return cancelAnimationFrame(handler);};
     }, [playAction, stepRef.current, rangeRef.current, rangeFullRef]);
 
 
