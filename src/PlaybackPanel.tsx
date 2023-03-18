@@ -57,7 +57,6 @@ export function PlaybackPanel({
         const rangeFullEl = rangeFullRef.current;
         if (!rangeFullEl) { return; }
 
-
         const render = () => {
             stepEl.innerText = nowPlaytimeText(playAction);
             rangeEl.valueAsNumber =
@@ -69,7 +68,7 @@ export function PlaybackPanel({
             handler = requestAnimationFrame(render);
         };
         let handler = requestAnimationFrame(render);
-        return () => { return cancelAnimationFrame(handler);};
+        return () => cancelAnimationFrame(handler);
     }, [playAction, stepRef.current, rangeRef.current, rangeFullRef]);
 
 
