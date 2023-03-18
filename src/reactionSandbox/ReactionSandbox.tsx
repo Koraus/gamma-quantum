@@ -10,6 +10,7 @@ import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { ReagentEditor } from "./ReagentEditor";
 import update from "immutability-helper";
 import { ParticleText } from "./ParticleText";
+import * as hax from "../utils/hax";
 
 export function ReactionSandbox({
     standalone,
@@ -45,20 +46,22 @@ export function ReactionSandbox({
 
     const sy = [...new Set(y)];
 
-    const products = sy.map(py => py.split(",").map(s => ({
-        content: [...s].reduce((acc, v) => {
-            acc[{
-                r: "red",
-                g: "green",
-                b: "blue",
-            }[v]]++;
-            return acc;
-        }, {
-            red: 0,
-            green: 0,
-            blue: 0,
-        }),
-    })));
+    const products = sy
+        .filter(py => py !== "")
+        .map(py => py.split(",").map(s => ({
+            content: [...s].reduce((acc, v) => {
+                acc[{
+                    r: "red",
+                    g: "green",
+                    b: "blue",
+                }[v]]++;
+                return acc;
+            }, {
+                red: 0,
+                green: 0,
+                blue: 0,
+            }),
+        })));
 
 
     return <div
@@ -117,7 +120,41 @@ export function ReactionSandbox({
                 +
             </button>
             <br />
-            
+            <button
+                onClick={() => {
+                    reagents[1]([{
+                        content: { red: 0, green: 2, blue: 0 },
+                        velocity: [...hax.direction.flat60["↓"]],
+                    }, {
+                        content: { red: 1, green: 0, blue: 0 },
+                        velocity: [...hax.direction.flat60["↖"]],
+                    }, {
+                        content: { red: 1, green: 0, blue: 0 },
+                        velocity: [...hax.direction.flat60["↙"]],
+                    }, {
+                        content: { red: 1, green: 1, blue: 1 },
+                        velocity: [...hax.direction.flat60["↙"]],
+                    }]);
+                }}
+            >
+                check 1: gg ↓ m1 + r ↖ m1 + r ↙ m1 + rgb ↙ m2
+            </button>
+            <br />
+            <button
+                onClick={() => {
+                    reagents[1]([{
+                        content: { red: 1, green: 0, blue: 0 },
+                        velocity: [...hax.direction.flat60["↓"]],
+                    }, {
+                        content: { red: 1, green: 0, blue: 0 },
+                        velocity: [...hax.direction.flat60["↑"]]
+                    }]);
+                }}
+            >
+                check 2: r ↓ m1 + r ↑ m1
+            </button>
+            <br />
+
             <div>
                 <label>
                     Show impossible reaction

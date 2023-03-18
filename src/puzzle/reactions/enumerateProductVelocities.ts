@@ -1,39 +1,126 @@
 import { v2 } from "../../utils/v";
 import * as hax from "../../utils/hax";
-import { Particle, _addParticleMomentum, _particleEnergy, _particleMass, particleMass, particlesEnergy, particlesMomentum } from "../world/Particle"; import { solveConservation } from "./solveConservation";
+import { Particle, _addParticleMomentum, _particleEnergy, particleMass, particlesEnergy, particlesMomentum } from "../world/Particle";
+import { solveConservation } from "./solveConservation";
 import { tuple } from "../../utils/tuple";
-import { keyifyResolvedReaction } from "./Reaction";
+import { keyifyResolvedReactionSide } from "./Reaction";
 import { ParticleKind } from "../terms/ParticleKind";
+import memoize from "memoizee";
 
-
-export const velocityVariants = [
-    v2.zero(),
-    ...hax.direction.flat60.itCwFromSouth,
-];
-export const velocityVariants1 = velocityVariants
-    .map(vel => tuple(vel));
-export const velocityVariants2 = velocityVariants
-    .flatMap(vel1 => velocityVariants.map(vel => tuple(vel1, vel)));
-export const velocityVariants3 = velocityVariants2
-    .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
-export const velocityVariants4 = velocityVariants3
-    .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
-export const velocityVariants5 = velocityVariants4
-    .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
-export const velocityVariants6 = velocityVariants5
-    .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
-export const velocityVariants7 = velocityVariants6
-    .flatMap(vels => velocityVariants.map(vel => tuple(...vels, vel)));
-export const velocityVariantsArr = [
-    [], velocityVariants1, velocityVariants2, velocityVariants3,
-    velocityVariants4, velocityVariants5, velocityVariants6,
-    velocityVariants7,
-] as const;
 
 const gamma = (d: Readonly<v2>) => ({
     content: "gamma",
     velocity: d,
 } as Particle);
+
+export function* __enumerateProductVelocitiesBody(
+    extraMomentum: readonly [number, number],
+    extraEnergy: number,
+    productsFree: ParticleKind[],
+    productsFixed: Particle[],
+): Generator<Particle[]> {
+
+    if (productsFree.length === 0) {
+        for (const ds of solveConservation(extraMomentum, extraEnergy)) {
+            yield [
+                ...productsFixed,
+                ...ds.map(gamma),
+            ];
+        }
+        return;
+    }
+
+    const [head, ...tail] = productsFree;
+    let tailMomentum = 0;
+    for (const p of productsFree) { tailMomentum += particleMass(p) || 1; }
+
+    while (particleMass(head) !== 0) {
+        const v = v2.r.zero;
+
+        const extraEnergy1 = extraEnergy - _particleEnergy(head.content, v);
+        if (0 > extraEnergy1) { break; }
+
+        const extraMomentum1 = [0, 0] as v2;
+        _addParticleMomentum(head.content, v, extraMomentum1);
+        extraMomentum1[0] = extraMomentum[0] - extraMomentum1[0];
+        extraMomentum1[1] = extraMomentum[1] - extraMomentum1[1];
+        if (hax.len(extraMomentum1) - tailMomentum > extraEnergy1) { break; }
+
+        yield* __enumerateProductVelocitiesBody(
+            extraMomentum1,
+            extraEnergy1,
+            tail,
+            [...productsFixed, { velocity: tuple(...v), ...head }],
+        );
+
+        break;
+    }
+
+    for (const v of hax.direction.flat60.itCwFromSouth) {
+        const extraEnergy1 = extraEnergy - _particleEnergy(head.content, v);
+        if (0 > extraEnergy1) { continue; }
+
+        const extraMomentum1 = [0, 0] as v2;
+        _addParticleMomentum(head.content, v, extraMomentum1);
+        extraMomentum1[0] = extraMomentum[0] - extraMomentum1[0];
+        extraMomentum1[1] = extraMomentum[1] - extraMomentum1[1];
+        if (hax.len(extraMomentum1) - tailMomentum > extraEnergy1) { continue; }
+
+        yield* __enumerateProductVelocitiesBody(
+            extraMomentum1,
+            extraEnergy1,
+            tail,
+            [...productsFixed, { velocity: tuple(...v), ...head }],
+        );
+    }
+
+}
+
+export function* __enumerateProductVelocities(
+    reagentsMomentum: readonly [number, number],
+    reagentsEnergy: number,
+    products: ParticleKind[],
+) {
+    const yieldedReactions = {} as Record<string, true>;
+
+    for (const r of __enumerateProductVelocitiesBody(
+        reagentsMomentum,
+        reagentsEnergy,
+        products,
+        [],
+    )) {
+        const kr = keyifyResolvedReactionSide(r);
+        if (kr in yieldedReactions) {
+            continue;
+        }
+        yield r;
+        yieldedReactions[kr] = true;
+    }
+}
+
+export const _enumerateProductVelocities = memoize((
+    reagentsMomentum: readonly [number, number],
+    reagentsEnergy: number,
+    products: ParticleKind[],
+) => [...__enumerateProductVelocities(
+    reagentsMomentum,
+    reagentsEnergy,
+    products,
+)], {
+    normalizer: ([
+        reagentsMomentum,
+        reagentsEnergy,
+        products,
+    ]: [
+            reagentsMomentum: readonly [number, number],
+            reagentsEnergy: number,
+            products: ParticleKind[],
+        ]) => JSON.stringify({
+            reagentsMomentum,
+            reagentsEnergy,
+            products: products.map(particleMass).sort(),
+        }),
+});
 
 export function* enumerateProductVelocities({
     reagents, products,
@@ -41,49 +128,14 @@ export function* enumerateProductVelocities({
     reagents: Particle[];
     products: ParticleKind[];
 }) {
-    if (products.length > velocityVariantsArr.length) {
-        throw new Error("not implemented");
-    }
-
-    const reagentsMomentum = particlesMomentum(reagents);
-    const reagentsEnergy = particlesEnergy(reagents);
-
-    const yieldedReactions = {} as Record<string, true>;
-    for (const vels of velocityVariantsArr[products.length]) {
-        let extraEnergy = reagentsEnergy;
-        const extraMomentum = [0, 0] as v2;
-        for (let i = 0; i < products.length; i++) {
-            const p = products[i];
-            const v = vels[i];
-            if (_particleMass(p.content) === 0 && hax.len(v) === 0) {
-                continue;
-            }
-            extraEnergy -= _particleEnergy(p.content, v);
-            _addParticleMomentum(p.content, v, extraMomentum);
-        }
-        extraMomentum[0] = reagentsMomentum[0] - extraMomentum[0];
-        extraMomentum[1] = reagentsMomentum[1] - extraMomentum[1];
-
-        let resolvedProducts = undefined;
-        for (const ds of solveConservation(extraMomentum, extraEnergy)) {
-            resolvedProducts =
-                resolvedProducts ?? products
-                    .map((p, i) => ({ velocity: tuple(...vels[i]), ...p }))
-                    .filter(p => particleMass(p) > 0
-                        || hax.len(p.velocity) > 0);
-            const r = {
-                reagents,
-                products: [
-                    ...resolvedProducts,
-                    ...ds.map(gamma),
-                ],
-            };
-            const kr = keyifyResolvedReaction(r);
-            if (kr in yieldedReactions) {
-                continue;
-            }
-            yield r;
-            yieldedReactions[kr] = true;
-        }
+    for (const resolvedProducts of _enumerateProductVelocities(
+        particlesMomentum(reagents),
+        particlesEnergy(reagents),
+        products,
+    )) {
+        yield {
+            reagents,
+            products: resolvedProducts,
+        };
     }
 }

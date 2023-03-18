@@ -22,6 +22,10 @@ const keyifyReactionParticle = (p: Particle) => (
     + "]}"
 ) as ReactionParticleKey;
 
+export const keyifyResolvedReactionSide =
+    (particles: Particle[]) =>
+        JSON.stringify(particles.map(keyifyReactionParticle).sort());
+
 export const keyifyResolvedReaction =
     ({ reagents, products }: ResolvedReaction) =>
         JSON.stringify({
