@@ -137,7 +137,21 @@ export function ReactionSandbox({
                     }]);
                 }}
             >
-                gg ↓ m1 + r ↖ m1 + r ↙ m1 + rgb ↙ m2
+                check 1: gg ↓ m1 + r ↖ m1 + r ↙ m1 + rgb ↙ m2
+            </button>
+            <br />
+            <button
+                onClick={() => {
+                    reagents[1]([{
+                        content: { red: 1, green: 0, blue: 0 },
+                        velocity: [...hax.direction.flat60["↓"]],
+                    }, {
+                        content: { red: 1, green: 0, blue: 0 },
+                        velocity: [...hax.direction.flat60["↑"]]
+                    }]);
+                }}
+            >
+                check 2: r ↓ m1 + r ↑ m1
             </button>
             <br />
 

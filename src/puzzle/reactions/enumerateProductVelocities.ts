@@ -34,17 +34,17 @@ export function* __enumerateProductVelocitiesBody(
     let tailMomentum = 0;
     for (const p of productsFree) { tailMomentum += particleMass(p) || 1; }
 
-    if (particleMass(head) !== 0) {
+    while (particleMass(head) !== 0) {
         const v = v2.r.zero;
 
         const extraEnergy1 = extraEnergy - _particleEnergy(head.content, v);
-        if (0 > extraEnergy1) { return; }
+        if (0 > extraEnergy1) { break; }
 
         const extraMomentum1 = [0, 0] as v2;
         _addParticleMomentum(head.content, v, extraMomentum1);
         extraMomentum1[0] = extraMomentum[0] - extraMomentum1[0];
         extraMomentum1[1] = extraMomentum[1] - extraMomentum1[1];
-        if (hax.len(extraMomentum1) - tailMomentum > extraEnergy1) { return; }
+        if (hax.len(extraMomentum1) - tailMomentum > extraEnergy1) { break; }
 
         yield* __enumerateProductVelocitiesBody(
             extraMomentum1,
@@ -52,17 +52,19 @@ export function* __enumerateProductVelocitiesBody(
             tail,
             [...productsFixed, { velocity: tuple(...v), ...head }],
         );
+
+        break;
     }
 
     for (const v of hax.direction.flat60.itCwFromSouth) {
         const extraEnergy1 = extraEnergy - _particleEnergy(head.content, v);
-        if (0 > extraEnergy1) { return; }
+        if (0 > extraEnergy1) { continue; }
 
         const extraMomentum1 = [0, 0] as v2;
         _addParticleMomentum(head.content, v, extraMomentum1);
         extraMomentum1[0] = extraMomentum[0] - extraMomentum1[0];
         extraMomentum1[1] = extraMomentum[1] - extraMomentum1[1];
-        if (hax.len(extraMomentum1) - tailMomentum > extraEnergy1) { return; }
+        if (hax.len(extraMomentum1) - tailMomentum > extraEnergy1) { continue; }
 
         yield* __enumerateProductVelocitiesBody(
             extraMomentum1,
@@ -80,7 +82,7 @@ export function* __enumerateProductVelocities(
     products: ParticleKind[],
 ) {
     const yieldedReactions = {} as Record<string, true>;
-    
+
     for (const r of __enumerateProductVelocitiesBody(
         reagentsMomentum,
         reagentsEnergy,
