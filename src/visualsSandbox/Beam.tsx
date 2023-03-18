@@ -2,7 +2,7 @@ import { CameraControls, GizmoHelper, GizmoViewport, Grid, PerspectiveCamera } f
 import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
 import { Group, InstancedMesh, Material, MeshBasicMaterial, ShaderChunk, SphereGeometry, WebGLRenderTarget, WebGLRenderer } from "three";
-import { FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
+// import { FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { randomChunk } from "./shaderChunks/randomChunk";
 import { easingChunk } from "./shaderChunks/easingChunk";
 import { zoneChunk } from "./shaderChunks/zoneChunk";
@@ -25,18 +25,18 @@ export const toGlslVecLiteral = (
         | [number, number, number, number]
 ) => `vec${vec.length}(${vec.map(toGlslFloatLiteral).join(", ")})`;
 
-const fsQuad = new FullScreenQuad();
-export const renderFsQuad = (
-    renderer: WebGLRenderer,
-    material: Material,
-    buffer: WebGLRenderTarget,
-) => {
-    fsQuad.material = material;
-    const originalRenderTarget = renderer.getRenderTarget();
-    if (buffer) { renderer.setRenderTarget(buffer); }
-    fsQuad.render(renderer);
-    renderer.setRenderTarget(originalRenderTarget);
-};
+// const fsQuad = new FullScreenQuad();
+// export const renderFsQuad = (
+//     renderer: WebGLRenderer,
+//     material: Material,
+//     buffer: WebGLRenderTarget,
+// ) => {
+//     fsQuad.material = material;
+//     const originalRenderTarget = renderer.getRenderTarget();
+//     if (buffer) { renderer.setRenderTarget(buffer); }
+//     fsQuad.render(renderer);
+//     renderer.setRenderTarget(originalRenderTarget);
+// };
 
 const particleSystemChunk = /*glsl*/`
 ${randomChunk}
