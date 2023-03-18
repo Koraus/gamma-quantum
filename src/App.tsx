@@ -205,15 +205,9 @@ export function App() {
                 flex: isSolutionManagerShown
                     ? "0 0 33vmin"
                     : "0 0 0vmin",
-                maxWidth: isSolutionManagerShown
-                    ? "33vmin"
-                    : "0vmin",
-                transform: isSolutionManagerShown
-                    ? "scale3d(1, 1, 1)"
-                    : "scale3d(0, 1, 1)",
                 margin: isSolutionManagerShown
                     ? "0px 1px 1px 0px"
-                    : "1px -0.5px",
+                    : "1px 0.5px",
             }} />
         </div>
 
