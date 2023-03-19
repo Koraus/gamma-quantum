@@ -30,11 +30,13 @@
 
 		import { App } from "./src/app/App";
 		import { Beam } from "./src/visualsSandbox/Beam";
+		import { Beam2 } from "./src/visualsSandbox/Beam2";
 		import { ReactionSandbox } from "./src/reactionSandbox/ReactionSandbox";
 
 		const SearchComponent = (() => {
 			const s = new URLSearchParams(location.search);
 			if (s.has("Beam")) { return Beam; }
+			if (s.has("Beam2")) { return Beam2; }
 			if (s.has("ReactionSandbox")) { return ReactionSandbox; }
 		})() ?? App;
 

@@ -1,7 +1,7 @@
 import { CameraControls, GizmoHelper, GizmoViewport, Grid, PerspectiveCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
-import { Group, InstancedMesh, Material, MeshBasicMaterial, ShaderChunk, SphereGeometry, WebGLRenderTarget, WebGLRenderer } from "three";
+import { AddEquation, AdditiveBlending, Color, CustomBlending, DstAlphaFactor, Group, InstancedMesh, Material, MeshBasicMaterial, OneMinusSrcAlphaFactor, PlaneGeometry, ShaderChunk, ShaderMaterial, SphereGeometry, SrcAlphaFactor, WebGLRenderTarget, WebGLRenderer } from "three";
 // import { FullScreenQuad } from "three/examples/jsm/postprocessing/Pass";
 import { randomChunk } from "./shaderChunks/randomChunk";
 import { easingChunk } from "./shaderChunks/easingChunk";
@@ -45,7 +45,7 @@ ${zoneChunk}
 ${transformChunk}
 
 mat4 emitterTransform(float timeSec) {
-  return translate(vec3(-250.0 + 500.0 * fract(timeSec * 0.2), 10.0, 0.0));
+  return translate(vec3(-250.0 + 500.0 * fract(timeSec * 0.2), 0.0, 0.0));
 }
 
 // Calculates a transform of a single particle at a given time of its lifespan 
@@ -55,23 +55,22 @@ mat4 emitterTransform(float timeSec) {
 // @ iteration - an integer iteration of particle instance (each iteration seeds another particle)
 mat4 particleTransform(in float particleTimeSec, in float t, in float iteration) {
   return identity
-    // * translate(vec3(t * 30.0, 0.0, 0.0))
-    * scale(mix(vec3(1.0), vec3(randomInRange(0.0, 3.0)), abs(sin(t * PI * 5.0))))
+    * translate(vec3(abs(sin((t - 0.5) * PI * 5.0) * sin((t - 0.5) * PI * 5.0)) * 15.0, 0.0, 0.0))
+    * rotate(vec3(1.0, 0.0, 0.0), t * PI * 2.0 * randomInRange(-1.0, 15.0))
+    * scale(mix(
+        vec3(1.5), 
+        vec3(randomInRange(1.0, 7.0)),
+        abs(sin(t * PI * 5.0))))
     // * translate(randomInBoxZone(vec3(0.0, -2.0, -2.0), vec3(0.0, 2.0, 2.0))) // initial position in a (flat) box
     * translate(vec3(0.0, randomInBallZone().yz) * 2.0) // initial position in a ball
-    * scale(mix(vec3(0.0), vec3(randomInRange(0.05, 0.1)), abs(sin(t * PI * 5.0))))
+    * scale(mix(vec3(0.5), vec3(randomInRange(0.5, 3.0)), abs(sin(t * PI * 5.0))))
+    * scale(vec3(0.2))
     * identity;
 }
 
 // Prepares particle iteration variables, seeds the random, returns particle transform
 mat4 particleMain(in float timeSec, in float seed, bool debug) {
   // if (debug) { return emitterTransform(timeSec); }
-  if (gl_InstanceID < 10) {
-    return identity
-      * translate(vec3(-250.0 + 500.0 * fract((timeSec + float(gl_InstanceID) + 0.5) * 0.2), 10.0, 0.0))
-      * scale(vec3(1.0))
-      * identity;
-  }
   randomSeed = seed;
   float lifeSec = randomInRange(5.0, 5.0);
   float initialLifeOffsetSec = randomInRange(-lifeSec, 0.0);
@@ -81,24 +80,92 @@ mat4 particleMain(in float timeSec, in float seed, bool debug) {
   float particleTimeSec = t * lifeSec;
   float emissionTimeSec = timeSec - particleTimeSec;
   float iterationSeed = fract(iteration * 1e-10);
+  if (gl_InstanceID < 5) {
+      return identity
+      * rotate(vec3(1.0, 0.0, 0.0), timeSec * PI * sin(float(gl_InstanceID) / 4.0) * PI)
+      * translate(vec3(-250.0 + 500.0 * fract((timeSec + float(gl_InstanceID) + 0.5) * 0.2), 1.0, 0.0))
+      * scale(vec3(55.0))
+      * identity;
+  }
   randomSeed = fract(randomSeed + iterationSeed); // reseed rand for every iteration
   return emitterTransform(emissionTimeSec) * particleTransform(particleTimeSec, t, iteration);
 }
 `;
 
-const count = 2 ** 10;
+const count = 2 ** 15;
 
-export function BeamImpl() {
+export function BeamImpl({
+    timeSec,
+    run,
+}: {
+    timeSec: number,
+    run: boolean,
+}) {
     const ref = useRef<Group>(null);
     useEffect(() => {
         const g = ref.current;
         if (!g) { return; }
 
-        const material = new MeshBasicMaterial({
-            color: "#c17dff",
+        const material = new ShaderMaterial({
+            transparent: true,
+            depthWrite: false,
+            // blending: AdditiveBlending,
+            // blending: CustomBlending,
+            // blendEquation: AddEquation,
+            // blendSrc: SrcAlphaFactor,
+            // blendDst: DstAlphaFactor,
+            uniforms: {
+                timeSec: { value: timeSec },
+            },
+            vertexShader: /*glsl*/`
+#include <common>
+uniform float timeSec;
+${particleSystemChunk} 
+varying vec2 vUv;
+
+void main() {
+    mat4 instanceMatrix2 = particleMain(
+        timeSec, 
+        (1.0 + float(gl_InstanceID)) / ${toGlslFloatLiteral(count)},
+        gl_InstanceID == 0);
+    mat4 instanceModelMatrix = instanceMatrix2 * modelMatrix;
+    
+	vec4 mvPosition = 
+        modelViewMatrix
+        * instanceMatrix2
+        * vec4(0.0, 0.0, 0.0, 1.0);
+	vec2 scale = vec2(
+        length((instanceMatrix2 * modelMatrix)[0].xyz), 
+        length((instanceMatrix2 * modelMatrix)[1].xyz));
+    mvPosition.xy += position.xy * scale;
+	gl_Position = projectionMatrix * mvPosition;
+
+    vUv = uv.xy;
+}
+`,
+            fragmentShader: /*glsl*/`
+varying vec2 vUv;
+
+void main() {
+    float r = length(vUv * 2.0 - 1.0);
+
+    if (r < 0.33) {
+        float t = r * r + 0.5;
+        gl_FragColor = vec4( 
+            5.0 * t * vec3(1.0, 0.2, 0.8), 
+            1.0);
+    } else {
+        // discard;
+        gl_FragColor = vec4( 
+            vec3(1.0, 0.2, 0.8), 
+            1.0 - r * r * 3.0);
+    }
+}
+`,
         });
         const x = particleSystemChunk;
         material.onBeforeCompile = (shader) => {
+            return;
             material.userData.shader = shader;
             shader.uniforms.timeSec = { value: 0 };
             shader.vertexShader = resolveShaderIncludes(shader.vertexShader)
@@ -117,13 +184,14 @@ mat4 instanceMatrix2 = particleMain(
                 );
         };
 
-        const geometry = new SphereGeometry();
+        const geometry = new PlaneGeometry();
 
         const obj = new InstancedMesh(geometry, material, count);
         obj.position.x = 250;
-        obj.position.z = -1;
         const objG = new Group();
         objG.add(obj);
+        objG.position.z = 1.5;
+        objG.rotation.x = Math.PI * 0.66;
         objG.rotation.y = -Math.PI;
         g.add(objG);
 
@@ -146,20 +214,21 @@ mat4 instanceMatrix2 = particleMain(
 
         const obj3 = new InstancedMesh(geometry, material, count);
         obj3.position.x = 250;
-        obj3.position.z = 1;
         const objG3 = new Group();
         objG3.add(obj3);
+        objG3.position.z = -1.5;
         objG3.rotation.y = -Math.PI;
         g.add(objG3);
 
         const update = () => {
-            material.userData.shader.uniforms.timeSec.value =
-                performance.now() * 0.001;
+            if (run) {
+                material.uniforms.timeSec.value = performance.now() * 0.001;
+            }
             h = requestAnimationFrame(update);
         }
         let h = requestAnimationFrame(update);
 
-        () => {
+        return () => {
             material.dispose();
             g.remove(objG);
             obj.dispose();
@@ -171,14 +240,15 @@ mat4 instanceMatrix2 = particleMain(
             obj3.dispose();
             cancelAnimationFrame(h);
         };
-    }, [ref.current]);
+    }, [ref.current, timeSec, run]);
 
-    return <group ref={ref}></group>;
+    return <group position={[0, 10, 0]} ref={ref}></group>;
 }
 
 export function Beam() {
-    const { x } = useControls({
-        x: { min: 0, value: 35, max: 100, step: 1 },
+    const { timeSec, run } = useControls({
+        timeSec: { min: -1, value: 0, max: 1, step: 0.001 },
+        run: false,
     });
     return <div css={{
         position: "fixed",
@@ -192,7 +262,7 @@ export function Beam() {
                 far={10000}
                 position={[200, 200, 200]} />
             <CameraControls />
-            <Grid
+            <Grid renderOrder={-1}
                 position={[0, -0.01, 0]}
                 args={[100, 100]}
                 infiniteGrid
@@ -209,7 +279,7 @@ export function Beam() {
                 <GizmoViewport />
             </GizmoHelper>
 
-            <BeamImpl />
+            <BeamImpl timeSec={timeSec} run={run} />
         </Canvas>
     </div>;
 }
