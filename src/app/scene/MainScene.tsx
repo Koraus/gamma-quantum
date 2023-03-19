@@ -5,7 +5,7 @@ import { tuple } from "../../utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
 import { nowPlaytime, playActionRecoil } from "../PlaybackPanel";
-import { Vector3 } from "three";
+import { Vector3, Box3 } from "three";
 import { GroupSync } from "../../utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
@@ -16,6 +16,8 @@ import { trustedEntries } from "../../utils/trustedRecord";
 import { parsePosition } from "../../puzzle/terms/Position";
 import { useRef } from "react";
 import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
+import { useWindowKeyUp } from "../../utils/useWindowKeyUp";
+import { useFrame } from "@react-three/fiber";
 
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
 
@@ -43,24 +45,66 @@ export function MainScene() {
     ];
 
     const ref = useRef<CameraControls>(null);
-
+    const isKeyPressed = {
+        keyA: false,
+        keyS: false,
+        keyD: false,
+        keyW: false,
+    };
     useWindowKeyDown((e) => {
-        const step = 1;
+        if (e.code === "KeyD") {
+            isKeyPressed.keyD = true;
+        }
+        if (e.code === "KeyA") {
+            isKeyPressed.keyA = true;
+        }
+        if (e.code === "KeyW") {
+            isKeyPressed.keyW = true;
+        }
+        if (e.code === "KeyS") {
+            isKeyPressed.keyS = true;
+        }
+    });
+    useWindowKeyUp((e) => {
+        if (e.code === "KeyD") {
+            isKeyPressed.keyD = false;
+        }
+        if (e.code === "KeyA") {
+            isKeyPressed.keyA = false;
+        }
+        if (e.code === "KeyW") {
+            isKeyPressed.keyW = false;
+        }
+        if (e.code === "KeyS") {
+            isKeyPressed.keyS = false;
+        }
+    });
+    useFrame(() => {
         if (ref.current !== null) {
-            if (e.code === "KeyD") {
-                ref.current.truck(step, 0, true);
+            const step = 0.3;
+
+            if (isKeyPressed.keyW) {
+                ref.current.forward(step, false);
             }
-            if (e.code === "KeyA") {
-                ref.current.truck(-step, 0, true);
+            if (isKeyPressed.keyS) {
+                ref.current.forward(-step, false);
             }
-            if (e.code === "KeyW") {
-                ref.current.forward(step, true);
+            if (isKeyPressed.keyD) {
+                ref.current.truck(step, 0, false);
             }
-            if (e.code === "KeyS") {
-                ref.current.forward(-step, true);
+            if (isKeyPressed.keyA) {
+                ref.current.truck(-step, 0, false);
             }
         }
     });
+
+    const cameraBoundary = new Box3(
+        new Vector3(-Infinity, 0, -Infinity),
+        new Vector3(Infinity, 0, Infinity),
+    );
+
+    ref.current?.setBoundary(cameraBoundary);
+
     return <>
         <PerspectiveCamera
             makeDefault

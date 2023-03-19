@@ -1,9 +1,9 @@
 import { useEffect, DependencyList } from "react";
 
 export function useWindowKeyDown(handler: (e: KeyboardEvent) => void,
-    depends?: DependencyList) {
+    deps?: DependencyList) {
     useEffect(() => {
         window.addEventListener("keydown", handler);
         return () => window.removeEventListener("keydown", handler);
-    }, depends);
+    }, deps);
 }
