@@ -1,11 +1,11 @@
 import { css, cx } from "@emotion/css";
-import { keyifyParticleKind, keyProjectParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "./puzzle/terms/ParticleKind";
+import { keyifyParticleKind, keyProjectParticleKind, parsePartilceKind, ParticleKind, ParticleKindKey } from "../puzzle/terms/ParticleKind";
 import { atom, useRecoilState, useRecoilValue } from "recoil";
-import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
+import { solutionManagerRecoil } from "../app/solutionManager/solutionManagerRecoil";
 import { hasValueAtKey } from "ts-is-present";
-import { trustedEntries, trustedValues } from "./utils/trustedRecord";
+import { trustedEntries, trustedValues } from "../utils/trustedRecord";
 import { useEffect } from "react";
-import { useWindowKeyDown } from "./utils/useWindowKeyDown";
+import { useWindowKeyDown } from "../utils/useWindowKeyDown";
 
 export type CursorTool = {
     kind: "none",

@@ -1,8 +1,8 @@
-import * as problems from "../puzzle/problems";
+import * as problems from "../../puzzle/problems";
 import ProblemInSolutionList from "./ProblemInSolutionList";
 import { useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "./solutionManagerRecoil";
-import { eqProblem } from "../puzzle/terms/Problem";
+import { eqProblem } from "../../puzzle/terms/Problem";
 import { useSetSolution } from "../useSetSolution";
 import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 

@@ -1,5 +1,5 @@
 import { Plane } from "@react-three/drei";
-import { v2 } from "../utils/v";
+import { v2 } from "../../utils/v";
 
 export function HexGrid({
     positions,

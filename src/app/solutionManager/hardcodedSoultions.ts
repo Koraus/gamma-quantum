@@ -1,6 +1,6 @@
-import { problem3, problem5, sandbox } from "../puzzle/problems";
-import { keyifyPosition } from "../puzzle/terms/Position";
-import { SolutionDraft } from "../puzzle/terms/Solution";
+import { problem3, problem5, sandbox } from "../../puzzle/problems";
+import { keyifyPosition } from "../../puzzle/terms/Position";
+import { SolutionDraft } from "../../puzzle/terms/Solution";
 
 
 

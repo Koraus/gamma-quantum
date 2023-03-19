@@ -11,8 +11,8 @@ import { WorldInfoPanel } from "./WorldInfoPanel";
 import { WinPanel } from "./WinPanel";
 import { StatsPanel } from "./stats/StatsPanel";
 import { useRef, useState } from "react";
-import { ReactionSandbox } from "./reactionSandbox/ReactionSandbox";
-import { useGrabFocusFromBody } from "./utils/useGrabFocusFromBody";
+import { ReactionSandbox } from "../reactionSandbox/ReactionSandbox";
+import { useGrabFocusFromBody } from "../utils/useGrabFocusFromBody";
 
 const focusMeOnce = (el: HTMLElement | null) => el?.focus();
 

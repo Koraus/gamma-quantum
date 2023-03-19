@@ -1,6 +1,6 @@
 import { Color, Vector3 } from "@react-three/fiber";
 import { useMemo } from "react";
-import { GroupSync } from "../utils/GroupSync";
+import { GroupSync } from "../../utils/GroupSync";
 
 export function SubparticleMesh({
     color,

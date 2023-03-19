@@ -1,10 +1,10 @@
 import { DefaultValue, atom, useSetRecoilState } from "recoil";
-import { Solution, SolutionKey, keyifySolution, parseSolution } from "../puzzle/terms/Solution";
+import { Solution, SolutionKey, keyifySolution, parseSolution } from "../../puzzle/terms/Solution";
 import { postSolution } from "./statsCllient";
-import { localStorageAtomEffect } from "../utils/localStorageAtomEffect";
+import { localStorageAtomEffect } from "../../utils/localStorageAtomEffect";
 import update from "immutability-helper";
-import { onChangeAtomEffect } from "../utils/onChangeAtomEffect";
-import { trustedKeys } from "../utils/trustedRecord";
+import { onChangeAtomEffect } from "../../utils/onChangeAtomEffect";
+import { trustedKeys } from "../../utils/trustedRecord";
 
 export const statsRecoil = atom({
     key: "stats",

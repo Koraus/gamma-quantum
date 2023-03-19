@@ -1,7 +1,7 @@
 import { useRecoilValue } from "recoil";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 import usePromise from "react-use-promise";
-import { isSolutionComplete, keyifySolution } from "../puzzle/terms/Solution";
+import { isSolutionComplete, keyifySolution } from "../../puzzle/terms/Solution";
 import { getStats } from "./statsCllient";
 import { statsRecoil } from "./statsRecoil";
 import { Chart } from "./Chart";

@@ -1,9 +1,9 @@
 import { useRecoilValue } from "recoil";
 import { nowPlaytime, playActionRecoil } from "./PlaybackPanel";
-import { solutionManagerRecoil } from "./solutionManager/solutionManagerRecoil";
+import { solutionManagerRecoil } from "../app/solutionManager/solutionManagerRecoil";
 import { useEffect, useState } from "react";
-import { SolutionDraft } from "./puzzle/terms/Solution";
-import { worldAtStep } from "./puzzle/world";
+import { SolutionDraft } from "../puzzle/terms/Solution";
+import { worldAtStep } from "../puzzle/world";
 
 
 export const getStepAtPlaytime = (playtime: number) =>

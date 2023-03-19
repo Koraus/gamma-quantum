@@ -8,7 +8,7 @@ import { PlaySkipForward } from "@emotion-icons/ionicons-solid/PlaySkipForward";
 import { PlayForward } from "@emotion-icons/ionicons-solid/PlayForward";
 import { CaretBack } from "@emotion-icons/ionicons-solid/CaretBack";
 import { atom, useRecoilState } from "recoil";
-import { useWindowKeyDown } from "./utils/useWindowKeyDown";
+import { useWindowKeyDown } from "../utils/useWindowKeyDown";
 
 export type PlayAction = {
     startRealtime: number;

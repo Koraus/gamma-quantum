@@ -1,8 +1,8 @@
 import { useFrame } from "@react-three/fiber";
-import { ParticleState } from "../puzzle/world";
-import { ParticleKind } from "../puzzle/terms/ParticleKind";
-import { directionOf } from "../reactionSandbox/ParticleText";
-import * as hax from "../utils/hax";
+import { ParticleState } from "../../puzzle/world";
+import { ParticleKind } from "../../puzzle/terms/ParticleKind";
+import { directionOf } from "../../reactionSandbox/ParticleText";
+import * as hax from "../../utils/hax";
 import { SubparticleMesh } from "./SubparticleMesh";
 
 

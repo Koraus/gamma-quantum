@@ -1,6 +1,6 @@
-import { Problem, keyifyProblem } from "../puzzle/terms/Problem";
-import { Solution, keyifySolution } from "../puzzle/terms/Solution";
-import { solutionStats } from "../puzzle/world";
+import { Problem, keyifyProblem } from "../../puzzle/terms/Problem";
+import { Solution, keyifySolution } from "../../puzzle/terms/Solution";
+import { solutionStats } from "../../puzzle/world";
 
 
 type Stats = ReturnType<typeof solutionStats>;

@@ -1,13 +1,13 @@
-import { solvedAtStep } from "./puzzle/world/index";
+import { solvedAtStep } from "../puzzle/world/index";
 import { atom, useRecoilState } from "recoil";
 import { useWorld } from "./useWorld";
 import { useEffect } from "react";
 import { useSetSolution } from "./useSetSolution";
 import update from "immutability-helper";
-import { Solution, isSolutionComplete } from "./puzzle/terms/Solution";
-import { trustedEntries } from "./utils/trustedRecord";
+import { Solution, isSolutionComplete } from "../puzzle/terms/Solution";
+import { trustedEntries } from "../utils/trustedRecord";
 import { particleKindText } from "./CursorToolSelectorPanel";
-import { ParticleKindKey, parsePartilceKind } from "./puzzle/terms/ParticleKind";
+import { ParticleKindKey, parsePartilceKind } from "../puzzle/terms/ParticleKind";
 import { CardChecklist } from "@emotion-icons/bootstrap/CardChecklist";
 import { CheckmarkSquareOutline } from "@emotion-icons/evaicons-outline/CheckmarkSquareOutline";
 import { SquareOutline } from "@emotion-icons/evaicons-outline/SquareOutline";

@@ -1,7 +1,7 @@
-import { Problem, eqProblem } from "../puzzle/terms/Problem";
-import { SolutionDraft, eqSolutionDraft } from "../puzzle/terms/Solution";
+import { Problem, eqProblem } from "../../puzzle/terms/Problem";
+import { SolutionDraft, eqSolutionDraft } from "../../puzzle/terms/Solution";
 import { css, cx } from "@emotion/css";
-import { StateProp } from "../utils/StateProp";
+import { StateProp } from "../../utils/StateProp";
 import { Save as SaveIcon } from "@emotion-icons/remix-fill/Save";
 import { useSetRecoilState } from "recoil";
 import { solutionManagerRecoil } from "./solutionManagerRecoil";

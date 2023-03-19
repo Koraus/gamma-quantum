@@ -1,12 +1,12 @@
 import { atom, useSetRecoilState } from "recoil";
 import * as amplitude from "@amplitude/analytics-browser";
 import update from "immutability-helper";
-import { localStorageAtomEffect } from "../utils/localStorageAtomEffect";
-import { Solution, SolutionDraft } from "../puzzle/terms/Solution";
-import { onChangeAtomEffect } from "../utils/onChangeAtomEffect";
+import { localStorageAtomEffect } from "../../utils/localStorageAtomEffect";
+import { Solution, SolutionDraft } from "../../puzzle/terms/Solution";
+import { onChangeAtomEffect } from "../../utils/onChangeAtomEffect";
 import * as solutions from "./hardcodedSoultions";
 import { SetStateAction } from "react";
-import { puzzleId } from "../puzzle/terms/puzzleId";
+import { puzzleId } from "../../puzzle/terms/puzzleId";
 
 
 const solutionManagerRecoilDefault = {
