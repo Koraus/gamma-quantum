@@ -74,14 +74,14 @@ export function PlaybackPanel({
 
     useWindowKeyDown((e) => {
         if (e.shiftKey) {
-            if (e.code === "Space") {
+            if (e.code === "KeyP") {
                 setPlayAction({
                     startPlaytime: 0,
                     playtimeSpeed: 0,
                     startRealtime: performance.now() / 1000,
                 });
             }
-        } else if (e.code === "Space") {
+        } else if (e.code === "KeyP") {
             setPlayAction({
                 startPlaytime: nowPlaytime(playAction),
                 playtimeSpeed:
