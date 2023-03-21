@@ -71,7 +71,6 @@ export function PlaybackPanel({
         return () => cancelAnimationFrame(handler);
     }, [playAction, stepRef.current, rangeRef.current, rangeFullRef]);
 
-
     useWindowKeyDown((e) => {
         if (e.shiftKey) {
             if (e.code === "KeyP") {
