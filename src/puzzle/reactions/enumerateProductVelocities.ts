@@ -1,6 +1,6 @@
 import { v2 } from "../../utils/v";
 import * as hax from "../../utils/hax";
-import { Particle, _addParticleMomentum, _particleEnergy, particleMass, particlesEnergy, particlesMomentum } from "../world/Particle";
+import { Particle, _addParticleMomentum, _particleEnergy, particleMass } from "../world/Particle";
 import { solveConservation } from "./solveConservation";
 import { tuple } from "../../utils/tuple";
 import { keyifyResolvedReactionSide } from "./Reaction";
@@ -13,7 +13,7 @@ const gamma = (d: Readonly<v2>) => ({
     velocity: d,
 } as Particle);
 
-export function* __enumerateProductVelocitiesBody(
+export function* _enumerateProductVelocitiesBody(
     extraMomentum: readonly [number, number],
     extraEnergy: number,
     productsFree: ParticleKind[],
@@ -46,7 +46,7 @@ export function* __enumerateProductVelocitiesBody(
         extraMomentum1[1] = extraMomentum[1] - extraMomentum1[1];
         if (hax.len(extraMomentum1) - tailMomentum > extraEnergy1) { break; }
 
-        yield* __enumerateProductVelocitiesBody(
+        yield* _enumerateProductVelocitiesBody(
             extraMomentum1,
             extraEnergy1,
             tail,
@@ -66,7 +66,7 @@ export function* __enumerateProductVelocitiesBody(
         extraMomentum1[1] = extraMomentum[1] - extraMomentum1[1];
         if (hax.len(extraMomentum1) - tailMomentum > extraEnergy1) { continue; }
 
-        yield* __enumerateProductVelocitiesBody(
+        yield* _enumerateProductVelocitiesBody(
             extraMomentum1,
             extraEnergy1,
             tail,
@@ -76,14 +76,14 @@ export function* __enumerateProductVelocitiesBody(
 
 }
 
-export function* __enumerateProductVelocities(
+export function* _enumerateProductVelocities(
     reagentsMomentum: readonly [number, number],
     reagentsEnergy: number,
     products: ParticleKind[],
 ) {
     const yieldedReactions = {} as Record<string, true>;
 
-    for (const r of __enumerateProductVelocitiesBody(
+    for (const r of _enumerateProductVelocitiesBody(
         reagentsMomentum,
         reagentsEnergy,
         products,
@@ -98,11 +98,11 @@ export function* __enumerateProductVelocities(
     }
 }
 
-export const _enumerateProductVelocities = memoize((
+export const enumerateProductVelocities = memoize((
     reagentsMomentum: readonly [number, number],
     reagentsEnergy: number,
     products: ParticleKind[],
-) => [...__enumerateProductVelocities(
+) => [..._enumerateProductVelocities(
     reagentsMomentum,
     reagentsEnergy,
     products,
@@ -121,21 +121,3 @@ export const _enumerateProductVelocities = memoize((
             products: products.map(particleMass).sort(),
         }),
 });
-
-export function* enumerateProductVelocities({
-    reagents, products,
-}: {
-    reagents: Particle[];
-    products: ParticleKind[];
-}) {
-    for (const resolvedProducts of _enumerateProductVelocities(
-        particlesMomentum(reagents),
-        particlesEnergy(reagents),
-        products,
-    )) {
-        yield {
-            reagents,
-            products: resolvedProducts,
-        };
-    }
-}

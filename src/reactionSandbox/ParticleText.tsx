@@ -2,17 +2,19 @@ import { css } from "@emotion/css";
 import * as hax from "../utils/hax";
 import { v2 } from "../utils/v";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
-import { Particle, particleMass } from "../puzzle/world/Particle";
+import { Particle, particleCount, particleMass } from "../puzzle/world/Particle";
 import { DirectionId } from "../puzzle/world/direction";
 import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
+import { enumerateSubparticles } from "../puzzle/reactions/enumerateProductCombinations";
 
 export const particleColor = (p: ParticleKind) => {
     if (p.content === "gamma") { return "white"; }
-    if (!Array.isArray(p.content)) { return "red"; }
-    if (p.content.length === 2) { return "lime"; }
-    if (p.content.length === 3) { return "purple"; }
-    if (p.content.length === 4) { return "orange"; }
-    throw "unexpected particle content";
+    const c = particleCount(p);
+    if (c === 1) { return "#ff4040"; }
+    if (c === 2) { return "#40FF40"; }
+    if (c === 3) { return "#ff40ff"; }
+    if (c === 4) { return "#ffff40"; }
+    return "grey";
 };
 
 export function directionOf(h: v2) {
@@ -61,16 +63,20 @@ export function ParticleText({
             : "?";
     return <div
         css={[{
-            border: `2px solid ${particleColor(p)}`,
+            border: `1px solid ${particleColor(p)}`,
             padding: "1px 2px",
-            borderRadius: 6,
-            margin: "0px 2px",
+            borderRadius: 3,
+            margin: "0px 3px",
             color: particleColor(p),
         }, cssProp]}
         {...props}
     >
-        {velocitySymbol}
+        {[...enumerateSubparticles(p)]
+            .map(s => s[0])
+            .sort()
+            .join("")}
         &nbsp;
-        <span className={css({ opacity: 0.3 })}>m</span>{particleMass(p)}
+        {velocitySymbol}
+        <span className={css({ opacity: 0.5 })}>{particleMass(p)}</span>
     </div>;
 }

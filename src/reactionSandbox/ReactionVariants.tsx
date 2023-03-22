@@ -42,32 +42,24 @@ function* enumerateReagentRequests(
     }
 }
 
-const prepareReactionRequests = ({ reagents, products }: {
-    reagents: (ParticleKind | Particle)[];
-    products: ParticleKind[];
-}) => groupReactionVariantsBySymmetries([...(
-    enumerateReagentRequests([
-        ...reagents,
-        // particles.g,
-        // particles.g
-    ])[Symbol.iterator]()
-        .map(reagents => ({
-            reagents,
-            products: [],
-        }))
-)]).map(vars => ({
-    ...vars[0],
-    products,
-}));
+const prepareReactionRequests = (reagents: (ParticleKind | Particle)[]) =>
+    groupReactionVariantsBySymmetries([...(
+        enumerateReagentRequests([
+            ...reagents,
+            // particles.g,
+            // particles.g
+        ])[Symbol.iterator]()
+            .map(reagents => ({
+                reagents,
+                products: [],
+            }))
+    )]).map(vars => vars[0].reagents);
 
 export function ReactionVariants({
-    title, reaction, setSelectedReactionVariant, showImpossibleReactions,
+    title, reagents, setSelectedReactionVariant, showImpossibleReactions,
 }: {
     title: string;
-    reaction: {
-        reagents: (ParticleKind | Particle)[];
-        products: ParticleKind[];
-    };
+    reagents: (ParticleKind | Particle)[];
     setSelectedReactionVariant: (x: ResolvedReaction & {
         twins: Array<ResolvedReaction>;
     }) => void;
@@ -84,10 +76,10 @@ export function ReactionVariants({
             {title}
         </div>
         {!isCollapsed && <div className={css({ paddingLeft: 20 })}>
-            {prepareReactionRequests(reaction)
-                .map((reaction, i) => <ReactionForDirections
+            {prepareReactionRequests(reagents)
+                .map((reagents, i) => <ReactionForDirections
                     key={i}
-                    {...reaction}
+                    reagents={reagents}
                     setSelectedReactionVariant={setSelectedReactionVariant}
                     showImpossibleReactions={showImpossibleReactions}
                 />)}
