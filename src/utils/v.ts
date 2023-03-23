@@ -12,8 +12,8 @@ export const v2 = {
     dot: ([ax, ay]: rv2, [bx, by]: rv2) => ax * bx + ay * by,
     eqStrict: ([ax, ay]: rv2, [bx, by]: rv2) => ax === bx && ay === by,
 
-    negate:([ax, ay]: rv2): v2 => [-ax, -ay],
-    sub:  ([ax, ay]: rv2, [bx, by]: rv2): v2 => [ax - bx, ay - by],
+    negate: ([ax, ay]: rv2): v2 => [-ax, -ay],
+    sub: ([ax, ay]: rv2, [bx, by]: rv2): v2 => [ax - bx, ay - by],
     lenSq: ([ax, ay]: rv2) => ax * ax + ay * ay,
     len: ([ax, ay]: rv2) => Math.sqrt(ax * ax + ay * ay),
     norm: ([ax, ay]: rv2): v2 => {
@@ -57,17 +57,17 @@ export function v<D extends 1 | 2 | 3 | 4 | 5 | 6 | 7>(d: D) {
     type rvd = Readonly<vd>;
     const vd = {
         from: (...v: rvd) => [...v] as vd,
-        zero: () => Array.from({length: d}, () => 0) as vd,
-        ones: () => Array.from({length: d}, () => 1) as vd,
-        one: (i: number) => 
-            Array.from({length: d}, (_, _i) => Number(i === _i)) as vd,
+        zero: () => Array.from({ length: d }, () => 0) as vd,
+        ones: () => Array.from({ length: d }, () => 1) as vd,
+        one: (i: number) =>
+            Array.from({ length: d }, (_, _i) => Number(i === _i)) as vd,
 
         add: (a: rvd, b: rvd) => a.map((_, i) => a[i] + b[i]) as vd,
         scale: (a: rvd, b: number) => a.map((_, i) => a[i] * b) as vd,
-        dot: (a: rvd, b: rvd) => 
+        dot: (a: rvd, b: rvd) =>
             a.map((_, i) => a[i] * b[i]).reduce((acc, v) => acc + v, 0),
         eqStrict: (a: rvd, b: rvd) => a.every((_, i) => a[i] === b[i]),
-        
+
         negate: (a: rvd) => vd.scale(a, -1),
         sub: (a: rvd, b: rvd) => vd.add(a, vd.negate(b)),
         lenSq: (v: rvd) => vd.dot(v, v),

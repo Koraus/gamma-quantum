@@ -1,6 +1,6 @@
 import type { ReadonlyDeep } from "ts-toolbelt/out/Object/Readonly";
 import { _never } from "../../utils/_never";
-import { ParticleKind } from "../terms/ParticleKind";
+import { ParticleKind, keyifyParticleKind } from "../terms/ParticleKind";
 
 export function* enumerateSubparticles(p: ParticleKind) {
     if (p.content === "gamma") {
@@ -64,8 +64,10 @@ export function* enumerateProductCombinations(
     const nonGammaSubparticles = allSubparticles
         .filter(sp => sp.subparticle !== "gamma");
 
+    const uniques = {} as Record<string, true>;
+
     for (const c of enumerateCombinations(nonGammaSubparticles)) {
-        yield c
+        const c1 = c
             .map(p => p.reduce((acc, v) => {
                 const sp = v.subparticle;
                 if (sp === "gamma") { return _never(); }
@@ -77,5 +79,11 @@ export function* enumerateProductCombinations(
                 blue: 0,
             }))
             .map(c => ({ content: c }));
+
+        const k = c1.map(keyifyParticleKind).sort().join(",");
+        if (k in uniques) { continue; }
+        uniques[k] = true;
+
+        yield c1;
     }
 }

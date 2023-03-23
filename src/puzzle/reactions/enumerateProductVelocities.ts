@@ -4,7 +4,7 @@ import { Particle, _addParticleMomentum, _particleEnergy, particleMass } from ".
 import { solveConservation } from "./solveConservation";
 import { tuple } from "../../utils/tuple";
 import { keyifyResolvedReactionSide } from "./Reaction";
-import { ParticleKind } from "../terms/ParticleKind";
+import { ParticleKind, keyifyParticleKind } from "../terms/ParticleKind";
 import memoize from "memoizee";
 
 
@@ -118,6 +118,6 @@ export const enumerateProductVelocities = memoize((
         ]) => JSON.stringify({
             reagentsMomentum,
             reagentsEnergy,
-            products: products.map(particleMass).sort(),
+            products: products.map(keyifyParticleKind).sort(),
         }),
 });

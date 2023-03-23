@@ -127,7 +127,6 @@ export function ReactionSandbox({
                         velocity: [...hax.direction.flat60["↙"]],
                     }]);
                 }}
-                disabled
             >
                 check 2: gg ↓ m1 + r ↖ m1 + r ↙ m1 + rgb ↙ m2
             </button>

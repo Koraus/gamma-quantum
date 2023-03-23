@@ -8,10 +8,28 @@ import * as hax from "../utils/hax";
 
 
 export function ReagentEditor({
-    particleState: [particle, setParticle], ...props
+    particleState: [particle, _setParticle], ...props
 }: {
     particleState: StateProp<Particle | ParticleKind>;
 } & EmotionJSX.IntrinsicElements["span"]) {
+    const setParticle = (p: Particle | ParticleKind) => {
+        if (
+            p.content !== "gamma"
+            && (p.content.red + p.content.green + p.content.blue === 0)
+        ) {
+            _setParticle(update(p, {
+                content: {
+                    $set: {
+                        red: 1,
+                        green: 0,
+                        blue: 0,
+                    },
+                },
+            }));
+            return;
+        }
+        _setParticle(p);
+    };
     return <span {...props}>
         <select
             value={JSON.stringify(particle.content === "gamma")}
@@ -117,7 +135,7 @@ export function ReagentEditor({
                     const d = hax.direction.flat60;
                     const xk = x as keyof typeof d;
                     setParticle(update(particle, {
-                        velocity: { $set: d[xk] as v2},
+                        velocity: { $set: d[xk] as v2 },
                     }));
                 }
             }}

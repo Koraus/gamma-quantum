@@ -2,11 +2,11 @@ import _ from "lodash";
 import { tuple } from "../../utils/tuple";
 import { groupReactionVariantsBySymmetries } from "./groupReactionVariantsBySymmetries";
 import { ResolvedReaction } from "./Reaction";
-import { socreResolvedReaction } from "./scoreResolvedReaction";
+import { scoreResolvedReaction } from "./scoreResolvedReaction";
 
 export function selectReactionVariant(variants: ResolvedReaction[]) {
     const allGrouppedVariants =
-        Object.entries(_.groupBy(variants, socreResolvedReaction))
+        Object.entries(_.groupBy(variants, scoreResolvedReaction))
             .map(([k, v]) => tuple(k, groupReactionVariantsBySymmetries(v)));
 
     allGrouppedVariants.sort((g1, g2) => g1[0].localeCompare(g2[0], "en"));
