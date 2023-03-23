@@ -1,4 +1,3 @@
-import { useFrame } from "@react-three/fiber";
 import { ParticleState } from "../../puzzle/world";
 import { ParticleKind } from "../../puzzle/terms/ParticleKind";
 import { directionOf } from "../../reactionSandbox/ParticleText";
@@ -22,18 +21,6 @@ export function ParticleToken({
     particle: ParticleState;
 }) {
     const cs = getParticleColors(p);
-
-    // const transition = getTransition(playAction.startPlaytime);
-
-    // const timeStartReal = performance.now();
-    useFrame(() => {
-        // const transitionCurrent = getTransition(nowPlaytime(playAction), transition);
-
-        // if (transitionCurrent === transition) { return; }
-
-        // todo: trigger render here
-    });
-
     const subparticles = (() => {
         switch (cs.length) {
             case 1: return <>

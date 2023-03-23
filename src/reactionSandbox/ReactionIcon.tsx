@@ -7,7 +7,7 @@ import { particleColor } from "./ParticleText";
 import { Particle } from "../puzzle/world/Particle";
 
 
-const circleRadius = 0.2;
+const circleRadius = 0.18;
 
 function ReagentParticle({
     color, velocity,
@@ -18,17 +18,13 @@ function ReagentParticle({
     return <g>
         {hax.len(velocity) !== 0 && <line
             className={cx(css`& {
-                stroke-width: 0.15;
+                stroke-width: 0.1;
                 stroke: ${color};
                 marker-end: url(#arrowHeadMarker-${color})
             }`)}
             {...xy1(v2.negate(velocity))}
-            {...xy2(v2.zero())}
+            {...xy2(v2.scale(velocity, -0.4))}
         />}
-        <circle
-            {...cxy(v2.negate(velocity))}
-            r={circleRadius * 1.3}
-            fill="white" />
         <circle {...cxy(v2.negate(velocity))} r={circleRadius} fill={color} />
     </g>;
 }
@@ -42,14 +38,13 @@ function ProductParticle({
     return <g>
         {hax.len(velocity) !== 0 && <line
             className={cx(css`& {
-                stroke-width: 0.15;
+                stroke-width: 0.1;
                 stroke: ${color};
                 marker-end: url(#arrowHeadMarker-${color})
             }`)}
-            {...xy1(v2.zero())}
-            {...xy2(velocity)}
+            {...xy1(v2.scale(velocity, 1.2))}
+            {...xy2(v2.scale(velocity, 1.6))}
         />}
-        <circle {...cxy(velocity)} r={circleRadius * 1.3} fill="white" />
         <circle {...cxy(velocity)} r={circleRadius} fill={color} />
     </g>;
 }
@@ -65,15 +60,38 @@ export function ReactionIcon({
         ...products.map(particleColor),
     ];
 
-    return <svg viewBox="-1.4 -1.4 2.8 2.8" width={60}>
+    const w = 3.5;
+    return <svg
+        css={{
+            border: "1px solid #ffffff10",
+        }}
+        viewBox={`${-w / 2} ${-w / 2} ${w * 2.2} ${w}`}
+        width={150}
+    >
+
         {colors.map((color, i) => <ArrowHeadMarker key={i} color={color} />)}
 
-        {[...hax.disc(2)].map((pos, i) =>
-            <circle key={i} {...cxy(pos)} r=".05" fill="white" />)}
+        <g>
+            {[...hax.disc(2)].map((pos, i) =>
+                <circle key={i} {...cxy(pos)} r=".02" fill="white" />)}
+            {reagents.map((r, i) =>
+                <ReagentParticle key={i} {...r} color={particleColor(r)} />)}
+        </g>
 
-        {reagents.map((r, i) =>
-            <ReagentParticle key={i} {...r} color={particleColor(r)} />)}
-        {products.map((r, i) =>
-            <ProductParticle key={i} {...r} color={particleColor(r)} />)}
+        <text
+            fill="white"
+            fontSize={w / 5}
+            x={w * 0.45}
+            y={w * 0.05}
+        >⇒</text>
+
+        <g transform={`translate(${w * 1.1},0)`}>
+            {[...hax.disc(2)].map((pos, i) =>
+                <circle key={i} {...cxy(pos)} r=".02" fill="white" />)}
+            {products.map((r, i) =>
+                <ProductParticle key={i} {...r} color={particleColor(r)} />)}
+        </g>
+
+
     </svg>;
 }

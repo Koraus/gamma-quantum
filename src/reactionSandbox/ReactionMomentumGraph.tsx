@@ -106,16 +106,6 @@ export function ReactionMomentumGraph({
 
         </div>
 
-        {twins.length > 0 && <div>
-            Twins:
-            {twins.map((t, i) => <ReactionIcon
-                key={i}
-                reagents={t.reagents}
-                products={t.products}
-            />)}
-        </div>
-        }
-
         <svg viewBox="-5 -5 10 10" width={300}>
             {colors.map((color, i) =>
                 <ArrowHeadMarker key={i} color={color} />)}
@@ -135,7 +125,8 @@ export function ReactionMomentumGraph({
                         className={cx(css`& {
                         stroke-width: 0.1;
                         stroke: white;
-                        marker-end: url(#arrowHeadMarker-${particleColor(particle)})
+                        marker-end: 
+                            url(#arrowHeadMarker-${particleColor(particle)})
                     }`)}
                         {...xy1(offset)}
                         {...xy2(v2.add(offset, v))} />
@@ -153,11 +144,32 @@ export function ReactionMomentumGraph({
                         className={cx(css`& {
                         stroke-width: 0.1;
                         stroke: grey;
-                        marker-end: url(#arrowHeadMarker-${particleColor(particle)})
+                        marker-end: 
+                            url(#arrowHeadMarker-${particleColor(particle)})
                     }`)}
                         {...xy1(offset)}
                         {...xy2(v2.add(offset, v))} />
                 </g>)}
         </svg>
+
+        {twins.length > 0 && <div>
+            Twins:
+            {twins.map((t, i) => <div>
+                <ReactionIcon
+                    key={i}
+                    reagents={t.reagents}
+                    products={t.products}
+                />
+
+                <div css={{ display: "flex", flexDirection: "row" }} >
+                    {t.reagents
+                        .map((p, i) => <ParticleText key={i} particle={p} />)}
+                    &nbsp;⇒&nbsp;
+                    {t.products
+                        .map((p, i) => <ParticleText key={i} particle={p} />)}
+                </div>
+            </div>)}
+        </div>
+        }
     </div>;
 }
