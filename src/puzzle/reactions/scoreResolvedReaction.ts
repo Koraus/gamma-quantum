@@ -1,14 +1,21 @@
 import { v2 } from "../../utils/v";
 import * as hax from "../../utils/hax";
 import _ from "lodash";
-import { particlesMomentum, particleMass, particlesDirectedMass } from "../world/Particle";
+import { particlesMomentum, particleMass, particlesDirectedMass, particleMomentum } from "../world/Particle";
 import { ResolvedReaction } from "./Reaction";
 
-export function socreResolvedReaction({
+export function scoreResolvedReaction({
     reagents, products,
 }: ResolvedReaction) {
     const gs = _.groupBy(products, p => JSON.stringify(p.velocity));
-    
+
+    const energyInMovement =
+        99
+        - products
+            .map(particleMomentum)
+            .map(hax.len)
+            .reduce((acc, v) => acc + v, 0);
+
     const massAtRest = gs[JSON.stringify(v2.zero())]
         ?.map(particleMass)
         .reduce((acc: number, v) => acc + v, 0) ?? 0;
@@ -23,6 +30,7 @@ export function socreResolvedReaction({
         particlesDirectedMass(products)));
 
     return [
+        energyInMovement,
         massAtRest,
         inertiaConservationScore,
         ...momentaByDirectionSorted,

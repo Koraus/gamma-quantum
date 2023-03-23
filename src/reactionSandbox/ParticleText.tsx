@@ -72,7 +72,7 @@ export function ParticleText({
         {...props}
     >
         {[...enumerateSubparticles(p)]
-            .map(s => s[0])
+            .map(s => s === "gamma" ? "γ" : s[0])
             .sort()
             .join("")}
         &nbsp;

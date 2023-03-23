@@ -1,9 +1,9 @@
 import { pipe } from "fp-ts/lib/function";
-import memoize from "memoizee";
 import { Stringify } from "../../utils/Stringify";
 import * as DEx from "../../utils/DecoderEx";
 import * as D from "io-ts/Decoder";
 import { decode, eqByKey, guardKey } from "./keyifyUtils";
+import { _throw } from "../../utils/_throw";
 
 
 export const ParticleKindDecoder = D.struct({
@@ -36,9 +36,24 @@ export type ParticleKind = D.TypeOf<typeof ParticleKindDecoder>;
 export type ParticleKindKey = Stringify<ParticleKind>;
 export const isParticleKindKey = guardKey(ParticleKindDecoder);
 export const keyProjectParticleKind = decode(ParticleKindDecoder);
-export const _keyifyParticleKind = (x: ParticleKind) =>
-    JSON.stringify(keyProjectParticleKind(x)) as ParticleKindKey;
-export const keyifyParticleKind = memoize(_keyifyParticleKind, { max: 1000 });
+
+export const keyifyParticleContent = (
+    x: ParticleKind["content"],
+): Stringify<ParticleKind["content"]> => {
+    if (x === "gamma") { return "\"gamma\""; }
+    const { red, green, blue } = x;
+    if (red % 1 !== 0) { _throw("red not integer"); }
+    if (red < 0) { _throw("red not positive"); }
+    if (green % 1 !== 0) { _throw("green not integer"); }
+    if (green < 0) { _throw("green not positive"); }
+    if (blue % 1 !== 0) { _throw("blue not integer"); }
+    if (blue < 0) { _throw("blue not positive"); }
+    if (red + green + blue === 0) { _throw("all zeros"); }
+    return `{"red":${red},"green":${green},"blue":${blue}}`;
+};
+export const keyifyParticleKind = (x: ParticleKind): ParticleKindKey =>
+    `{"content":${keyifyParticleContent(x.content)}}`;
+
 export const parsePartilceKind = (key: ParticleKindKey) =>
     JSON.parse(key) as ParticleKind;
 export const eqParticleKind = eqByKey(keyifyParticleKind);

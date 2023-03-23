@@ -30,6 +30,14 @@ export const _particleMass = (p_content: ParticleKind["content"]) => {
 export const particleMass = (p: ReadonlyDeep<ParticleKind>) =>
     _particleMass(p.content);
 
+export const _particleBondCount = (p_content: ParticleKind["content"]) => {
+    const c = _particleCount(p_content);
+    return (c + (c - 1)) / 2;
+};
+
+export const particleBondCount = (p: ReadonlyDeep<ParticleKind>) =>
+    _particleBondCount(p.content);
+
 export const _addParticleMomentum = (
     p_content: Particle["content"],
     p_velocity: ReadonlyDeep<Particle["velocity"]>,
