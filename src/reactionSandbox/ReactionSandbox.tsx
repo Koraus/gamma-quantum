@@ -3,13 +3,13 @@ import { css } from "@emotion/css";
 import { Particle } from "../puzzle/world/Particle";
 import { useState } from "react";
 import { ReactionMomentumGraph } from "./ReactionMomentumGraph";
-import { ReactionVariants } from "./ReactionVariants";
+import { prepareReactionRequests } from "./prepareReactionRequests";
 import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
 import { ReagentEditor } from "./ReagentEditor";
 import update from "immutability-helper";
 import { ParticleText } from "./ParticleText";
-import * as hax from "../utils/hax";
+import { ReactionForDirections } from "./ReactionForDirections";
 
 export function ReactionSandbox({
     standalone,
@@ -27,9 +27,10 @@ export function ReactionSandbox({
         twins: Array<{ reagents: Particle[]; products: Particle[]; }>
     }>();
 
-    const reagents = useState<Array<Particle | ParticleKind>>([{
+    const reagentsState = useState<Array<Particle | ParticleKind>>([{
         content: "gamma",
     }]);
+    const [reagents, setReagents] = reagentsState;
 
 
     return <div
@@ -52,19 +53,24 @@ export function ReactionSandbox({
             flexShrink: 0,
             height: "100%",
         })}>
-            {reagents[0].map((_, i) => <div key={i}>
+            {reactions.map((r, i) => <button
+                key={i}
+                css={{ display: "block" }}
+                onClick={() => setReagents(r.reagents)}
+            >{r.title}</button>)}
+            ---
+            {reagents.map((_, i) => <div key={i}>
                 <ParticleText
                     css={{ display: "inline" }}
-                    particle={reagents[0][i]} />
+                    particle={reagents[i]} />
                 <ReagentEditor
-
                     particleState={[
-                        reagents[0][i],
+                        reagents[i],
                         _n => {
                             const n = "function" === typeof _n
-                                ? _n(reagents[0][i])
+                                ? _n(reagents[i])
                                 : _n;
-                            return reagents[1](update(reagents[0], {
+                            return setReagents(update(reagents, {
                                 [i]: { $set: n },
                             }));
                         },
@@ -72,73 +78,16 @@ export function ReactionSandbox({
                 />
                 <button
                     onClick={() =>
-                        reagents[1](update(reagents[0], { $splice: [[i, 1]] }))}
-                >
-                    x
-                </button>
+                        setReagents(update(reagents, { $splice: [[i, 1]] }))}
+                >x</button>
             </div>)}
             <button
                 css={{ width: "100px" }}
                 onClick={() =>
-                    reagents[1](update(reagents[0], {
-                        $push:
-                            [{ content: "gamma" }],
+                    setReagents(update(reagents, {
+                        $push: [{ content: "gamma" }],
                     }))}
-            >
-                +
-            </button>
-            <br />
-            <button
-                onClick={() => {
-                    reagents[1]([{
-                        content: { red: 0, green: 2, blue: 0 },
-                        velocity: [...hax.direction.flat60["↓"]],
-                    }, {
-                        content: { red: 1, green: 0, blue: 0 },
-                        velocity: [...hax.direction.flat60["↖"]],
-                    }, {
-                        content: { red: 1, green: 0, blue: 0 },
-                        velocity: [...hax.direction.flat60["↙"]],
-                    }]);
-                }}
-            >
-                check 1: gg ↓ m1 + r ↖ m1 + r ↙ m1
-            </button>
-            <br />
-            <button
-                onClick={() => {
-                    reagents[1]([{
-                        content: { red: 0, green: 2, blue: 0 },
-                        velocity: [...hax.direction.flat60["↓"]],
-                    }, {
-                        content: { red: 1, green: 0, blue: 0 },
-                        velocity: [...hax.direction.flat60["↖"]],
-                    }, {
-                        content: { red: 1, green: 0, blue: 0 },
-                        velocity: [...hax.direction.flat60["↙"]],
-                    }, {
-                        content: { red: 1, green: 1, blue: 1 },
-                        velocity: [...hax.direction.flat60["↙"]],
-                    }]);
-                }}
-            >
-                check 2: gg ↓ m1 + r ↖ m1 + r ↙ m1 + rgb ↙ m2
-            </button>
-            <br />
-            <button
-                onClick={() => {
-                    reagents[1]([{
-                        content: { red: 1, green: 0, blue: 0 },
-                        velocity: [...hax.direction.flat60["↓"]],
-                    }, {
-                        content: { red: 1, green: 0, blue: 0 },
-                        velocity: [...hax.direction.flat60["↑"]],
-                    }]);
-                }}
-            >
-                check 3: r ↓ m1 + r ↑ m1
-            </button>
-            <br />
+            >+</button>
 
             <div>
                 <label>
@@ -151,12 +100,13 @@ export function ReactionSandbox({
                     />
                 </label>
             </div>
-            <ReactionVariants
-                title="default"
-                reagents={reagents[0]}
-                setSelectedReactionVariant={setSelectedReaction}
-                showImpossibleReactions={showImpossibleReactions}
-            />
+            {prepareReactionRequests(reagents)
+                .map((reagents, i) => <ReactionForDirections
+                    key={i}
+                    reagents={reagents}
+                    setSelectedReactionVariant={setSelectedReaction}
+                    showImpossibleReactions={showImpossibleReactions}
+                />)}
         </div>
         {
             selectedReaction &&

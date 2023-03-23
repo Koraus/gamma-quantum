@@ -1,13 +1,20 @@
 import { enumerateProductVelocities } from "../puzzle/reactions/enumerateProductVelocities";
-import { ReactionVariant } from "./ReactionVariant";
+import { ReactionFormula } from "./ReactionFormula";
 import { ParticleText } from "./ParticleText";
 import { useState } from "react";
 import { Particle, particlesEnergy, particlesMomentum } from "../puzzle/world/Particle";
 import { selectReactionVariant } from "../puzzle/reactions/selectReactionVariant";
 import { enumerateProductCombinations } from "../puzzle/reactions/enumerateProductCombinations";
+import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 
-function WarnSign() {
-    return <span css={{ color: "yellow" }}>⚠</span>;
+function WarnSign({
+    css: cssProp,
+    ...props
+}: EmotionJSX.IntrinsicElements["span"]) {
+    return <span
+        css={[{ color: "yellow" }, cssProp]}
+        {...props}
+    >⚠</span>;
 }
 
 export function ReactionForDirections({
@@ -26,13 +33,12 @@ export function ReactionForDirections({
 
     const variants = [
         ...enumerateProductCombinations(reagents)
-            .flatMap(products =>
-                enumerateProductVelocities(
-                    reagentsMomentum,
-                    reagentsEnergy,
-                    products,
-                ))
-            .map(products => ({ reagents, products }))];
+            .flatMap(products => enumerateProductVelocities(
+                reagentsMomentum,
+                reagentsEnergy,
+                products))
+            .map(products => ({ reagents, products })),
+    ];
 
     const {
         allGrouppedVariants,
@@ -84,46 +90,29 @@ export function ReactionForDirections({
                 <br />
                 {allGrouppedVariants.map(([key, variants], i) => <div key={i}>
                     # scored group, score = {key}
-                    {variants.map((symGroup, i) => {
-                        const variant = symGroup[0];
-                        const {
-                            products,
-                        } = variant;
-                        const twins = symGroup.slice(1);
-                        return <div key={i}>
-                            ##
-                            {symGroup.length > 1 && <>
-                                &nbsp;<WarnSign />
-                            </>}
-                            &nbsp;sym group, size {symGroup.length}
-                            <div
-                                key={i}
-                                css={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                }}
-                            >
-                                <ReactionVariant
-                                    css={{
-                                        border: "1px solid",
-                                        borderColor:
-                                            variant === selectedVariant
-                                                ? "#ffffff"
-                                                : "#ffffff30",
-                                    }}
-                                    reagents={reagents}
-                                    products={products}
-                                    twins={twins} />
-                                <button
-                                    onClick={() => setSelectedReactionVariant({
-                                        reagents: reagents,
-                                        products: products,
-                                        twins,
-                                    })}
-                                >&gt;</button>
-                            </div>
-                        </div>;
-                    })}
+                    {variants.map((symGroup, i) => <div
+                        key={i}
+                        css={{
+                            display: "flex",
+                            flexDirection: "row",
+                            border: "1px solid",
+                            borderColor: symGroup[0] === selectedVariant
+                                ? "#ffffff"
+                                : "#ffffff00",
+                        }}
+                    >
+                        {symGroup.length > 1 && <>
+                            <WarnSign title={`${symGroup.length} twins`} />
+                            s{symGroup.length}&nbsp;
+                        </>}
+                        <ReactionFormula {...symGroup[0]} />
+                        <button
+                            onClick={() => setSelectedReactionVariant({
+                                ...symGroup[0],
+                                twins: symGroup.slice(1),
+                            })}
+                        >&gt;</button>
+                    </div>)}
                 </div>)}
 
                 <br />

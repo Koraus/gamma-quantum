@@ -20,7 +20,7 @@ const mirrorTransformReaction =
         });
 
 export function groupReactionVariantsBySymmetries(
-    variants: ResolvedReaction[],
+    variants: Iterable<ResolvedReaction>,
 ) {
     const groups = {} as Record<string, Set<ResolvedReaction>>;
     const keysProcessed = new Set<string>();

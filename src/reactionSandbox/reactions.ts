@@ -1,4 +1,5 @@
 import { ParticleKind } from "../puzzle/terms/ParticleKind";
+import * as hax from "../utils/hax";
 
 export const particles = {
     // gamma-quantum
@@ -19,68 +20,71 @@ export const particles = {
 
 export const reactions = [{
     title: "Elastic collision with gamma",
-    reaction: {
-        reagents: [particles.q],
-        products: [particles.q],
-    },
-},{
+    reagents: [particles.q],
+}, {
     title: "Elastic collision",
-    reaction: {
-        reagents: [particles.q, particles.q],
-        products: [particles.q, particles.q],
-    },
-},{
+    reagents: [particles.q, particles.q],
+}, {
     title: "Annihilation (q-m1 + q-m1 => g-m0)",
-    reaction: {
-        reagents: [particles.q, particles.q],
-        products: [particles.g],
-    },
+    reagents: [particles.q, particles.q],
 }, {
     title: "Shift (q-m1 + q-m1 => q-m1), Fusion (... => qq-m1)",
-    reaction: {
-        reagents: [particles.q, particles.q],
-        products: [particles.qq],
-    },
+    reagents: [particles.q, particles.q],
 }, {
     title: "Shift (q-m1 => q-m1 + q-m1), Fusion (qq-m1 => ...)",
-    reaction: {
-        reagents: [particles.qq],
-        products: [particles.q, particles.q],
-    },
+    reagents: [particles.qq],
 }, {
     title: "Oscillation (qq-m1 + q-m1 => qqq-m2)",
-    reaction: {
-        reagents: [particles.qq, particles.q],
-        products: [particles.qqq],
-    },
+    reagents: [particles.qq, particles.q],
 }, {
     title: "Oscillation (qqq-m2 => qq-m1 + q-m1)",
-    reaction: {
-        reagents: [particles.qqq],
-        products: [particles.qq, particles.q],
-    },
+    reagents: [particles.qqq],
 }, {
     title: "Fission-31 (qqq-m2 + q-m1 => qqqq-m4)",
-    reaction: {
-        reagents: [particles.qqq, particles.q],
-        products: [particles.qqqq],
-    },
+    reagents: [particles.qqq, particles.q],
 }, {
     title: "Fission-31 (qqqq-m4 => qqq-m2 + q-m1)",
-    reaction: {
-        reagents: [particles.qqqq],
-        products: [particles.qqq, particles.q],
-    },
+    reagents: [particles.qqqq],
 }, {
     title: "Fission-22 (qq-m1 + qq-m1 => qqqq-m4)",
-    reaction: {
-        reagents: [particles.qq, particles.qq],
-        products: [particles.qqqq],
-    },
+    reagents: [particles.qq, particles.qq],
 }, {
     title: "Fission-22 (qqqq-m4 => qq-m1 + qq-m1)",
-    reaction: {
-        reagents: [particles.qqqq],
-        products: [particles.qq, particles.qq],
-    },
+    reagents: [particles.qqqq],
+}, {
+    title: "check 2: gg ↓ m1 + r ↖ m1 + r ↙ m1",
+    reagents: [{
+        content: { red: 0, green: 2, blue: 0 },
+        velocity: [...hax.direction.flat60["↓"]],
+    }, {
+        content: { red: 1, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↖"]],
+    }, {
+        content: { red: 1, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↙"]],
+    }],
+}, {
+    title: "check 2: gg ↓ m1 + r ↖ m1 + r ↙ m1 + rgb ↙ m2",
+    reagents: [{
+        content: { red: 0, green: 2, blue: 0 },
+        velocity: [...hax.direction.flat60["↓"]],
+    }, {
+        content: { red: 1, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↖"]],
+    }, {
+        content: { red: 1, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↙"]],
+    }, {
+        content: { red: 1, green: 1, blue: 1 },
+        velocity: [...hax.direction.flat60["↙"]],
+    }],
+}, {
+    title: "check 3: r ↓ m1 + r ↑ m1",
+    reagents: [{
+        content: { red: 1, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↓"]],
+    }, {
+        content: { red: 1, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↑"]],
+    }],
 }];
