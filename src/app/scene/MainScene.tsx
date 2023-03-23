@@ -10,7 +10,7 @@ import { GroupSync } from "../../utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { useWorld } from "../useWorld";
 import { trustedEntries } from "../../utils/trustedRecord";
 import { parsePosition } from "../../puzzle/terms/Position";
@@ -18,9 +18,9 @@ import { useRef } from "react";
 import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
 import { useWindowKeyUp } from "../../utils/useWindowKeyUp";
 import { useFrame } from "@react-three/fiber";
+import { cellContent } from "./CellContent";
 
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
-
 
 export const axialToFlatCartXz =
     (...args: Parameters<typeof toFlatCart>) => {
@@ -105,6 +105,8 @@ export function MainScene() {
 
     ref.current?.setBoundary(cameraBoundary);
 
+    const [cellCont, setCellCont] = useRecoilState(cellContent);
+
     return <>
         <PerspectiveCamera
             makeDefault
@@ -164,6 +166,10 @@ export function MainScene() {
                     position={v3.add(
                         x0y(toFlatCart((prev ?? p).position)),
                         [0, 0.1 + j * 0.2, 0])}
+                    onClick={(ev) => {
+                        ev.stopPropagation();
+                        setCellCont(ps); console.log(ps);
+                    }}
                 >
                     <ParticleToken
                         particle={p}

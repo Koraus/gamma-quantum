@@ -10,6 +10,8 @@ import { ReagentEditor } from "./ReagentEditor";
 import update from "immutability-helper";
 import { ParticleText } from "./ParticleText";
 import * as hax from "../utils/hax";
+import { cellContent  } from "../app/scene/CellContent";
+import { useRecoilState } from "recoil";
 
 export function ReactionSandbox({
     standalone,
@@ -31,12 +33,15 @@ export function ReactionSandbox({
         content: "gamma",
     }]);
 
-
+    // вміст клітинки з MainScene  
+    // const [ cellCont, setCellCont] = useRecoilState(cellContent);
+    
     return <div
         css={[
             {
                 display: "flex",
                 flexDirection: "row",
+                overflow: "scroll",
             },
             standalone && {
                 fontFamily: "monospace",
@@ -51,6 +56,7 @@ export function ReactionSandbox({
             paddingRight: 20,
             flexShrink: 0,
             height: "100%",
+            width: "50%",
         })}>
             {reagents[0].map((_, i) => <div key={i}>
                 <ParticleText

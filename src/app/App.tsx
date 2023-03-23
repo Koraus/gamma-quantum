@@ -63,6 +63,59 @@ export function App() {
             display: "flex",
             flex: "row",
         }}>
+            <div
+                css={{
+                    pointerEvents: "all",
+                    transitionDuration: "0.2s",
+                    overflow: "hidden",
+                    flex: isReactionSandboxShown
+                        ? "0 0 100vmin"
+                        : "0 0 0vmin",
+                    margin: isReactionSandboxShown
+                        ? "0px 1px 1px 0px"
+                        : "1px 0.5px",
+                    background: "#000000f0",
+                    border: "1px solid #ffffffb0",
+                    padding: isReactionSandboxShown
+                        ? "1vmin"
+                        : "0",
+
+                }}
+                tabIndex={-1}
+                ref={focusMeOnce}
+                onKeyDown={ev => {
+                    if (ev.code === "Escape") {
+                        setIsReactionSandboxShown(false);
+                        return;
+                    }
+                }}
+            >
+                <ReactionSandbox css={{
+                    height: "100%",
+
+                }} />
+
+            </div>
+            <button
+                css={{
+                    padding: 0,
+                    pointerEvents: "all",
+                }}
+                onClick={() =>
+                    setIsReactionSandboxShown(!isReactionSandboxShown)}
+            >
+                <span css={{
+                    display: "inline-block",
+                    transitionDuration: "0.2s",
+                    transform: isReactionSandboxShown
+                        ? "rotate(0deg)"
+                        : "rotate(180deg)",
+                }}>&#60;
+                </span>
+                {/* * ⇔ * */}
+                <br /><span css={{ textDecoration: "underline" }}>L</span>
+
+            </button>
             <div css={{
                 flex: "1 1 0",
                 position: "relative",
@@ -100,16 +153,6 @@ export function App() {
                             pointerEvents: "all",
                         }))} />}
 
-                <button
-                    css={{
-                        pointerEvents: "all",
-                    }}
-                    onClick={() =>
-                        setIsReactionSandboxShown(!isReactionSandboxShown)}
-                >
-                    * ⇔ *
-                    (<span css={{ textDecoration: "underline" }}>L</span>)
-                </button>
 
                 <CursorToolSelectorPanel
                     className={cx(css({
@@ -143,41 +186,6 @@ export function App() {
                     </span>
                 </div>
 
-                {isReactionSandboxShown && <div
-                    css={{
-                        pointerEvents: "all",
-                        position: "absolute",
-                        inset: "5vmin",
-                        background: "#000000f0",
-                        border: "1px solid #ffffffb0",
-                        padding: "2vmin",
-                        zIndex: 100,
-                    }}
-                    tabIndex={-1}
-                    ref={focusMeOnce}
-                    onKeyDown={ev => {
-                        if (ev.code === "Escape") {
-                            setIsReactionSandboxShown(false);
-                            return;
-                        }
-                    }}
-                >
-                    <ReactionSandbox css={{
-                        height: "100%",
-                    }} />
-                    <button
-                        css={{
-                            position: "absolute",
-                            padding: "0px 3px 0px 3px",
-                            top: "0",
-                            right: "0",
-                            background: "red",
-                            color: "white",
-                        }}
-                        onClick={() => {
-                            setIsReactionSandboxShown(false);
-                        }}> X </button>
-                </div>}
 
             </div>
 
