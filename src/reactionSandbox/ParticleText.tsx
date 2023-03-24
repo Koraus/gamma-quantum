@@ -68,15 +68,19 @@ export function ParticleText({
             borderRadius: 3,
             margin: "0px 3px",
             color: particleColor(p),
+            minWidth: "1.2em",
+            textAlign: "center",
         }, cssProp]}
         {...props}
-    >
-        {[...enumerateSubparticles(p)]
+    > {p.content === "gamma"
+        ? <>{velocitySymbol}</>
+        : <>{[...enumerateSubparticles(p)]
             .map(s => s === "gamma" ? "γ" : s[0])
             .sort()
             .join("")}
-        &nbsp;
-        {velocitySymbol}
-        <span className={css({ opacity: 0.5 })}>{particleMass(p)}</span>
-    </div>;
+            &nbsp;
+            {velocitySymbol}
+            <span className={css({ opacity: 0.5 })}>{particleMass(p)}</span></>
+
+        }</div>;
 }
