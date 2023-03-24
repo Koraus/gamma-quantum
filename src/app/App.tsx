@@ -13,6 +13,8 @@ import { StatsPanel } from "./stats/StatsPanel";
 import { useRef, useState } from "react";
 import { ReactionSandbox } from "../reactionSandbox/ReactionSandbox";
 import { useGrabFocusFromBody } from "../utils/useGrabFocusFromBody";
+import { useRecoilValue } from "recoil";
+import { cellContentRecoil } from "./scene/cellContentRecoil";
 
 const focusMeOnce = (el: HTMLElement | null) => el?.focus();
 
@@ -26,7 +28,7 @@ export function App() {
 
     const focusRootRef = useRef<HTMLDivElement>(null);
     useGrabFocusFromBody(focusRootRef);
-
+    const cellContent = useRecoilValue(cellContentRecoil);
     return <div
         css={{
             display: "flex",
@@ -69,17 +71,13 @@ export function App() {
                     transitionDuration: "0.2s",
                     overflow: "hidden",
                     flex: isReactionSandboxShown
-                        ? "0 0 100vmin"
+                        ? "0 0 70vmin"
                         : "0 0 0vmin",
                     margin: isReactionSandboxShown
                         ? "0px 1px 1px 0px"
                         : "1px 0.5px",
                     background: "#000000f0",
                     border: "1px solid #ffffffb0",
-                    padding: isReactionSandboxShown
-                        ? "1vmin"
-                        : "0",
-
                 }}
                 tabIndex={-1}
                 ref={focusMeOnce}
@@ -90,10 +88,11 @@ export function App() {
                     }
                 }}
             >
-                <ReactionSandbox css={{
-                    height: "100%",
-
-                }} />
+                <ReactionSandbox
+                    cellContent={cellContent}
+                    css={{
+                        height: "100%",
+                    }} />
 
             </div>
             <button
@@ -104,6 +103,8 @@ export function App() {
                 onClick={() =>
                     setIsReactionSandboxShown(!isReactionSandboxShown)}
             >
+                ⇔
+                <br />
                 <span css={{
                     display: "inline-block",
                     transitionDuration: "0.2s",
@@ -112,9 +113,8 @@ export function App() {
                         : "rotate(180deg)",
                 }}>&#60;
                 </span>
-                {/* * ⇔ * */}
-                <br /><span css={{ textDecoration: "underline" }}>L</span>
-
+                <br />
+                <span css={{ textDecoration: "underline" }}>L</span>
             </button>
             <div css={{
                 flex: "1 1 0",

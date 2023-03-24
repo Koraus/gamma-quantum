@@ -1,7 +1,7 @@
 import { reactions } from "./reactions";
 import { css } from "@emotion/css";
 import { Particle } from "../puzzle/world/Particle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ReactionMomentumGraph } from "./ReactionMomentumGraph";
 import { prepareReactionRequests } from "./prepareReactionRequests";
 import type { EmotionJSX } from "@emotion/react/types/jsx-namespace";
@@ -10,15 +10,16 @@ import { ReagentEditor } from "./ReagentEditor";
 import update from "immutability-helper";
 import { ParticleText } from "./ParticleText";
 import { ReactionForDirections } from "./ReactionForDirections";
-import { cellContent  } from "../app/scene/CellContent";
-import { useRecoilState } from "recoil";
+
 
 export function ReactionSandbox({
     standalone,
+    cellContent,
     css: cssProp,
     ...props
 }: {
-    standalone?: boolean
+    standalone?: boolean,
+    cellContent?: Particle[],
 } & EmotionJSX.IntrinsicElements["div"]) {
     const [showImpossibleReactions, setShowImpossibleReactions] =
         useState(true);
@@ -34,15 +35,19 @@ export function ReactionSandbox({
     }]);
     const [reagents, setReagents] = reagentsState;
 
-    // вміст клітинки з MainScene  
-    // const [ cellCont, setCellCont] = useRecoilState(cellContent);
-    
+    useEffect(() => {
+        if (cellContent) {
+            setReagents(cellContent);
+        }
+    }, [cellContent]);
+
     return <div
         css={[
             {
                 display: "flex",
                 flexDirection: "row",
-                overflow: "scroll",
+                overflowX: "auto",
+                padding: "1vmin",
             },
             standalone && {
                 fontFamily: "monospace",
@@ -53,11 +58,10 @@ export function ReactionSandbox({
     >
 
         <div className={css({
-            overflow: "scroll",
+            overflowY: "auto",
             paddingRight: 20,
             flexShrink: 0,
             height: "100%",
-            width: "50%",
         })}>
             {reactions.map((r, i) => <button
                 key={i}
@@ -125,4 +129,3 @@ export function ReactionSandbox({
         }
     </div >;
 }
-

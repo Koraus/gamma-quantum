@@ -10,15 +10,14 @@ import { GroupSync } from "../../utils/GroupSync";
 import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
-import { useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useWorld } from "../useWorld";
 import { trustedEntries } from "../../utils/trustedRecord";
 import { parsePosition } from "../../puzzle/terms/Position";
 import { useRef } from "react";
-import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
-import { useWindowKeyUp } from "../../utils/useWindowKeyUp";
 import { useFrame } from "@react-three/fiber";
-import { cellContent } from "./CellContent";
+import { cellContentRecoil } from "./cellContentRecoil";
+import { heldKeys } from "../../utils/heldKeys";
 
 const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
 
@@ -44,58 +43,17 @@ export function MainScene() {
         ...trustedEntries(world.problem.actors),
     ];
 
-    const ref = useRef<CameraControls>(null);
-    const isKeyPressed = {
-        keyA: false,
-        keyS: false,
-        keyD: false,
-        keyW: false,
-    };
-    useWindowKeyDown((e) => {
-        if (e.code === "KeyD") {
-            isKeyPressed.keyD = true;
-        }
-        if (e.code === "KeyA") {
-            isKeyPressed.keyA = true;
-        }
-        if (e.code === "KeyW") {
-            isKeyPressed.keyW = true;
-        }
-        if (e.code === "KeyS") {
-            isKeyPressed.keyS = true;
-        }
-    });
-    useWindowKeyUp((e) => {
-        if (e.code === "KeyD") {
-            isKeyPressed.keyD = false;
-        }
-        if (e.code === "KeyA") {
-            isKeyPressed.keyA = false;
-        }
-        if (e.code === "KeyW") {
-            isKeyPressed.keyW = false;
-        }
-        if (e.code === "KeyS") {
-            isKeyPressed.keyS = false;
-        }
-    });
-    useFrame(() => {
-        if (ref.current !== null) {
-            const step = 0.3;
+    const cameraControlsRef = useRef<CameraControls>(null);
 
-            if (isKeyPressed.keyW) {
-                ref.current.forward(step, false);
-            }
-            if (isKeyPressed.keyS) {
-                ref.current.forward(-step, false);
-            }
-            if (isKeyPressed.keyD) {
-                ref.current.truck(step, 0, false);
-            }
-            if (isKeyPressed.keyA) {
-                ref.current.truck(-step, 0, false);
-            }
-        }
+    useFrame((_, delta) => {
+        const cameraControls = cameraControlsRef.current;
+        if (!cameraControls) { return; }
+
+        const step = 10 * delta;
+        if (heldKeys.KeyW) { cameraControls.forward(step, false); }
+        if (heldKeys.KeyS) { cameraControls.forward(-step, false); }
+        if (heldKeys.KeyD) { cameraControls.truck(step, 0, false); }
+        if (heldKeys.KeyA) { cameraControls.truck(-step, 0, false); }
     });
 
     const cameraBoundary = new Box3(
@@ -103,9 +61,9 @@ export function MainScene() {
         new Vector3(Infinity, 0, Infinity),
     );
 
-    ref.current?.setBoundary(cameraBoundary);
+    cameraControlsRef.current?.setBoundary(cameraBoundary);
 
-    const [cellCont, setCellCont] = useRecoilState(cellContent);
+    const setCellContent = useSetRecoilState(cellContentRecoil);
 
     return <>
         <PerspectiveCamera
@@ -115,7 +73,7 @@ export function MainScene() {
             far={1000}
             position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)} />
         <CameraControls
-            ref={ref}
+            ref={cameraControlsRef}
             draggingSmoothTime={0.05}
             mouseButtons={{
                 wheel: 0,
@@ -168,7 +126,7 @@ export function MainScene() {
                         [0, 0.1 + j * 0.2, 0])}
                     onClick={(ev) => {
                         ev.stopPropagation();
-                        setCellCont(ps); console.log(ps);
+                        setCellContent(ps.map(p => p.p));
                     }}
                 >
                     <ParticleToken
