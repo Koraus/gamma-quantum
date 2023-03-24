@@ -4,39 +4,56 @@ import { ParticleState } from "../world";
 import { particlesEnergy, particlesMomentum } from "../world/Particle";
 import _ from "lodash";
 import { enumerateProductCombinations } from "./enumerateProductCombinations";
+import { eqParticleKind } from "../terms/ParticleKind";
+import { v2 } from "../../utils/v";
+import update from "immutability-helper";
+
+const resolveReactionInCell = (reagents: ParticleState[]) => {
+    reagents = [...reagents];
+    const reagentsEnergy = particlesEnergy(reagents);
+    const reagentsMomentum = particlesMomentum(reagents);
+    const {
+        selectedVariant,
+    } = selectReactionVariant([...enumerateProductCombinations(reagents)
+        .flatMap(products => enumerateProductVelocities(
+            reagentsMomentum,
+            reagentsEnergy,
+            products))
+        .map(products => ({ reagents, products }))]);
+    if (!selectedVariant) { return reagents; }
+
+    return selectedVariant.products.map(p => {
+        const i = reagents.findIndex(r =>
+            eqParticleKind(r, p)
+            && v2.eq(r.velocity, p.velocity));
+        if (i >= 0) {
+            const r = reagents[i];
+            reagents.splice(i, 1);
+            return r;
+        }
+        return {
+            ...p,
+            position: reagents[0].position,
+            isRemoved: false,
+        };
+    });
+};
 
 export function applyReactionsInPlace(particles: ParticleState[]) {
     const newParticles = Object.values(_.groupBy(
-        particles
-            .filter(p => !p.isRemoved),
+        particles.filter(p => !p.isRemoved),
         p => JSON.stringify(p.position)),
-    ).flatMap(reagents => {
-        const reagentsEnergy = particlesEnergy(reagents);
-        const reagentsMomentum = particlesMomentum(reagents);
-        const {
-            selectedVariant,
-        } = selectReactionVariant([...enumerateProductCombinations(reagents)
-            .flatMap(products => enumerateProductVelocities(
-                reagentsMomentum,
-                reagentsEnergy,
-                products))
-            .map(products => ({ reagents, products }))]);
-        if (selectedVariant) {
-            return selectedVariant.products
-                .map(p => ({
-                    ...p,
-                    position: reagents[0].position,
-                    isRemoved: false,
-                }));
-        }
-        return reagents;
-    });
+    ).flatMap(resolveReactionInCell);
 
-    // todo diff newParticles vs particles,
-    // - apply (add) the changed particles
-    // - leave unchanged as is on their positions
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].isRemoved = true;
+    for (const p of newParticles) {
+        if (particles.includes(p)) { continue; }
+        particles.push(p);
     }
-    particles.push(...newParticles);
+
+    for (const p of particles) {
+        if (newParticles.includes(p)) { continue; }
+        particles[particles.indexOf(p)] = update(p, {
+            isRemoved: { $set: true },
+        });
+    }
 }
