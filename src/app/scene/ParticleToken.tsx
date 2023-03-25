@@ -33,7 +33,7 @@ export function ParticleToken({
             case 3: return <>
                 <SubparticleMesh position={[0.07, 0, 0]} color={cs[0]} />
                 <SubparticleMesh position={[-0.02, 0, 0.05]} color={cs[1]} />
-                <SubparticleMesh position={[-0.02, 0, -0.05]} color={cs[3]} />
+                <SubparticleMesh position={[-0.02, 0, -0.05]} color={cs[2]} />
             </>;
             case 4: return <>
                 <SubparticleMesh position={[0.07, 0, 0]} color={cs[0]} />
