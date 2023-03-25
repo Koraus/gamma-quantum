@@ -55,15 +55,15 @@ export function ReagentEditor({
         >
             <option
                 value={JSON.stringify(true)}
-            >gamma</option>
+            >γ</option>
             <option
                 value={JSON.stringify(false)}
-            >non-gamma</option>
+            >non-γ</option>
         </select>
         {particle.content !== "gamma"
             && <>
                 <label>
-                    red:
+                    r:
                     <input
                         css={{ width: "30px" }}
                         type="number"
@@ -78,7 +78,7 @@ export function ReagentEditor({
                     ></input>
                 </label>
                 <label>
-                    green:
+                    g:
                     <input
                         css={{ width: "30px" }}
                         type="number"
@@ -93,7 +93,7 @@ export function ReagentEditor({
                     ></input>
                 </label>
                 <label>
-                    blue:
+                    b:
                     <input
                         css={{ width: "30px" }}
                         type="number"

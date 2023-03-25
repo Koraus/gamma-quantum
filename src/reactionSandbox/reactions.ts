@@ -20,39 +20,36 @@ export const particles = {
 
 export const reactions = [{
     title: "Elastic collision with gamma",
-    reagents: [particles.q],
+    reagents: [particles.q, particles.g],
 }, {
     title: "Elastic collision",
     reagents: [particles.q, particles.q],
 }, {
-    title: "Annihilation (q-m1 + q-m1 => g-m0)",
+    title: "Annihilation",
     reagents: [particles.q, particles.q],
 }, {
-    title: "Shift (q-m1 + q-m1 => q-m1), Fusion (... => qq-m1)",
+    title: "Shift, Fusion",
     reagents: [particles.q, particles.q],
 }, {
-    title: "Shift (q-m1 => q-m1 + q-m1), Fusion (qq-m1 => ...)",
+    title: "Shift, Fusion (back)",
     reagents: [particles.qq],
 }, {
-    title: "Oscillation (qq-m1 + q-m1 => qqq-m2)",
+    title: "Oscillation",
     reagents: [particles.qq, particles.q],
 }, {
-    title: "Oscillation (qqq-m2 => qq-m1 + q-m1)",
+    title: "Oscillation",
     reagents: [particles.qqq],
 }, {
-    title: "Fission-31 (qqq-m2 + q-m1 => qqqq-m4)",
+    title: "Fission",
+    reagents: [particles.qqqq],
+}, {
+    title: "Fission",
     reagents: [particles.qqq, particles.q],
 }, {
-    title: "Fission-31 (qqqq-m4 => qqq-m2 + q-m1)",
-    reagents: [particles.qqqq],
-}, {
-    title: "Fission-22 (qq-m1 + qq-m1 => qqqq-m4)",
+    title: "Fission (back)",
     reagents: [particles.qq, particles.qq],
 }, {
-    title: "Fission-22 (qqqq-m4 => qq-m1 + qq-m1)",
-    reagents: [particles.qqqq],
-}, {
-    title: "check 1: gg ↓ m1 + r ↖ m1 + r ↙ m1",
+    title: "check 1",
     reagents: [{
         content: { red: 0, green: 2, blue: 0 },
         velocity: [...hax.direction.flat60["↓"]],
@@ -64,7 +61,7 @@ export const reactions = [{
         velocity: [...hax.direction.flat60["↙"]],
     }],
 }, {
-    title: "check 2: gg ↓ m1 + r ↖ m1 + r ↙ m1 + rgb ↙ m2",
+    title: "check 2",
     reagents: [{
         content: { red: 0, green: 2, blue: 0 },
         velocity: [...hax.direction.flat60["↓"]],
@@ -79,7 +76,7 @@ export const reactions = [{
         velocity: [...hax.direction.flat60["↙"]],
     }],
 }, {
-    title: "check 3: r ↓ m1 + r ↑ m1",
+    title: "check 3",
     reagents: [{
         content: { red: 1, green: 0, blue: 0 },
         velocity: [...hax.direction.flat60["↓"]],
@@ -88,7 +85,7 @@ export const reactions = [{
         velocity: [...hax.direction.flat60["↑"]],
     }],
 }, {
-    title: "check 4: rr ↓ m1 + rg ↑ m1",
+    title: "check 4",
     reagents: [{
         content: { red: 2, green: 0, blue: 0 },
         velocity: [...hax.direction.flat60["↓"]],

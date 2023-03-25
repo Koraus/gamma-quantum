@@ -65,9 +65,14 @@ export function ReactionSandbox({
         })}>
             {reactions.map((r, i) => <button
                 key={i}
-                css={{ display: "block" }}
+                css={{ 
+                    display: "flex",
+                    flexDirection: "row",
+                }}
                 onClick={() => setReagents(r.reagents)}
-            >{r.title}</button>)}
+            >
+                {r.title}{r.reagents.map(p => <ParticleText particle={p} />)}
+            </button>)}
             ---
             {reagents.map((_, i) => <div key={i}>
                 <ParticleText

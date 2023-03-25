@@ -70,6 +70,7 @@ export function ParticleText({
             color: particleColor(p),
             minWidth: "1.2em",
             textAlign: "center",
+            background: "black",
         }, cssProp]}
         {...props}
     > {p.content === "gamma"
