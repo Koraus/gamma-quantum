@@ -59,9 +59,16 @@ export function* scoreResolvedReaction({
 
     // inertia
     // more mass continues to move in the same direction -- better
-    yield Math.abs(
-        hax_flatCartDir(particlesDirectedMass(reagents))
-        - hax_flatCartDir(particlesDirectedMass(products)));
+    {
+        const a1 = hax_flatCartDir(particlesDirectedMass(reagents));
+        const a2 = hax_flatCartDir(particlesDirectedMass(reagents));
+        let da = a1 - a2;
+        da -= -Math.PI;
+        da %= 2 * Math.PI;
+        if (da < 0) { da += Math.PI * 2; }
+        da += -Math.PI;
+        yield Math.abs(da);
+    }
 
     // count of particles with velocities common for both sides of reaction
     // helps to resovle elastic collisions

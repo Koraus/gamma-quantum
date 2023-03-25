@@ -61,7 +61,7 @@ export const reactions = [{
         velocity: [...hax.direction.flat60["↙"]],
     }],
 }, {
-    title: "check 2",
+    title: "",
     reagents: [{
         content: { red: 0, green: 2, blue: 0 },
         velocity: [...hax.direction.flat60["↓"]],
@@ -76,7 +76,7 @@ export const reactions = [{
         velocity: [...hax.direction.flat60["↙"]],
     }],
 }, {
-    title: "check 3",
+    title: "",
     reagents: [{
         content: { red: 1, green: 0, blue: 0 },
         velocity: [...hax.direction.flat60["↓"]],
@@ -85,12 +85,21 @@ export const reactions = [{
         velocity: [...hax.direction.flat60["↑"]],
     }],
 }, {
-    title: "check 4",
+    title: "",
     reagents: [{
         content: { red: 2, green: 0, blue: 0 },
         velocity: [...hax.direction.flat60["↓"]],
     }, {
         content: { red: 1, green: 1, blue: 0 },
         velocity: [...hax.direction.flat60["↑"]],
+    }],
+}, {
+    title: "",
+    reagents: [{
+        content: { red: 1, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↓"]],
+    }, {
+        content: { red: 0, green: 1, blue: 0 },
+        velocity: [...hax.direction.flat60["↙"]],
     }],
 }];
