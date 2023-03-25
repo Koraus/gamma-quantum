@@ -7,6 +7,8 @@ import { ActorDecoder } from "./Actor";
 import { isPositionKey } from "./Position";
 import { decode, eqByKey } from "./keyifyUtils";
 import { ShallowStringify } from "../../utils/Stringify";
+import { ParticleKindKey, keyifyParticleKind } from "./ParticleKind";
+import { trustedEntries, trustedValues } from "../../utils/trustedRecord";
 
 
 export const SolutionDraftDecoder = pipe(
@@ -30,8 +32,27 @@ export const SolutionDraftDecoder = pipe(
             }),
         "solution actors positions are allowed / not banned"),
     D.refine(
-        (x): x is typeof x =>
-            true, // todo
+        (x): x is typeof x => {
+            const spawners = {} as Partial<Record<ParticleKindKey, number>>;
+            const consumers = {} as Partial<Record<ParticleKindKey, number>>;
+            for (const a of trustedValues(x.actors)) {
+                if (a.kind === "spawner") {
+                    const k = keyifyParticleKind(a.output);
+                    spawners[k] = (spawners[k] ?? 0) + 1;
+                }
+                if (a.kind === "consumer") {
+                    const k = keyifyParticleKind(a.input);
+                    consumers[k] = (consumers[k] ?? 0) + 1;
+                }
+            }
+            return true
+                && trustedEntries(spawners)
+                    .every(([k, count]) =>
+                        (x.problem.spawners[k] ?? 0) >= count)
+                && trustedEntries(consumers)
+                    .every(([k, count]) =>
+                        (x.problem.consumers[k] ?? 0) >= count);
+        },
         "solution spawners and consumers do not exceed problem limits"),
 );
 export type SolutionDraft = D.TypeOf<typeof SolutionDraftDecoder>;
