@@ -7,7 +7,7 @@ import { ParticleToken } from "./ParticleToken";
 import { nowPlaytime, playActionRecoil } from "../PlaybackPanel";
 import { Vector3, Box3 } from "three";
 import { GroupSync } from "../../utils/GroupSync";
-import { easeBackIn, easeBackOut, easeSinInOut } from "d3-ease";
+import { easeBackIn, easeBackOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
 import { useRecoilValue, useSetRecoilState } from "recoil";
