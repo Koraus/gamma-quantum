@@ -18,6 +18,7 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { cellContentRecoil } from "./cellContentRecoil";
 import { heldKeys } from "../../utils/heldKeys";
+import { ConsumerToken } from "./ConsumerToken";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -172,12 +173,11 @@ export function MainScene() {
                 />;
             }
             if (a.kind === "consumer") {
-                return <group key={i} position={axialToFlatCartXz(position)}>
-                    <mesh rotation={[Math.PI / 2, 0, 0]}>
-                        <torusGeometry args={[0.5, 0.01]} />
-                        <meshPhongMaterial color={"grey"} />
-                    </mesh>
-                </group>;
+                return <ConsumerToken
+                    actor={a}
+                    key={i}
+                    position={axialToFlatCartXz(position)}
+                />;
             }
             if (a.kind === "mirror") {
                 return <group
