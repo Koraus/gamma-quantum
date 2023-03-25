@@ -4,7 +4,8 @@ import { Problem } from "./terms/Problem";
 import { puzzleId } from "./terms/puzzleId";
 import * as hax from "../utils/hax";
 
-export const problem0: Problem = {
+
+export const _tutorial1: Problem = {
     puzzleId,
     spawners: {},
     consumers: {},
@@ -18,14 +19,58 @@ export const problem0: Problem = {
     },
     positionsMode: "allow",
     actors: {
-        [keyifyPosition([6, -1])]: {
+        [keyifyPosition([4, -4])]: {
             kind: "spawner",
             output: { content: { red: 1, green: 0, blue: 0 } },
             direction: 2,
         },
-        [keyifyPosition([-6, 1])]: {
+        [keyifyPosition([0, -4])]: {
+            kind: "mirror",
+            direction: 5,
+        },
+        [keyifyPosition([4, 0])]: {
+            kind: "mirror",
+            direction: 9,
+        },
+        [keyifyPosition([-1, 5])]: {
             kind: "consumer",
             input: { content: { red: 1, green: 0, blue: 0 } },
+        },
+    },
+};
+
+export const _tutorial2: Problem = {
+    puzzleId,
+    spawners: {},
+    consumers: {},
+    demand: {
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 3,
+        [keyifyParticleKind({ content: { red: 0, green: 1, blue: 0 } })]: 3,
+    },
+    positions: {
+        ...Object.fromEntries(
+            hax.disc(3)[Symbol.iterator]()
+                .map(h => [keyifyPosition(h), true])),
+    },
+    positionsMode: "allow",
+    actors: {
+        [keyifyPosition([4, -4])]: {
+            kind: "spawner",
+            output: { content: { red: 1, green: 0, blue: 0 } },
+            direction: 1,
+        },
+        [keyifyPosition([-4, 4])]: {
+            kind: "consumer",
+            input: { content: { red: 1, green: 0, blue: 0 } },
+        },
+        [keyifyPosition([0, -4])]: {
+            kind: "spawner",
+            output: { content: { red: 0, green: 1, blue: 0 } },
+            direction: 0,
+        },
+        [keyifyPosition([0, 4])]: {
+            kind: "consumer",
+            input: { content: { red: 0, green: 1, blue: 0 } },
         },
     },
 };
