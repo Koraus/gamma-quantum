@@ -1,7 +1,8 @@
 import { v2 } from "../../utils/v";
 import * as hax from "../../utils/hax";
 import { tuple } from "../../utils/tuple";
-import { ResolvedReaction, keyifyResolvedReaction } from "./Reaction";
+import { ResolvedReaction } from "./Reaction";
+import { Particle, particleMass } from "../world/Particle";
 
 export const mirrorTransforms = tuple(
     (h: v2) => [-hax.q(h), -hax.s(h)] as v2,
@@ -19,6 +20,23 @@ const mirrorTransformReaction =
             products: products.map(p => ({ ...p, velocity: m(p.velocity) })),
         });
 
+const keyifyParticle1 = (p: Particle) => (
+    "{\"mass\":"
+    + particleMass(p)
+    + ",\"velocity\":["
+    + p.velocity[0]
+    + ","
+    + p.velocity[1]
+    + "]}"
+);
+
+export const keyifyReaction1 =
+    ({ reagents, products }: ResolvedReaction) =>
+        JSON.stringify({
+            reagents: reagents.map(keyifyParticle1).sort(),
+            products: products.map(keyifyParticle1).sort(),
+        });
+
 export function groupReactionVariantsBySymmetries(
     variants: Iterable<ResolvedReaction>,
 ) {
@@ -26,7 +44,7 @@ export function groupReactionVariantsBySymmetries(
     const keysProcessed = new Set<string>();
 
     for (const var1 of variants) {
-        const key1 = keyifyResolvedReaction(var1);
+        const key1 = keyifyReaction1(var1);
         const g1 = (groups[key1] ?? (groups[key1] = new Set()));
         g1.add(var1);
 
@@ -37,7 +55,7 @@ export function groupReactionVariantsBySymmetries(
             const var2 of mirrorTransforms
                 .map(mirrorTransformReaction(var1))
         ) {
-            const key2 = keyifyResolvedReaction(var2);
+            const key2 = keyifyReaction1(var2);
             const g2 = groups[key2];
 
             if (g1 === g2) { continue; }

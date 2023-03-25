@@ -1,7 +1,8 @@
 import { v2 } from "../../utils/v";
 import * as hax from "../../utils/hax";
-import { ParticleKind } from "../terms/ParticleKind";
+import { ParticleKind, keyifyParticleContent } from "../terms/ParticleKind";
 import type { ReadonlyDeep } from "ts-toolbelt/out/Object/Readonly";
+import { Stringify } from "../../utils/Stringify";
 
 
 export type Particle = ParticleKind & {
@@ -22,21 +23,13 @@ export const _particleMass = (p_content: ParticleKind["content"]) => {
         case 1: return 1;
         case 2: return 1;
         case 3: return 2;
-        case 4: return 4;
+        case 4: return 5;
     }
     return 999999;
 };
 
 export const particleMass = (p: ReadonlyDeep<ParticleKind>) =>
     _particleMass(p.content);
-
-export const _particleBondCount = (p_content: ParticleKind["content"]) => {
-    const c = _particleCount(p_content);
-    return (c + (c - 1)) / 2;
-};
-
-export const particleBondCount = (p: ReadonlyDeep<ParticleKind>) =>
-    _particleBondCount(p.content);
 
 export const _addParticleMomentum = (
     p_content: Particle["content"],
@@ -89,3 +82,13 @@ export const particlesDirectedMass = (ps: Iterable<ReadonlyDeep<Particle>>) =>
     ps[Symbol.iterator]()
         .map(particleDirectedMass)
         .reduce(...v2.sumReducer());
+
+export const keyifyParticle = (p: Particle) => (
+    "{\"content\":"
+    + keyifyParticleContent(p.content)
+    + ",\"velocity\":["
+    + p.velocity[0]
+    + ","
+    + p.velocity[1]
+    + "]}"
+) as Stringify<Particle>;

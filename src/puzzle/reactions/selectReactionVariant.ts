@@ -6,7 +6,12 @@ import { scoreResolvedReaction } from "./scoreResolvedReaction";
 
 export function selectReactionVariant(variants: ResolvedReaction[]) {
     const allGrouppedVariants =
-        Object.entries(_.groupBy(variants, scoreResolvedReaction))
+        Object.entries(_.groupBy(
+            variants,
+            v => [...scoreResolvedReaction(v)
+                .map(x => (50 + x).toFixed(2).padStart(2, "0")),
+            ].join(","),
+        ))
             .map(([k, v]) => tuple(k, groupReactionVariantsBySymmetries(v)));
 
     allGrouppedVariants.sort((g1, g2) => g1[0].localeCompare(g2[0], "en"));

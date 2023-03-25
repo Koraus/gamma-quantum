@@ -1,9 +1,8 @@
 import { v2 } from "../../utils/v";
 import * as hax from "../../utils/hax";
-import { Particle, _addParticleMomentum, _particleEnergy, particleMass } from "../world/Particle";
+import { Particle, _addParticleMomentum, _particleEnergy, keyifyParticle, particleMass } from "../world/Particle";
 import { solveConservation } from "./solveConservation";
 import { tuple } from "../../utils/tuple";
-import { keyifyResolvedReactionSide } from "./Reaction";
 import { ParticleKind, keyifyParticleKind } from "../terms/ParticleKind";
 import memoize from "memoizee";
 
@@ -89,10 +88,8 @@ export function* _enumerateProductVelocities(
         products,
         [],
     )) {
-        const kr = keyifyResolvedReactionSide(r);
-        if (kr in yieldedReactions) {
-            continue;
-        }
+        const kr = JSON.stringify(r.map(keyifyParticle).sort());
+        if (kr in yieldedReactions) { continue; }
         yield r;
         yieldedReactions[kr] = true;
     }

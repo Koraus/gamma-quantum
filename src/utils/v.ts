@@ -22,7 +22,7 @@ export const v2 = {
     },
     distSq: (a: rv2, b: rv2) => v2.lenSq(v2.sub(b, a)),
     dist: (a: rv2, b: rv2) => v2.len(v2.sub(b, a)),
-    eq: (a: rv2, b: rv2, eps = 0) => v2.dist(a, b) <= eps,
+    eq: (a: rv2, b: rv2, eps = 0) => v2.eqStrict(a, b) || v2.dist(a, b) <= eps,
 
     sumReducer: () => [
         (acc: v2, [x, y]: rv2) => {

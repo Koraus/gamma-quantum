@@ -88,8 +88,14 @@ export function ReactionForDirections({
             </div>
             {!isCollapsed && <>
                 <br />
-                {allGrouppedVariants.map(([key, variants], i) => <div key={i}>
-                    # scored group, score = {key}
+                {allGrouppedVariants.map(([key, variants], i) => <div
+                    key={i}
+                    css={{
+                        padding: 3,
+                        border: "1px solid #ffffff30",
+                    }}
+                >
+                    # score = {key}
                     {variants.map((symGroup, i) => <div
                         key={i}
                         css={{

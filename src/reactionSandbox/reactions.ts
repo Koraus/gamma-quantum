@@ -52,7 +52,7 @@ export const reactions = [{
     title: "Fission-22 (qqqq-m4 => qq-m1 + qq-m1)",
     reagents: [particles.qqqq],
 }, {
-    title: "check 2: gg ↓ m1 + r ↖ m1 + r ↙ m1",
+    title: "check 1: gg ↓ m1 + r ↖ m1 + r ↙ m1",
     reagents: [{
         content: { red: 0, green: 2, blue: 0 },
         velocity: [...hax.direction.flat60["↓"]],
@@ -85,6 +85,15 @@ export const reactions = [{
         velocity: [...hax.direction.flat60["↓"]],
     }, {
         content: { red: 1, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↑"]],
+    }],
+}, {
+    title: "check 4: rr ↓ m1 + rg ↑ m1",
+    reagents: [{
+        content: { red: 2, green: 0, blue: 0 },
+        velocity: [...hax.direction.flat60["↓"]],
+    }, {
+        content: { red: 1, green: 1, blue: 0 },
         velocity: [...hax.direction.flat60["↑"]],
     }],
 }];
