@@ -61,7 +61,7 @@ export function* scoreResolvedReaction({
     // more mass continues to move in the same direction -- better
     {
         const a1 = hax_flatCartDir(particlesDirectedMass(reagents));
-        const a2 = hax_flatCartDir(particlesDirectedMass(reagents));
+        const a2 = hax_flatCartDir(particlesDirectedMass(products));
         let da = a1 - a2;
         da -= -Math.PI;
         da %= 2 * Math.PI;
