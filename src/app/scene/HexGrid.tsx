@@ -59,7 +59,7 @@ vec3 cubeRound(vec2 v) {
 float max3(vec3 v) { return max(max(v.x, v.y), v.z); }
 
 void main() {
-    vec2 xy = (vUv - 0.5) * 2.0 * 50.0 * sqrt(3.0);
+    vec2 xy = vec2(vUv.x - 0.5, -(vUv.y - 0.5)) * 2.0 * 50.0 * sqrt(3.0);
     vec2 _h = flatCartToAxial(xy);
     vec3 h = vec3(_h, -_h.x-_h.y);
     vec3 hr = cubeRound(_h);
