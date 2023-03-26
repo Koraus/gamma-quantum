@@ -5,7 +5,7 @@ import { tuple } from "../../utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
 import { nowPlaytime, playActionRecoil } from "../PlaybackPanel";
-import { Vector3, Box3 } from "three";
+import { Vector3 } from "three";
 import { GroupSync } from "../../utils/GroupSync";
 import { easeBackIn, easeBackOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
@@ -60,13 +60,6 @@ export function MainScene() {
         if (heldKeys.KeyA) { cameraControls.truck(-step, 0, false); }
     });
 
-    const cameraBoundary = new Box3(
-        new Vector3(-Infinity, 0, -Infinity),
-        new Vector3(Infinity, 0, Infinity),
-    );
-
-    cameraControlsRef.current?.setBoundary(cameraBoundary);
-
     const setCellContent = useSetRecoilState(cellContentRecoil);
 
     return <>
@@ -79,11 +72,12 @@ export function MainScene() {
         <CameraControls
             ref={cameraControlsRef}
             draggingSmoothTime={0.05}
+            verticalDragToForward
             mouseButtons={{
                 wheel: 0,
-                left: 2,
+                left: 1,
                 middle: 8,
-                right: 1,
+                right: 2,
             }} />
         <InteractiveBoard />
         <GizmoHelper
