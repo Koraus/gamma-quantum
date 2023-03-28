@@ -11,7 +11,7 @@ import { easeBackIn, easeBackOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { useWorld } from "../useWorld";
+import { useWorld, getStepAtPlaytime } from "../useWorld";
 import { trustedEntries } from "../../utils/trustedRecord";
 import { parsePosition } from "../../puzzle/terms/Position";
 import { useRef } from "react";
@@ -19,6 +19,10 @@ import { useFrame } from "@react-three/fiber";
 import { cellContentRecoil } from "./cellContentRecoil";
 import { heldKeys } from "../../utils/heldKeys";
 import { ConsumerToken } from "./ConsumerToken";
+import { directionOf } from "../../reactionSandbox/ParticleText";
+import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
+import { ParticleState, worldAtStep } from "../../puzzle/world";
+import { enumerateSubparticles } from "../../puzzle/reactions/enumerateProductCombinations";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -62,6 +66,21 @@ export function MainScene() {
 
     const setCellContent = useSetRecoilState(cellContentRecoil);
 
+    const predictedParticles: ParticleState[] = [];
+
+    const solution =
+        useRecoilValue(solutionManagerRecoil).currentSolution;
+    const stepNow = Math.floor(nowPlaytime(playAction));
+    const startStep = getStepAtPlaytime(stepNow);
+
+    for (let i = startStep; i <= startStep + 20; i++) {
+        const stepWorld = worldAtStep(solution, i);
+        stepWorld.particles.forEach(
+            (p) => {
+                if (!p.isRemoved) { predictedParticles.push(p); }
+            });
+    }
+
     return <>
         <PerspectiveCamera
             makeDefault
@@ -90,6 +109,34 @@ export function MainScene() {
 
         <directionalLight intensity={0.6} position={[-10, 30, 45]} />
         <ambientLight intensity={0.3} />
+
+        {
+            predictedParticles.map((p, i) => {
+                return <group
+                    position={x0y(toFlatCart(p.position))}
+                    rotation={[
+                        0,
+                        -Math.PI / 3 * directionOf(p.velocity)[0],
+                        0]}
+                    key={i}
+                >
+                    {[...enumerateSubparticles(p)].map((sp, j) =>
+                        <mesh
+                            position={[0.1*j, 0, 0.5]}
+                            rotation={[
+                                0,
+                                Math.PI / 2,
+                                Math.PI / 2]}
+                            key={j}
+                        >
+                            <cylinderBufferGeometry args={[0.01, 0.01, 1]} />
+                            <meshBasicMaterial color={
+                               sp === "gamma" ? "white" : sp }
+                            />
+                        </mesh> )}
+                </group>;
+            })
+        }
 
         {Object.values(_.groupBy(particles, p => JSON.stringify(p.p.position)))
             .flatMap((ps) => ps.map(({ p, prev, i }, j) => {
