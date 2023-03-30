@@ -5,7 +5,7 @@ import { tuple } from "../../utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
 import { nowPlaytime, playActionRecoil } from "../PlaybackPanel";
-import { Vector3 } from "three";
+import { Object3D, SpotLight, Vector3 } from "three";
 import { GroupSync } from "../../utils/GroupSync";
 import { easeBackIn, easeBackOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
@@ -19,6 +19,7 @@ import { useFrame } from "@react-three/fiber";
 import { cellContentRecoil } from "./cellContentRecoil";
 import { heldKeys } from "../../utils/heldKeys";
 import { ConsumerToken } from "./ConsumerToken";
+import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -50,31 +51,80 @@ export function MainScene() {
     const cameraControlsRef = useRef<CameraControls>(null);
 
     useFrame((_, delta) => {
-        const cameraControls = cameraControlsRef.current;
-        if (!cameraControls) { return; }
+        const cc = cameraControlsRef.current;
+        if (!cc) { return; }
 
-        const step = 10 * delta;
-        if (heldKeys.KeyW) { cameraControls.forward(step, false); }
-        if (heldKeys.KeyS) { cameraControls.forward(-step, false); }
-        if (heldKeys.KeyD) { cameraControls.truck(step, 0, false); }
-        if (heldKeys.KeyA) { cameraControls.truck(-step, 0, false); }
+        const isShift = heldKeys["ShiftLeft"] || heldKeys["ShiftRight"];
+
+        const moveStep = 0.5 * cc.distance * (isShift ? 3 : 1) * delta;
+        if (heldKeys["KeyW"]) { cc.forward(moveStep, false); }
+        if (heldKeys["KeyS"]) { cc.forward(-moveStep, false); }
+        if (heldKeys["KeyD"]) { cc.truck(moveStep, 0, false); }
+        if (heldKeys["KeyA"]) { cc.truck(-moveStep, 0, false); }
+
+        const rotateStep = 0.5 * Math.PI * (isShift ? 3 : 1) * delta;
+        if (heldKeys["ArrowLeft"]) { cc.rotate(-rotateStep, 0, false); }
+        if (heldKeys["ArrowRight"]) { cc.rotate(rotateStep, 0, false); }
+        if (heldKeys["ArrowUp"]) { cc.rotate(0, -rotateStep, false); }
+        if (heldKeys["ArrowDown"]) { cc.rotate(0, rotateStep, false); }
+
+        const dollyStep = 50 * (isShift ? 3 : 1) * delta;
+        if (heldKeys["PageUp"]) { cc.dolly(dollyStep, false); }
+        if (heldKeys["PageDown"]) { cc.dolly(-dollyStep, false); }
+    });
+    useWindowKeyDown(ev => {
+        const cc = cameraControlsRef.current;
+        if (!cc) { return; }
+
+        if (ev.code === "KeyF") {
+            cc.rotatePolarTo((cc.polarAngle < 0.01 ? 0.25 : 0) * Math.PI, true);
+            cc.dollyTo(cc.minDistance * 1.5, true);
+        }
+
+        if (ev.code === "KeyC") {
+            cc.moveTo(0, 0, 0, true);
+        }
     });
 
     const setCellContent = useSetRecoilState(cellContentRecoil);
+    const spotLightRef = useRef<SpotLight>(null);
+    const spotLightTargetRef = useRef<Object3D>(null);
+    useFrame(({ camera }) => {
+        const spotLight = spotLightRef.current;
+        if (!spotLight) { return; }
+        if (!spotLightTargetRef.current) { return; }
+
+        spotLight.position.copy(camera.position);
+        spotLight.target = spotLightTargetRef.current;
+    });
 
     return <>
+        <fog near={1} far={10} />
+        <spotLight
+            ref={spotLightRef}
+            penumbra={0.9}
+            angle={0.45}
+            intensity={1}
+            power={2000}
+        />
         <PerspectiveCamera
             makeDefault
-            fov={40}
+            fov={60}
             near={0.1}
             far={1000}
-            position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)} />
+            position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)}
+        >
+            <object3D ref={spotLightTargetRef} position={[0, 0, -1]} />
+        </PerspectiveCamera>
         <CameraControls
             ref={cameraControlsRef}
             draggingSmoothTime={0.05}
             verticalDragToForward
+            minDistance={15}
+            maxDistance={100}
+            maxPolarAngle={0.48 * Math.PI}
             mouseButtons={{
-                wheel: 0,
+                wheel: 8,
                 left: 1,
                 middle: 8,
                 right: 2,
@@ -88,8 +138,8 @@ export function MainScene() {
         </GizmoHelper>
 
 
-        <directionalLight intensity={0.6} position={[-10, 30, 45]} />
-        <ambientLight intensity={0.3} />
+        <directionalLight intensity={0.1} position={[-10, 30, 45]} />
+        <ambientLight intensity={0.1} />
 
         {Object.values(_.groupBy(particles, p => JSON.stringify(p.p.position)))
             .flatMap((ps) => ps.map(({ p, prev, i }, j) => {
