@@ -1,5 +1,5 @@
 import { v2, v3 } from "../../utils/v";
-import { GizmoHelper, GizmoViewport, PerspectiveCamera, CameraControls } from "@react-three/drei";
+import { GizmoHelper, GizmoViewport, PerspectiveCamera } from "@react-three/drei";
 import { toFlatCart } from "../../utils/hax";
 import { tuple } from "../../utils/tuple";
 import * as _ from "lodash";
@@ -17,9 +17,8 @@ import { parsePosition } from "../../puzzle/terms/Position";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { cellContentRecoil } from "./cellContentRecoil";
-import { heldKeys } from "../../utils/heldKeys";
 import { ConsumerToken } from "./ConsumerToken";
-import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
+import { MainCameraControls } from "./MainCameraControls";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -47,44 +46,6 @@ export function MainScene() {
         ...trustedEntries(world.actors),
         ...trustedEntries(world.problem.actors),
     ];
-
-    const cameraControlsRef = useRef<CameraControls>(null);
-
-    useFrame((_, delta) => {
-        const cc = cameraControlsRef.current;
-        if (!cc) { return; }
-
-        const isShift = heldKeys["ShiftLeft"] || heldKeys["ShiftRight"];
-
-        const moveStep = 0.5 * cc.distance * (isShift ? 3 : 1) * delta;
-        if (heldKeys["KeyW"]) { cc.forward(moveStep, false); }
-        if (heldKeys["KeyS"]) { cc.forward(-moveStep, false); }
-        if (heldKeys["KeyD"]) { cc.truck(moveStep, 0, false); }
-        if (heldKeys["KeyA"]) { cc.truck(-moveStep, 0, false); }
-
-        const rotateStep = 0.5 * Math.PI * (isShift ? 3 : 1) * delta;
-        if (heldKeys["ArrowLeft"]) { cc.rotate(-rotateStep, 0, false); }
-        if (heldKeys["ArrowRight"]) { cc.rotate(rotateStep, 0, false); }
-        if (heldKeys["ArrowUp"]) { cc.rotate(0, -rotateStep, false); }
-        if (heldKeys["ArrowDown"]) { cc.rotate(0, rotateStep, false); }
-
-        const dollyStep = 50 * (isShift ? 3 : 1) * delta;
-        if (heldKeys["PageUp"]) { cc.dolly(dollyStep, false); }
-        if (heldKeys["PageDown"]) { cc.dolly(-dollyStep, false); }
-    });
-    useWindowKeyDown(ev => {
-        const cc = cameraControlsRef.current;
-        if (!cc) { return; }
-
-        if (ev.code === "KeyF") {
-            cc.rotatePolarTo((cc.polarAngle < 0.01 ? 0.25 : 0) * Math.PI, true);
-            cc.dollyTo(cc.minDistance * 1.5, true);
-        }
-
-        if (ev.code === "KeyC") {
-            cc.moveTo(0, 0, 0, true);
-        }
-    });
 
     const setCellContent = useSetRecoilState(cellContentRecoil);
     const spotLightRef = useRef<SpotLight>(null);
@@ -116,19 +77,7 @@ export function MainScene() {
         >
             <object3D ref={spotLightTargetRef} position={[0, 0, -1]} />
         </PerspectiveCamera>
-        <CameraControls
-            ref={cameraControlsRef}
-            draggingSmoothTime={0.05}
-            verticalDragToForward
-            minDistance={15}
-            maxDistance={100}
-            maxPolarAngle={0.48 * Math.PI}
-            mouseButtons={{
-                wheel: 8,
-                left: 1,
-                middle: 8,
-                right: 2,
-            }} />
+        <MainCameraControls />
         <InteractiveBoard />
         <GizmoHelper
             alignment="bottom-right"
