@@ -22,7 +22,7 @@ import { ConsumerToken } from "./ConsumerToken";
 import { directionOf } from "../../reactionSandbox/ParticleText";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 import { ParticleState, worldAtStep } from "../../puzzle/world";
-import { enumerateSubparticles } from "../../puzzle/reactions/enumerateProductCombinations";
+import { PredictedParticle } from "./PredictedParticle";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -109,7 +109,6 @@ export function MainScene() {
         {
             predictedParticles.map(
                 (ps, relStep) => {
-                    const opacity = 1 - ((relStep + 1) / 21);
                     return ps.map((p, i) => {
                         return <group
                             position={x0y(toFlatCart(p.position))}
@@ -119,23 +118,7 @@ export function MainScene() {
                                 0]}
                             key={i}
                         >
-                            {[...enumerateSubparticles(p)].map((sp, j) =>
-                                <mesh
-                                    position={[0.1 * j, 0, 0.5]}
-                                    rotation={[
-                                        0,
-                                        Math.PI / 2,
-                                        Math.PI / 2]}
-                                    key={j}
-                                >
-                                    <cylinderBufferGeometry args={[0.01, 0.01, 1]}
-                                    />
-                                    <meshPhongMaterial color={
-                                        sp === "gamma" ? "white" : sp}
-                                        transparent
-                                        opacity={opacity}
-                                    />
-                                </mesh>)}
+                            <PredictedParticle p={p} relStep={relStep} />
                         </group>;
                     });
                 })
