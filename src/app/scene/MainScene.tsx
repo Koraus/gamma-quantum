@@ -66,21 +66,17 @@ export function MainScene() {
 
     const setCellContent = useSetRecoilState(cellContentRecoil);
 
-    const predictedParticles: ParticleState[] = [];
+    const predictedParticles: ParticleState[][] = [];
 
     const solution =
         useRecoilValue(solutionManagerRecoil).currentSolution;
-    const stepNow = Math.floor(nowPlaytime(playAction));
-    const startStep = getStepAtPlaytime(stepNow);
+    const startStep = getStepAtPlaytime(world.step);
 
     for (let i = startStep; i <= startStep + 20; i++) {
         const stepWorld = worldAtStep(solution, i);
-        stepWorld.particles.forEach(
-            (p) => {
-                if (!p.isRemoved) { predictedParticles.push(p); }
-            });
+        const stepArr = stepWorld.particles.filter((p) => !p.isRemoved);
+        predictedParticles.push(stepArr);
     }
-
     return <>
         <PerspectiveCamera
             makeDefault
@@ -111,33 +107,39 @@ export function MainScene() {
         <ambientLight intensity={0.3} />
 
         {
-            predictedParticles.map((p, i) => {
-                return <group
-                    position={x0y(toFlatCart(p.position))}
-                    rotation={[
-                        0,
-                        -Math.PI / 3 * directionOf(p.velocity)[0],
-                        0]}
-                    key={i}
-                >
-                    {[...enumerateSubparticles(p)].map((sp, j) =>
-                        <mesh
-                            position={[0.1*j, 0, 0.5]}
+            predictedParticles.map(
+                (ps, relStep) => {
+                    const opacity = 1 - ((relStep + 1) / 21);
+                    return ps.map((p, i) => {
+                        return <group
+                            position={x0y(toFlatCart(p.position))}
                             rotation={[
                                 0,
-                                Math.PI / 2,
-                                Math.PI / 2]}
-                            key={j}
+                                -Math.PI / 3 * directionOf(p.velocity)[0],
+                                0]}
+                            key={i}
                         >
-                            <cylinderBufferGeometry args={[0.01, 0.01, 1]} />
-                            <meshBasicMaterial color={
-                               sp === "gamma" ? "white" : sp }
-                            />
-                        </mesh> )}
-                </group>;
-            })
+                            {[...enumerateSubparticles(p)].map((sp, j) =>
+                                <mesh
+                                    position={[0.1 * j, 0, 0.5]}
+                                    rotation={[
+                                        0,
+                                        Math.PI / 2,
+                                        Math.PI / 2]}
+                                    key={j}
+                                >
+                                    <cylinderBufferGeometry args={[0.01, 0.01, 1]}
+                                    />
+                                    <meshPhongMaterial color={
+                                        sp === "gamma" ? "white" : sp}
+                                        transparent
+                                        opacity={opacity}
+                                    />
+                                </mesh>)}
+                        </group>;
+                    });
+                })
         }
-
         {Object.values(_.groupBy(particles, p => JSON.stringify(p.p.position)))
             .flatMap((ps) => ps.map(({ p, prev, i }, j) => {
                 return <GroupSync
