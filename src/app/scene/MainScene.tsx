@@ -11,14 +11,19 @@ import { easeBackIn, easeBackOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { SpawnerToken } from "./SpawnerToken";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { useWorld } from "../useWorld";
+import { useWorld, getStepAtPlaytime } from "../useWorld";
 import { trustedEntries } from "../../utils/trustedRecord";
 import { parsePosition } from "../../puzzle/terms/Position";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { cellContentRecoil } from "./cellContentRecoil";
 import { ConsumerToken } from "./ConsumerToken";
+import { directionOf } from "../../reactionSandbox/ParticleText";
+import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
+import { ParticleState, worldAtStep } from "../../puzzle/world";
+import { PredictedParticle } from "./PredictedParticle";
 import { MainCameraControls } from "./MainCameraControls";
+import { ghostSolutionRecoil } from "./ghostSolutionRecoil";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -47,7 +52,6 @@ export function MainScene() {
         ...trustedEntries(world.problem.actors),
     ];
 
-    const setCellContent = useSetRecoilState(cellContentRecoil);
     const spotLightRef = useRef<SpotLight>(null);
     const spotLightTargetRef = useRef<Object3D>(null);
     useFrame(({ camera }) => {
@@ -59,6 +63,26 @@ export function MainScene() {
         spotLight.target = spotLightTargetRef.current;
         spotLight.power = Math.pow(camera.position.y, 1.3) * 500;
     });
+
+    const setCellContent = useSetRecoilState(cellContentRecoil);
+
+    const predictedParticles: ParticleState[][] = [];
+
+    const startStep = getStepAtPlaytime(world.step);
+
+    const ghostSolution = useRecoilValue(ghostSolutionRecoil);
+    useRecoilValue(solutionManagerRecoil).currentSolution;
+
+    const currentSolution = useRecoilValue(solutionManagerRecoil)
+        .currentSolution;
+
+    const solution = ghostSolution ? ghostSolution : currentSolution;
+
+    for (let i = startStep; i <= startStep + 20; i++) {
+        const stepWorld = worldAtStep(solution, i);
+        const stepArr = stepWorld.particles.filter((p) => !p.isRemoved);
+        predictedParticles.push(stepArr);
+    }
 
     return <>
         <color attach="background" args={["#000001"]} />
@@ -89,6 +113,22 @@ export function MainScene() {
             <GizmoViewport />
         </GizmoHelper>
 
+        {predictedParticles.map(
+            (ps, relStep) => {
+                return ps.map((p, i) => {
+                    return <group
+                        position={x0y(toFlatCart(p.position))}
+                        rotation={[
+                            0,
+                            -Math.PI / 3 * directionOf(p.velocity)[0],
+                            0]}
+                        key={i}
+                    >
+                        <PredictedParticle p={p} relStep={relStep} />
+                    </group>;
+                });
+            })
+        }
         {Object.values(_.groupBy(particles, p => JSON.stringify(p.p.position)))
             .flatMap((ps) => ps.map(({ p, prev, i }, j) => {
                 return <GroupSync

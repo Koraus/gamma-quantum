@@ -8,7 +8,7 @@ import { useRef, useState } from "react";
 import { pipe } from "fp-ts/lib/function";
 import update from "immutability-helper";
 import { cursorToolRecoil } from "../CursorToolSelectorPanel";
-import { useRecoilValue } from "recoil";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import { useSetSolution } from "../useSetSolution";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 import { keyifyPosition, parsePosition } from "../../puzzle/terms/Position";
@@ -16,6 +16,7 @@ import { trustedKeys } from "../../utils/trustedRecord";
 import { keyifyProblem } from "../../puzzle/terms/Problem";
 import { isLeft } from "fp-ts/Either";
 import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
+import { ghostSolutionRecoil } from "./ghostSolutionRecoil";
 import { Plane } from "@react-three/drei";
 
 
@@ -36,10 +37,12 @@ export function InteractiveBoard() {
         cursorDirection % 12
         + ((cursorDirection < 0) ? 12 : 0);
 
+    const setGhostSolution = useSetRecoilState(ghostSolutionRecoil);
+
     const applyCursor = (hPos: v2) => {
 
         const hPosKey = keyifyPosition(hPos);
-
+        setGhostSolution(undefined);
         switch (cursorTool.kind) {
             case "none": break;
             case "spawner": {
@@ -104,6 +107,74 @@ export function InteractiveBoard() {
         }
     };
 
+    const applyGhostCursor = (hPos: v2) => {
+
+        const hPosKey = keyifyPosition(hPos);
+        switch (cursorTool.kind) {
+            case "none": break;
+            case "spawner": {
+                setGhostSolution(update(solution, {
+                    actors: {
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                                direction:
+                                    Math.floor((normalizedDirection) / 2) as
+                                    DirectionId,
+                            },
+                        },
+                    },
+                }));
+                break;
+            }
+            case "consumer": {
+                setGhostSolution(update(solution, {
+                    actors: {
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                            },
+                        },
+                    },
+                }));
+                break;
+            }
+            case "mirror": {
+                setGhostSolution(update(solution, {
+                    actors: {
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                                direction:
+                                    normalizedDirection as HalfDirectionId,
+                            },
+                        },
+                    },
+                }));
+                break;
+            }
+            case "trap": {
+                setGhostSolution(update(solution, {
+                    actors: {
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                            },
+                        },
+                    },
+                }));
+                break;
+            }
+            case "remove": {
+                setGhostSolution(update(solution, {
+                    actors: { $unset: [hPosKey] },
+                }));
+                break;
+            }
+        }
+
+    };
+
     useWindowKeyDown((e) => {
         const step = (cursorTool.kind === "mirror" ? 1 : 2);
         if (e.code === "KeyR") {
@@ -138,6 +209,16 @@ export function InteractiveBoard() {
                     ([x, y]) => new Vector3(x, 0, y),
                 ));
                 // cursorEl.scale.setScalar(ev.distance * 0.02);
+                const hPos = pipe(
+                    ev.unprojectedPoint
+                        .clone()
+                        .addScaledVector(ev.ray.direction, ev.distance),
+                    ({ x, z }) => [x, z] as v2,
+                    hax.fromFlatCart,
+                    hax.round,
+                    ([x, y]) => [x, y] as v2,
+                );
+                applyGhostCursor(hPos);
             }}
             onWheel={(e) => {
                 const step = (cursorTool.kind === "mirror" ? 1 : 2);
@@ -164,7 +245,8 @@ export function InteractiveBoard() {
                 transparent
                 opacity={0}
                 alphaTest={1}
-            />
+           
+        />
         </Plane>
         {cursorTool.kind !== "none" &&
             <mesh
