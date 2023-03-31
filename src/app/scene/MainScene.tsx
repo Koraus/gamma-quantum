@@ -1,11 +1,11 @@
 import { v2, v3 } from "../../utils/v";
-import { GizmoHelper, GizmoViewport, PerspectiveCamera, CameraControls } from "@react-three/drei";
+import { GizmoHelper, GizmoViewport, PerspectiveCamera } from "@react-three/drei";
 import { toFlatCart } from "../../utils/hax";
 import { tuple } from "../../utils/tuple";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
 import { nowPlaytime, playActionRecoil } from "../PlaybackPanel";
-import { Vector3 } from "three";
+import { Object3D, SpotLight, Vector3 } from "three";
 import { GroupSync } from "../../utils/GroupSync";
 import { easeBackIn, easeBackOut } from "d3-ease";
 import { InteractiveBoard } from "./InteractiveBoard";
@@ -17,12 +17,12 @@ import { parsePosition } from "../../puzzle/terms/Position";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { cellContentRecoil } from "./cellContentRecoil";
-import { heldKeys } from "../../utils/heldKeys";
 import { ConsumerToken } from "./ConsumerToken";
 import { directionOf } from "../../reactionSandbox/ParticleText";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 import { ParticleState, worldAtStep } from "../../puzzle/world";
 import { PredictedParticle } from "./PredictedParticle";
+import { MainCameraControls } from "./MainCameraControls";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -51,17 +51,16 @@ export function MainScene() {
         ...trustedEntries(world.problem.actors),
     ];
 
-    const cameraControlsRef = useRef<CameraControls>(null);
+    const setCellContent = useSetRecoilState(cellContentRecoil);
+    const spotLightRef = useRef<SpotLight>(null);
+    const spotLightTargetRef = useRef<Object3D>(null);
+    useFrame(({ camera }) => {
+        const spotLight = spotLightRef.current;
+        if (!spotLight) { return; }
+        if (!spotLightTargetRef.current) { return; }
 
-    useFrame((_, delta) => {
-        const cameraControls = cameraControlsRef.current;
-        if (!cameraControls) { return; }
-
-        const step = 10 * delta;
-        if (heldKeys.KeyW) { cameraControls.forward(step, false); }
-        if (heldKeys.KeyS) { cameraControls.forward(-step, false); }
-        if (heldKeys.KeyD) { cameraControls.truck(step, 0, false); }
-        if (heldKeys.KeyA) { cameraControls.truck(-step, 0, false); }
+        spotLight.position.copy(camera.position);
+        spotLight.target = spotLightTargetRef.current;
     });
 
     const setCellContent = useSetRecoilState(cellContentRecoil);
@@ -78,22 +77,24 @@ export function MainScene() {
         predictedParticles.push(stepArr);
     }
     return <>
+        <fog near={1} far={10} />
+        <spotLight
+            ref={spotLightRef}
+            penumbra={0.9}
+            angle={0.45}
+            intensity={1}
+            power={2000}
+        />
         <PerspectiveCamera
             makeDefault
-            fov={40}
+            fov={60}
             near={0.1}
             far={1000}
-            position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)} />
-        <CameraControls
-            ref={cameraControlsRef}
-            draggingSmoothTime={0.05}
-            verticalDragToForward
-            mouseButtons={{
-                wheel: 0,
-                left: 1,
-                middle: 8,
-                right: 2,
-            }} />
+            position={v3.scale(v3.from(1, Math.SQRT2, 1), 25)}
+        >
+            <object3D ref={spotLightTargetRef} position={[0, 0, -1]} />
+        </PerspectiveCamera>
+        <MainCameraControls />
         <InteractiveBoard />
         <GizmoHelper
             alignment="bottom-right"
@@ -103,8 +104,8 @@ export function MainScene() {
         </GizmoHelper>
 
 
-        <directionalLight intensity={0.6} position={[-10, 30, 45]} />
-        <ambientLight intensity={0.3} />
+        <directionalLight intensity={0.1} position={[-10, 30, 45]} />
+        <ambientLight intensity={0.1} />
 
         {
             predictedParticles.map(

@@ -1,9 +1,10 @@
-import { useEffect, DependencyList } from "react";
+import { DependencyList } from "react";
+import { useWindowEvent } from "./useWindowEvent";
 
-export function useWindowKeyDown(handler: (e: KeyboardEvent) => void,
-    deps?: DependencyList) {
-    useEffect(() => {
-        window.addEventListener("keydown", handler);
-        return () => window.removeEventListener("keydown", handler);
-    }, deps);
+/** @deprecated Use useWindowEvent("keydown", ...) instead */
+export function useWindowKeyDown(
+    handler: (e: KeyboardEvent) => void,
+    deps?: DependencyList,
+) {
+    useWindowEvent("keydown", handler, deps);
 }

@@ -55,7 +55,13 @@ export function App() {
             }
         }}
     >
-        <Canvas css={{ position: "absolute", inset: 0, zIndex: -1 }}>
+        <Canvas
+            css={{ position: "absolute", inset: 0, zIndex: -1 }}
+            gl={{
+                physicallyCorrectLights: true,
+            }}
+            
+        >
             <MainScene />
         </Canvas>
         <div css={{
