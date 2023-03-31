@@ -71,7 +71,7 @@ export function MainScene() {
 
     const ghostSolution = useRecoilValue(ghostSolutionRecoil);
     useRecoilValue(solutionManagerRecoil).currentSolution;
-    
+
     const currentSolution = useRecoilValue(solutionManagerRecoil)
         .currentSolution;
 

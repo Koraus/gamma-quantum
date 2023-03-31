@@ -36,12 +36,12 @@ export function InteractiveBoard() {
         cursorDirection % 12
         + ((cursorDirection < 0) ? 12 : 0);
 
+    const setGhostSolution = useSetRecoilState(ghostSolutionRecoil);
+
     const applyCursor = (hPos: v2) => {
 
         const hPosKey = keyifyPosition(hPos);
-
         setGhostSolution(undefined);
-
         switch (cursorTool.kind) {
             case "none": break;
             case "spawner": {
@@ -105,8 +105,6 @@ export function InteractiveBoard() {
             }
         }
     };
-
-    const setGhostSolution = useSetRecoilState(ghostSolutionRecoil);
 
     const applyGhostCursor = (hPos: v2) => {
 
@@ -205,6 +203,16 @@ export function InteractiveBoard() {
                     ([x, y]) => new Vector3(x, 0, y),
                 ));
                 // cursorEl.scale.setScalar(ev.distance * 0.02);
+                const hPos = pipe(
+                    ev.unprojectedPoint
+                        .clone()
+                        .addScaledVector(ev.ray.direction, ev.distance),
+                    ({ x, z }) => [x, z] as v2,
+                    hax.fromFlatCart,
+                    hax.round,
+                    ([x, y]) => [x, y] as v2,
+                );
+                applyGhostCursor(hPos);
             }}
             onWheel={(e) => {
                 const step = (cursorTool.kind === "mirror" ? 1 : 2);
@@ -225,18 +233,6 @@ export function InteractiveBoard() {
 
                     applyCursor(hPos);
                 }
-            }}
-            onPointerMove={ev => {
-                const hPos = pipe(
-                    ev.unprojectedPoint
-                        .clone()
-                        .addScaledVector(ev.ray.direction, ev.distance),
-                    ({ x, z }) => [x, z] as v2,
-                    hax.fromFlatCart,
-                    hax.round,
-                    ([x, y]) => [x, y] as v2,
-                );
-                applyGhostCursor(hPos);
             }}
         />
         {cursorTool.kind !== "none" &&
