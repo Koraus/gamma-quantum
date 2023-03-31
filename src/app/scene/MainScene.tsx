@@ -23,6 +23,7 @@ import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil"
 import { ParticleState, worldAtStep } from "../../puzzle/world";
 import { PredictedParticle } from "./PredictedParticle";
 import { MainCameraControls } from "./MainCameraControls";
+import { ghostSolutionRecoil } from "./ghostSolutionRecoil";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -51,7 +52,6 @@ export function MainScene() {
         ...trustedEntries(world.problem.actors),
     ];
 
-    const setCellContent = useSetRecoilState(cellContentRecoil);
     const spotLightRef = useRef<SpotLight>(null);
     const spotLightTargetRef = useRef<Object3D>(null);
     useFrame(({ camera }) => {
@@ -67,15 +67,22 @@ export function MainScene() {
 
     const predictedParticles: ParticleState[][] = [];
 
-    const solution =
-        useRecoilValue(solutionManagerRecoil).currentSolution;
     const startStep = getStepAtPlaytime(world.step);
+
+    const ghostSolution = useRecoilValue(ghostSolutionRecoil);
+    useRecoilValue(solutionManagerRecoil).currentSolution;
+    
+    const currentSolution = useRecoilValue(solutionManagerRecoil)
+        .currentSolution;
+
+    const solution = ghostSolution ? ghostSolution : currentSolution;
 
     for (let i = startStep; i <= startStep + 20; i++) {
         const stepWorld = worldAtStep(solution, i);
         const stepArr = stepWorld.particles.filter((p) => !p.isRemoved);
         predictedParticles.push(stepArr);
     }
+
     return <>
         <fog near={1} far={10} />
         <spotLight
@@ -107,22 +114,21 @@ export function MainScene() {
         <directionalLight intensity={0.1} position={[-10, 30, 45]} />
         <ambientLight intensity={0.1} />
 
-        {
-            predictedParticles.map(
-                (ps, relStep) => {
-                    return ps.map((p, i) => {
-                        return <group
-                            position={x0y(toFlatCart(p.position))}
-                            rotation={[
-                                0,
-                                -Math.PI / 3 * directionOf(p.velocity)[0],
-                                0]}
-                            key={i}
-                        >
-                            <PredictedParticle p={p} relStep={relStep} />
-                        </group>;
-                    });
-                })
+        {predictedParticles.map(
+            (ps, relStep) => {
+                return ps.map((p, i) => {
+                    return <group
+                        position={x0y(toFlatCart(p.position))}
+                        rotation={[
+                            0,
+                            -Math.PI / 3 * directionOf(p.velocity)[0],
+                            0]}
+                        key={i}
+                    >
+                        <PredictedParticle p={p} relStep={relStep} />
+                    </group>;
+                });
+            })
         }
         {Object.values(_.groupBy(particles, p => JSON.stringify(p.p.position)))
             .flatMap((ps) => ps.map(({ p, prev, i }, j) => {

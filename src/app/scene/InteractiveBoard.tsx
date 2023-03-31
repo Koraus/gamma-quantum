@@ -8,7 +8,7 @@ import { useRef, useState } from "react";
 import { pipe } from "fp-ts/lib/function";
 import update from "immutability-helper";
 import { cursorToolRecoil } from "../CursorToolSelectorPanel";
-import { useRecoilValue } from "recoil";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 import { useSetSolution } from "../useSetSolution";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
 import { keyifyPosition, parsePosition } from "../../puzzle/terms/Position";
@@ -16,6 +16,7 @@ import { trustedKeys } from "../../utils/trustedRecord";
 import { keyifyProblem } from "../../puzzle/terms/Problem";
 import { isLeft } from "fp-ts/Either";
 import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
+import { ghostSolutionRecoil } from "./ghostSolutionRecoil";
 
 
 export function InteractiveBoard() {
@@ -38,6 +39,8 @@ export function InteractiveBoard() {
     const applyCursor = (hPos: v2) => {
 
         const hPosKey = keyifyPosition(hPos);
+
+        setGhostSolution(undefined);
 
         switch (cursorTool.kind) {
             case "none": break;
@@ -103,6 +106,76 @@ export function InteractiveBoard() {
         }
     };
 
+    const setGhostSolution = useSetRecoilState(ghostSolutionRecoil);
+
+    const applyGhostCursor = (hPos: v2) => {
+
+        const hPosKey = keyifyPosition(hPos);
+        switch (cursorTool.kind) {
+            case "none": break;
+            case "spawner": {
+                setGhostSolution(update(solution, {
+                    actors: {
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                                direction:
+                                    Math.floor((normalizedDirection) / 2) as
+                                    DirectionId,
+                            },
+                        },
+                    },
+                }));
+                break;
+            }
+            case "consumer": {
+                setGhostSolution(update(solution, {
+                    actors: {
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                            },
+                        },
+                    },
+                }));
+                break;
+            }
+            case "mirror": {
+                setGhostSolution(update(solution, {
+                    actors: {
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                                direction:
+                                    normalizedDirection as HalfDirectionId,
+                            },
+                        },
+                    },
+                }));
+                break;
+            }
+            case "trap": {
+                setGhostSolution(update(solution, {
+                    actors: {
+                        [hPosKey]: {
+                            $set: {
+                                ...cursorTool,
+                            },
+                        },
+                    },
+                }));
+                break;
+            }
+            case "remove": {
+                setGhostSolution(update(solution, {
+                    actors: { $unset: [hPosKey] },
+                }));
+                break;
+            }
+        }
+
+    };
+
     useWindowKeyDown((e) => {
         const step = (cursorTool.kind === "mirror" ? 1 : 2);
         if (e.code === "KeyR") {
@@ -152,7 +225,20 @@ export function InteractiveBoard() {
 
                     applyCursor(hPos);
                 }
-            }} />
+            }}
+            onPointerMove={ev => {
+                const hPos = pipe(
+                    ev.unprojectedPoint
+                        .clone()
+                        .addScaledVector(ev.ray.direction, ev.distance),
+                    ({ x, z }) => [x, z] as v2,
+                    hax.fromFlatCart,
+                    hax.round,
+                    ([x, y]) => [x, y] as v2,
+                );
+                applyGhostCursor(hPos);
+            }}
+        />
         {cursorTool.kind !== "none" &&
             <mesh
                 ref={cursorRef}
