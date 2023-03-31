@@ -12,14 +12,10 @@ export function PredictedParticle({
         const opacity = 1 - ((relStep + 1) / 21);
         return <mesh
             position={[0.1 * j, 0, 0.5]}
-            rotation={[
-                0,
-                Math.PI / 2,
-                Math.PI / 2]}
+            rotation={[Math.PI / 2, 0, 0]}
             key={j}
         >
-            <cylinderBufferGeometry args={[0.01, 0.01, 1]}
-            />
+            <cylinderGeometry args={[0.01, 0.01, 1]} />
             <meshPhongMaterial color={
                 sp === "gamma" ? "white" : sp}
                 transparent
