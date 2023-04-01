@@ -59,7 +59,7 @@ export function App() {
         <Canvas
             css={{ position: "absolute", inset: 0, zIndex: -1 }}
             gl={{
-                physicallyCorrectLights: true,
+                useLegacyLights: false,
                 toneMapping: NoToneMapping,
                 antialias: true,
             }}

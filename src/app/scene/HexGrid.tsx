@@ -1,7 +1,7 @@
 import { v2 } from "../../utils/v";
 import { GroupProps, useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
-import { CanvasTexture, CircleGeometry, DataTexture, Group, Mesh, MeshPhysicalMaterial, Plane, PointLight, Raycaster, RepeatWrapping, ShaderChunk, Texture, Vector3 } from "three";
+import { CanvasTexture, CircleGeometry, DataTexture, Group, Mesh, MeshPhysicalMaterial, Plane, PointLight, Raycaster, RepeatWrapping, ShaderChunk, Texture, Vector2, Vector3 } from "three";
 import * as hax from "../../utils/hax";
 import { _throw } from "../../utils/_throw";
 
@@ -70,7 +70,7 @@ function procSampler_normal_fragment_maps(
 ) {
     const chunk = ShaderChunk["normal_fragment_maps"]
         .replaceAll(
-            "vec3 mapN = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;",
+            "vec3 mapN = texture2D( normalMap, vNormalMapUv ).xyz * 2.0 - 1.0;",
             sampler("mapN"));
     return fragmentShader
         .replaceAll("#include <normal_fragment_maps>", chunk);
@@ -96,8 +96,6 @@ const createMaterial = ({
 
         return txt;
     };
-
-    const fakeTxt = setSampler(new DataTexture());
 
     const m = new MeshPhysicalMaterial({
         color: "#030d20",
@@ -129,7 +127,9 @@ const createMaterial = ({
             ctx.strokeStyle = "#ffffff";
             strokeHexGridTile(ctx);
         }))),
-        normalMap: fakeTxt,
+
+        // fake texture to trgigger procedural normalMap usage
+        normalMap: new DataTexture(),
     });
     m.onBeforeCompile = shader => {
         shader.vertexShader = shader.vertexShader
@@ -151,46 +151,47 @@ void main() {`)
 ${haxShaderChunk}
 varying vec3 vWorldPosition;
 
-void main() {`,
+void main() {
+    // vec2 hexPosFrac = 
+        // flatCartToAxialMatrix * vec2(-vUv.x * sqrt(3.0), vUv.y + 0.25);
+    vec2 hexPosFrac = flatCartToAxialMatrix * vWorldPosition.xz;
+    vec2 hexPos = cubeRound(hexPosFrac);
+    vec2 hexFrac = hexPosFrac - hexPos;
+    vec3 at3 = abs(vec3(hexFrac, -hexFrac.x - hexFrac.y));
+    at3 += vec3(at3.y, at3.z, at3.x);
+    float hexFracDist = max(at3.x, max(at3.y, at3.z));
+    
+    bool canBuild = ${positionsMode === "allow" ? "false" : "true"};
+    if (false${positions
+                    .map(([x, y]) => ` || (hexPos == vec2(${x}.0, ${y}.0))`)
+                    .join("")
+                }) {
+        canBuild = !canBuild;
+    }
+`,
             )
             .replaceAll(
                 "vec4 diffuseColor = vec4( diffuse, opacity );",
                 /*glsl*/`
-vec4 diffuseColor = vec4( diffuse, opacity );
-// vec2 hexPosFrac = 
-//     flatCartToAxialMatrix * vec2(vUv.x * sqrt(3.0), vUv.y + 0.25);
-vec2 hexPosFrac = flatCartToAxialMatrix * vWorldPosition.xz;
-vec2 hexPos = cubeRound(hexPosFrac);
-bool canBuild = ${positionsMode === "allow" ? "false" : "true"};
-vec2 hexFrac = hexPosFrac - hexPos;
-vec3 at3 = abs(vec3(hexFrac, -hexFrac.x - hexFrac.y));
-float hexFracDist = max3(at3 + vec3(at3.y, at3.z, at3.x));
-    
-if (false${positions
-                    .map(([x, y]) => ` || (hexPos == vec2(${x}.0, ${y}.0))`)
-                    .join("")
-                }) {
-    canBuild = !canBuild;
-}
+    vec4 diffuseColor = vec4( diffuse, opacity );
 
-if (!canBuild) {
-    diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.05), 0.08);
-} else {
-    if (hexFracDist > 0.7) {
-        diffuseColor.rgb *= (0.9 + hexFracDist * 0.3);
+    if (!canBuild) {
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.05), 0.08);
+    } else {
+        if (hexFracDist > 0.7) {
+            diffuseColor.rgb *= (0.9 + hexFracDist * 0.3);
+        }
     }
-}
 `,
             );
 
         shader.fragmentShader = procSampler_normal_fragment_maps(
             shader.fragmentShader,
             varName => /*glsl*/`
+    vec2 cartFrac = axialToFlatCartMatrix * hexFrac;
     vec3 ${varName} = (hexFracDist > (canBuild ? 0.7 : 0.97))
         ? vec3(0.0, 0.0, 1.0)
-        : vec3(
-            axialToFlatCartMatrix * hexFrac, 
-            3.5 / hexFracDist);
+        : vec3(cartFrac.x, -cartFrac.y, 2.5 / hexFracDist / hexFracDist);
  `);
 
         // console.log(shader.fragmentShader);
@@ -234,7 +235,7 @@ export function HexGrid({
         if (!g) { return; }
 
         const raycaster = new Raycaster();
-        raycaster.setFromCamera({ x: 0, y: 0 }, camera);
+        raycaster.setFromCamera(new Vector2(0, 0), camera);
         const point = new Vector3();
         raycaster.ray.intersectPlane(y0Plane, point);
         const p1 =
