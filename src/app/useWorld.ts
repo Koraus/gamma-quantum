@@ -4,6 +4,7 @@ import { solutionManagerRecoil } from "../app/solutionManager/solutionManagerRec
 import { useEffect, useState } from "react";
 import { SolutionDraft } from "../puzzle/terms/Solution";
 import { worldAtStep } from "../puzzle/world";
+import { ghostSolutionRecoil } from "./scene/ghostSolutionRecoil";
 
 
 export const getStepAtPlaytime = (playtime: number) =>
@@ -14,7 +15,11 @@ export const getWorldAtPlaytime = (solution: SolutionDraft, playtime: number) =>
 
 export function useWorld() {
     const playAction = useRecoilValue(playActionRecoil);
-    const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
+    const ghostSolution = useRecoilValue(ghostSolutionRecoil);
+    const currentSolution = useRecoilValue(solutionManagerRecoil)
+        .currentSolution;
+    const solution = ghostSolution ? ghostSolution : currentSolution;
+
     const [step, setStep] = useState(0);
     useEffect(() => {
         const handler = setInterval(() => {
