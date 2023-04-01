@@ -15,6 +15,7 @@ import { ReactionSandbox } from "../reactionSandbox/ReactionSandbox";
 import { useGrabFocusFromBody } from "../utils/useGrabFocusFromBody";
 import { useRecoilValue } from "recoil";
 import { cellContentRecoil } from "./scene/cellContentRecoil";
+import { NoToneMapping } from "three";
 
 const focusMeOnce = (el: HTMLElement | null) => el?.focus();
 
@@ -59,8 +60,9 @@ export function App() {
             css={{ position: "absolute", inset: 0, zIndex: -1 }}
             gl={{
                 physicallyCorrectLights: true,
+                toneMapping: NoToneMapping,
+                antialias: true,
             }}
-            
         >
             <MainScene />
         </Canvas>

@@ -17,6 +17,7 @@ import { keyifyProblem } from "../../puzzle/terms/Problem";
 import { isLeft } from "fp-ts/Either";
 import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
 import { ghostSolutionRecoil } from "./ghostSolutionRecoil";
+import { Plane } from "@react-three/drei";
 
 
 export function InteractiveBoard() {
@@ -189,6 +190,11 @@ export function InteractiveBoard() {
             positions={trustedKeys(solution.problem.positions)
                 .map(parsePosition)}
             positionsMode={solution.problem.positionsMode}
+        />
+        <Plane
+            args={[100, 100]}
+            rotation={[-Math.PI / 2, 0, 0]}
+
             onPointerMove={ev => {
                 const cursorEl = cursorRef.current;
                 if (!cursorEl) { return; }
@@ -234,7 +240,14 @@ export function InteractiveBoard() {
                     applyCursor(hPos);
                 }
             }}
+        >
+            <meshBasicMaterial
+                transparent
+                opacity={0}
+                alphaTest={1}
+           
         />
+        </Plane>
         {cursorTool.kind !== "none" &&
             <mesh
                 ref={cursorRef}

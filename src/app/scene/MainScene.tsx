@@ -59,18 +59,21 @@ export function MainScene() {
 
         spotLight.position.copy(camera.position);
         spotLight.target = spotLightTargetRef.current;
+        spotLight.power = Math.pow(camera.position.y, 1.3) * 500;
     });
 
     const setCellContent = useSetRecoilState(cellContentRecoil);
 
     return <>
-        <fog near={1} far={10} />
+        <color attach="background" args={["#000001"]} />
+
+        {/* <ambientLight intensity={1} /> */}
         <spotLight
             ref={spotLightRef}
-            penumbra={0.9}
-            angle={0.45}
+            penumbra={0.99}
+            angle={0.95}
             intensity={1}
-            power={2000}
+            power={1} // is set through useFrame
         />
         <PerspectiveCamera
             makeDefault
@@ -91,8 +94,6 @@ export function MainScene() {
         </GizmoHelper>
 
 
-        <directionalLight intensity={0.1} position={[-10, 30, 45]} />
-        <ambientLight intensity={0.1} />
 
         {Array.from({ length: 20 }, (_, i) => {
             const w1 = worldAtStep(world, i + getStepAtPlaytime(world.step));

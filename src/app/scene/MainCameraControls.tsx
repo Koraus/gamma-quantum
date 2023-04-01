@@ -47,7 +47,7 @@ export function MainCameraControls() {
         verticalDragToForward
         minDistance={15}
         maxDistance={100}
-        maxPolarAngle={0.48 * Math.PI}
+        maxPolarAngle={0.35 * Math.PI}
         mouseButtons={{
             wheel: 8,
             left: 1,
