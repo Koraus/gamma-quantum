@@ -19,11 +19,9 @@ import { useFrame } from "@react-three/fiber";
 import { cellContentRecoil } from "./cellContentRecoil";
 import { ConsumerToken } from "./ConsumerToken";
 import { directionOf } from "../../reactionSandbox/ParticleText";
-import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
-import { ParticleState, worldAtStep } from "../../puzzle/world";
+import { worldAtStep } from "../../puzzle/world";
 import { PredictedParticle } from "./PredictedParticle";
 import { MainCameraControls } from "./MainCameraControls";
-import { ghostSolutionRecoil } from "./ghostSolutionRecoil";
 
 
 const lerp = (a: number, b: number, t: number) =>
@@ -96,21 +94,26 @@ export function MainScene() {
         <directionalLight intensity={0.1} position={[-10, 30, 45]} />
         <ambientLight intensity={0.1} />
 
-        {Array.from({ length: 20 }, (_, i) =>
-            worldAtStep(world, i + getStepAtPlaytime(world.step))
+        {Array.from({ length: 20 }, (_, i) => {
+            const w1 = worldAtStep(world, i + getStepAtPlaytime(world.step));
+            if (w1.action !== "move") { return null; }
+            return w1
                 .particles
                 .filter(p => !p.isRemoved)
-                .map((p, j) => <group
-                    key={j}
-                    position={x0y(toFlatCart(p.position))}
-                    rotation={[
-                        0,
-                        -Math.PI / 3 * directionOf(p.velocity)[0],
-                        0]}
-                >
-                    <PredictedParticle p={p} relStep={i} />
-                </group>))
-        }
+                .map((p, j) => {
+                    return <group
+                        key={j}
+                        position={x0y(toFlatCart(p.position))}
+                        rotation={[
+                            0,
+                            -Math.PI / 3 * directionOf(p.velocity)[0],
+                            0,
+                        ]}
+                    >
+                        <PredictedParticle p={p} relStep={i} />
+                    </group>;
+                });
+        })}
 
         {Object.values(_.groupBy(particles, p => JSON.stringify(p.p.position)))
             .flatMap((ps) => ps.map(({ p, prev, i }, j) => {

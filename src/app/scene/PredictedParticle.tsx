@@ -9,9 +9,9 @@ export function PredictedParticle({
     p: ParticleState, relStep: number
 } & ThreeElements["mesh"]) {
     return <>{[...enumerateSubparticles(p)].map((sp, j) => {
-        const opacity = 1 - ((relStep + 1) / 21);
+        const opacity = 1 - (relStep / 21);
         return <mesh
-            position={[0.1 * j, 0, 0.5]}
+            position={[0.1 * j, 0, -0.5]}
             rotation={[
                 0,
                 Math.PI / 2,
