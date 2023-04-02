@@ -1,9 +1,10 @@
 import { v2 } from "../../utils/v";
-import { GroupProps, useFrame } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
-import { CanvasTexture, CircleGeometry, DataTexture, Group, Mesh, MeshPhysicalMaterial, Plane, PointLight, Raycaster, RepeatWrapping, ShaderChunk, Texture, Vector2, Vector3 } from "three";
+import { GroupProps } from "@react-three/fiber";
+import { useEffect, useMemo } from "react";
+import { CanvasTexture, DataTexture, MeshPhysicalMaterial, Plane, RepeatWrapping, ShaderChunk, Texture, Vector2, Vector3 } from "three";
 import * as hax from "../../utils/hax";
 import { _throw } from "../../utils/_throw";
+import { GroupSync } from "../../utils/GroupSync";
 
 
 const y0Plane = new Plane(new Vector3(0, 1, 0), 0);
@@ -200,6 +201,11 @@ void main() {
     return m;
 };
 
+const roundCartXzAsHexInPlace = (p: Vector3) => {
+    const p1 = hax.toFlatCart(hax.round(hax.fromFlatCart([p.x, p.z])));
+    p.set(p1[0], 0, p1[1]);
+};
+
 export function HexGrid({
     positions,
     positionsMode,
@@ -207,69 +213,45 @@ export function HexGrid({
 }: {
     positions: v2[],
     positionsMode: "ban" | "allow",
-} & Omit<GroupProps, "ref">) {
-    const ref = useRef<Group>(null);
-    const cursorLightRef = useRef<PointLight>(null);
+} & GroupProps) {
+    const size = 3000;
+    const gridMatrial = useMemo(
+        () => createMaterial({ size, positions, positionsMode }),
+        [size, positions, positionsMode]);
+    useEffect(() => () => gridMatrial.dispose(), [gridMatrial]);
 
-    const { obj: grid, dispose } = useMemo(() => {
-        const size = 3000;
-        const g = new CircleGeometry(size / 2, 16);
-        g.rotateX(-Math.PI / 2);
-        const m = createMaterial({ size, positions, positionsMode });
-        const obj = new Mesh(g, m);
+    return <group {...props} >
+        <GroupSync onFrame={(g, { camera, raycaster }) => {
+            if (!g.parent) { return; }
 
-        return {
-            obj,
-            dispose: () => {
-                g.dispose();
-                m.dispose();
-            },
-        };
-    }, [positions, positionsMode]);
-    useEffect(() => dispose, [dispose]);
+            raycaster.setFromCamera(new Vector2(0, 0), camera);
+            raycaster.ray.intersectPlane(y0Plane, g.position);
+            roundCartXzAsHexInPlace(g.position);
+            g.parent.worldToLocal(g.position);
+        }}>
+            <mesh rotation={[-Math.PI / 2, 0, 0]}>
+                <circleGeometry args={[size / 2, 16]} />
+                <primitive
+                    attach="material"
+                    object={gridMatrial}
+                />
+            </mesh>
+        </GroupSync>
+        <GroupSync onFrame={(g, { raycaster, pointer, camera }) => {
+            if (!g.parent) { return; }
 
-    useFrame(({ camera }) => {
-        // Hex grid plane to follow the camera
-
-        const g = ref.current;
-        if (!g) { return; }
-
-        const raycaster = new Raycaster();
-        raycaster.setFromCamera(new Vector2(0, 0), camera);
-        const point = new Vector3();
-        raycaster.ray.intersectPlane(y0Plane, point);
-        const p1 =
-            hax.toFlatCart(hax.round(hax.fromFlatCart([point.x, point.z])));
-        grid.position.set(p1[0], 0, p1[1]);
-        g.worldToLocal(grid.position);
-    });
-
-    useFrame(({ camera, pointer }) => {
-        // Light to follow the pointer
-
-        const g = ref.current;
-        if (!g) { return; }
-        const light = cursorLightRef.current;
-        if (!light) { return; }
-
-        const raycaster = new Raycaster();
-        raycaster.setFromCamera(pointer, camera);
-        const point = new Vector3();
-        raycaster.ray.intersectPlane(y0Plane, point);
-        light.position.copy(point);
-        light.position.y += 2;
-        g.worldToLocal(light.position);
-    });
-
-    return <group ref={ref} {...props} >
-        <primitive object={grid} />
-        <pointLight
-            ref={cursorLightRef}
-            intensity={1}
-            power={1000}
-            color={"#ffffff"}
-        >
-            {/* <Box /> */}
-        </pointLight>
+            raycaster.setFromCamera(pointer, camera);
+            raycaster.ray.intersectPlane(y0Plane, g.position);
+            g.parent.worldToLocal(g.position);
+        }}>
+            <pointLight
+                position={[0, 2, 0]}
+                intensity={1}
+                power={1000}
+                color={"#ffffff"}
+            >
+                {/* <Box /> */}
+            </pointLight>
+        </GroupSync>
     </group>;
 }

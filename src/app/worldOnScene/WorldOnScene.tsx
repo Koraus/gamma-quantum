@@ -23,7 +23,7 @@ export const lerp = (a: number, b: number, t: number) =>
     a + t * (b - a);
 export const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
 
-export const axialToFlatCartXz =
+export const toFlatCartXz =
     (...args: Parameters<typeof toFlatCart>) => {
         const v = toFlatCart(...args);
         return [v[0], 0, v[1]] as v3;
@@ -136,19 +136,19 @@ export function WorldOnScene() {
                 return <SpawnerToken
                     actor={a}
                     key={i}
-                    position={axialToFlatCartXz(position)} />;
+                    position={toFlatCartXz(position)} />;
             }
             if (a.kind === "consumer") {
                 return <ConsumerToken
                     actor={a}
                     key={i}
-                    position={axialToFlatCartXz(position)} />;
+                    position={toFlatCartXz(position)} />;
             }
             if (a.kind === "mirror") {
                 return <group
                     key={i}
                     rotation={[0, -Math.PI / 6 * a.direction, 0]}
-                    position={axialToFlatCartXz(position)}
+                    position={toFlatCartXz(position)}
                 >
                     <mesh rotation={[0, 0, 0]}>
                         <boxGeometry args={[1, 0.5, 0.03]} />
@@ -159,7 +159,7 @@ export function WorldOnScene() {
             if (a.kind === "trap") {
                 return <group
                     key={i}
-                    position={axialToFlatCartXz(position)}
+                    position={toFlatCartXz(position)}
                 >
                     <mesh rotation={[0, Math.PI / 4, 0]}>
                         <boxGeometry args={[0.5, 0.01, 0.1]} />
