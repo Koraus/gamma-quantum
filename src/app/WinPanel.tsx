@@ -77,7 +77,7 @@ export function WinPanel({
         <div {...props}>
 
             <CardChecklist css={{ width: "3vmin" }} /><br />
-            {trustedEntries(world.problem.demand)
+            {trustedEntries(world.init.problem.demand)
                 .map(([key, val], i) => <ObjectiveLine
                     key={i}
                     particleKindKey={key}

@@ -84,11 +84,6 @@ export const particlesDirectedMass = (ps: Iterable<ReadonlyDeep<Particle>>) =>
         .reduce(...v2.sumReducer());
 
 export const keyifyParticle = (p: Particle) => (
-    "{\"content\":"
-    + keyifyParticleContent(p.content)
-    + ",\"velocity\":["
-    + p.velocity[0]
-    + ","
-    + p.velocity[1]
-    + "]}"
-) as Stringify<Particle>;
+    "{\"content\":" + keyifyParticleContent(p.content)
+    + ",\"velocity\":[" + p.velocity[0] + "," + p.velocity[1] + "]"
+    + "}") as Stringify<Particle>;

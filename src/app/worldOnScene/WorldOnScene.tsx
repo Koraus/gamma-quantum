@@ -41,15 +41,17 @@ export function WorldOnScene() {
     }).filter(<T,>(x: T): x is NonNullable<T> => !!x);
 
     const actors = [
-        ...trustedEntries(world.actors),
-        ...trustedEntries(world.problem.actors),
+        ...trustedEntries(world.init.actors),
+        ...trustedEntries(world.init.problem.actors),
     ];
 
     const setCellContent = useSetRecoilState(cellContentRecoil);
 
     return <>
         {Array.from({ length: 20 }, (_, i) => {
-            const w1 = worldAtStep(world, i + getStepAtPlaytime(world.step));
+            const w1 = worldAtStep(
+                world.init, 
+                i + getStepAtPlaytime(world.step));
             if (w1.action !== "move") { return null; }
             return w1
                 .particles

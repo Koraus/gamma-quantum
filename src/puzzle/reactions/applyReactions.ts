@@ -1,15 +1,15 @@
 import { enumerateProductVelocities } from "./enumerateProductVelocities";
 import { selectReactionVariant } from "./selectReactionVariant";
 import { ParticleState } from "../world";
-import { particlesEnergy, particlesMomentum } from "../world/Particle";
+import { Particle, keyifyParticle, particlesEnergy, particlesMomentum } from "../world/Particle";
 import _ from "lodash";
 import { enumerateProductCombinations } from "./enumerateProductCombinations";
 import { eqParticleKind } from "../terms/ParticleKind";
 import { v2 } from "../../utils/v";
 import update from "immutability-helper";
+import memoize from "memoizee";
 
-const resolveReactionInCell = (reagents: ParticleState[]) => {
-    reagents = [...reagents];
+const resolveReactionInCell = memoize((reagents: Particle[]) => {
     const reagentsEnergy = particlesEnergy(reagents);
     const reagentsMomentum = particlesMomentum(reagents);
     const {
@@ -20,12 +20,21 @@ const resolveReactionInCell = (reagents: ParticleState[]) => {
             reagentsEnergy,
             products))
         .map(products => ({ reagents, products }))]);
-    if (!selectedVariant) { return reagents; }
 
-    return selectedVariant.products.map(p => {
-        const i = reagents.findIndex(r =>
-            eqParticleKind(r, p)
-            && v2.eq(r.velocity, p.velocity));
+    return selectedVariant?.products ?? reagents;
+}, {
+    normalizer: ([reagents]) =>
+        JSON.stringify(reagents.map(keyifyParticle).sort()),
+    max: 1000,
+});
+
+const eqParticle = (p1: Particle, p2: Particle) =>
+    eqParticleKind(p1, p2) && v2.eq(p1.velocity, p2.velocity);
+
+const asUpdated = (reagents: ParticleState[], products: Particle[]) => {
+    reagents = [...reagents];
+    return products.map(p => {
+        const i = reagents.findIndex(r => eqParticle(r, p));
         if (i >= 0) {
             const r = reagents[i];
             reagents.splice(i, 1);
@@ -43,7 +52,8 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
     const newParticles = Object.values(_.groupBy(
         particles.filter(p => !p.isRemoved),
         p => JSON.stringify(p.position)),
-    ).flatMap(resolveReactionInCell);
+    ).flatMap(reagents =>
+        asUpdated(reagents, resolveReactionInCell(reagents)));
 
     for (const p of newParticles) {
         if (particles.includes(p)) { continue; }

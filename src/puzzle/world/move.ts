@@ -10,8 +10,8 @@ export function move(world: World) {
     const isParticleTrapped = (p: ParticleState) => {
         if (p.isRemoved) { return false; }
         const pk = keyifyPosition(p.position);
-        if (world.actors[pk]?.kind === "trap") { return true; }
-        if (world.problem.actors[pk]?.kind === "trap") { return true; }
+        if (world.init.actors[pk]?.kind === "trap") { return true; }
+        if (world.init.problem.actors[pk]?.kind === "trap") { return true; }
         return false;
     };
 

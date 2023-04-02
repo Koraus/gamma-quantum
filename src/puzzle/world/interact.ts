@@ -22,8 +22,8 @@ export function interact(world: World) {
     applyReactionsInPlace(reactedWorld.particles);
 
     const actors = [
-        ...trustedEntries(world.actors),
-        ...trustedEntries(world.problem.actors),
+        ...trustedEntries(world.init.actors),
+        ...trustedEntries(world.init.problem.actors),
     ];
     for (const [positionKey, a] of actors) {
         const position = parsePosition(positionKey);

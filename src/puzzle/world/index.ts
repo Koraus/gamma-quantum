@@ -37,7 +37,7 @@ export const worldAtStep = memoize(
     { max: 5000 });
 
 export const isSolved = (world: World) =>
-    trustedEntries(world.problem.demand)
+    trustedEntries(world.init.problem.demand)
         .every(([key, count]) => (world.consumed[key] ?? 0) >= count);
 
 export function assertSolved(solution: Solution) {

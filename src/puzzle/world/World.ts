@@ -9,8 +9,7 @@ export type ParticleState = Particle & {
     isRemoved: boolean;
 };
 
-export type World = SolutionDraft & ({
-    init: SolutionDraft;
+export type World = ({
     prev?: never;
     action: "init";
     step: 0;
@@ -19,6 +18,7 @@ export type World = SolutionDraft & ({
     action: "move" | "interact";
     step: number;
 }) & {
+    init: SolutionDraft;
     energy: number;
     momentum: v2;
     consumed: Partial<Record<ParticleKindKey, number>>;

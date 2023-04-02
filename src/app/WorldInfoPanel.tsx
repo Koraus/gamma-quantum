@@ -48,9 +48,9 @@ export function WorldInfoPanel({
             {directionSymbolFor(particleTotalMomentum)}
             {JSON.stringify(particleTotalMomentum)}</div>
         <div> resetStats: {JSON.stringify(stats)}</div>
-        {isSolutionComplete(world)
+        {isSolutionComplete(world.init)
             && <div>
-                solution stats: {JSON.stringify(solutionStats(world))}
+                solution stats: {JSON.stringify(solutionStats(world.init))}
             </div>}
     </div >;
 }
