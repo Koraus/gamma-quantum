@@ -5,11 +5,13 @@ import { winRecoil } from "./WinPanel";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { solutionManagerRecoil, useSetCurrentSolution } from "./solutionManager/solutionManagerRecoil";
 import { useTrackSolution } from "./stats/statsRecoil";
+import { ghostSolutionRecoil } from "./scene/ghostSolutionRecoil";
 
 export function useSetSolution() {
     // todo use transaction here? why? why not?
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const setSolution = useSetCurrentSolution();
+    const resetGhostSolution = useResetRecoilState(ghostSolutionRecoil);
     const resetPlayAction = useResetRecoilState(playActionRecoil);
     const resetCursorTool = useResetRecoilState(cursorToolRecoil);
     const resetWin = useResetRecoilState(winRecoil);
@@ -25,6 +27,7 @@ export function useSetSolution() {
             : _nextSolution;
 
         setSolution(nextSolution);
+        resetGhostSolution();
 
         if (isSolutionComplete(nextSolution)) { trackSolution(nextSolution); }
 
