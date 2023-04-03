@@ -46,7 +46,9 @@ export function interact(world: World) {
                 }
 
                 if (eqParticleKind(p, a.input)) {
-                    reactedWorld.particles[i].isRemoved = true;
+                    reactedWorld.particles[i] = update(p, {
+                        isRemoved: { $set: true },
+                    });
                     reactedWorld.consumed[keyifyParticleKind(p)] =
                         (reactedWorld.consumed[keyifyParticleKind(p)] ?? 0) + 1;
                 }
@@ -67,11 +69,15 @@ export function interact(world: World) {
                 const vc = hax.toFlatCart(p.velocity);
                 const nc = hax.toFlatCart(mirrorNormal);
                 const vc1 = v2.add(vc, v2.scale(nc, -0.5 * v2.dot(vc, nc)));
-                p.velocity = pipe(
-                    vc1,
-                    hax.fromFlatCart,
-                    hax.round,
-                );
+                reactedWorld.particles[i] = update(p, {
+                    velocity: {
+                        $set: pipe(
+                            vc1,
+                            hax.fromFlatCart,
+                            hax.round,
+                        ),
+                    },
+                });
 
                 const dm = v2.sub(m1, particleMomentum(p));
                 reactedWorld.momentum = v2.add(
