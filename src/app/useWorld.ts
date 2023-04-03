@@ -18,7 +18,7 @@ export function useWorld() {
     const ghostSolution = useRecoilValue(ghostSolutionRecoil);
     const currentSolution = useRecoilValue(solutionManagerRecoil)
         .currentSolution;
-    const solution = ghostSolution ? ghostSolution : currentSolution;
+    const solution = ghostSolution ?? currentSolution;
 
     const [step, setStep] = useState(0);
     useEffect(() => {
