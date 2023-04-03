@@ -244,21 +244,5 @@ export function HexGrid({
                 />
             </mesh>
         </GroupSync>
-        <GroupSync onFrame={(g, { raycaster, pointer, camera }) => {
-            if (!g.parent) { return; }
-
-            raycaster.setFromCamera(pointer, camera);
-            raycaster.ray.intersectPlane(y0Plane, g.position);
-            g.parent.worldToLocal(g.position);
-        }}>
-            <pointLight
-                position={[0, 2, 0]}
-                intensity={1}
-                power={1000}
-                color={"#ffffff"}
-            >
-                {/* <Box /> */}
-            </pointLight>
-        </GroupSync>
     </group>;
 }

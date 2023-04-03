@@ -1,14 +1,16 @@
 import { v3 } from "../../utils/v";
 import { GizmoHelper, GizmoViewport, PerspectiveCamera } from "@react-three/drei";
-import { Object3D, SpotLight } from "three";
+import { Object3D, Plane, SpotLight, Vector3 } from "three";
 import { InteractiveBoard } from "./InteractiveBoard";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { MainCameraControls } from "./MainCameraControls";
 import { WorldOnScene } from "../worldOnScene/WorldOnScene";
 import { HexGrid } from "./HexGrid";
+import { GroupSync } from "../../utils/GroupSync";
 
 
+const y0Plane = new Plane(new Vector3(0, 1, 0), 0);
 
 export function MainScene() {
 
@@ -52,6 +54,23 @@ export function MainScene() {
         >
             <GizmoViewport />
         </GizmoHelper>
+
+        <GroupSync onFrame={(g, { raycaster, pointer, camera }) => {
+            if (!g.parent) { return; }
+
+            raycaster.setFromCamera(pointer, camera);
+            raycaster.ray.intersectPlane(y0Plane, g.position);
+            g.parent.worldToLocal(g.position);
+        }}>
+            <pointLight
+                position={[0, 2, 0]}
+                intensity={1}
+                power={1000}
+                color={"#ffffff"}
+            >
+                {/* <Box /> */}
+            </pointLight>
+        </GroupSync>
 
         <HexGrid />
         <WorldOnScene />

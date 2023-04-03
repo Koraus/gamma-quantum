@@ -19,8 +19,7 @@ import { PredictedParticle } from "./PredictedParticle";
 import { tuple } from "../../utils/tuple";
 
 
-export const lerp = (a: number, b: number, t: number) =>
-    a + t * (b - a);
+export const lerp = (a: number, b: number, t: number) => a + t * (b - a);
 export const x0y = ([x, y]: v2 | v3) => tuple(x, 0, y);
 
 export const toFlatCartXz =
