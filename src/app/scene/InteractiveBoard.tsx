@@ -2,7 +2,6 @@ import { v2 } from "../../utils/v";
 import * as hax from "../../utils/hax";
 import { DirectionId, HalfDirectionId } from "../../puzzle/world/direction";
 import { Solution, SolutionDraft, SolutionDraftDecoder } from "../../puzzle/terms/Solution";
-import { HexGrid } from "./HexGrid";
 import { Mesh, Vector3 } from "three";
 import { useRef, useState } from "react";
 import { pipe } from "fp-ts/lib/function";
@@ -11,9 +10,7 @@ import { cursorToolRecoil } from "../CursorToolSelectorPanel";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { useSetSolution } from "../useSetSolution";
 import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
-import { keyifyPosition, parsePosition } from "../../puzzle/terms/Position";
-import { trustedKeys } from "../../utils/trustedRecord";
-import { keyifyProblem } from "../../puzzle/terms/Problem";
+import { keyifyPosition } from "../../puzzle/terms/Position";
 import { isLeft } from "fp-ts/Either";
 import { useWindowKeyDown } from "../../utils/useWindowKeyDown";
 import { ghostSolutionRecoil } from "./ghostSolutionRecoil";
@@ -185,12 +182,6 @@ export function InteractiveBoard() {
     });
 
     return <group>
-        <HexGrid
-            key={keyifyProblem(solution.problem)}
-            positions={trustedKeys(solution.problem.positions)
-                .map(parsePosition)}
-            positionsMode={solution.problem.positionsMode}
-        />
         <Plane
             args={[100, 100]}
             rotation={[-Math.PI / 2, 0, 0]}

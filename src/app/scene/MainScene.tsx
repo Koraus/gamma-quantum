@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { MainCameraControls } from "./MainCameraControls";
 import { WorldOnScene } from "../worldOnScene/WorldOnScene";
+import { HexGrid } from "./HexGrid";
 
 
 
@@ -52,6 +53,7 @@ export function MainScene() {
             <GizmoViewport />
         </GizmoHelper>
 
+        <HexGrid />
         <WorldOnScene />
     </>;
 }

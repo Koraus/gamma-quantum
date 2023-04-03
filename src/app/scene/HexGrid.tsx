@@ -5,6 +5,10 @@ import { CanvasTexture, DataTexture, MeshPhysicalMaterial, Plane, RepeatWrapping
 import * as hax from "../../utils/hax";
 import { _throw } from "../../utils/_throw";
 import { GroupSync } from "../../utils/GroupSync";
+import { useRecoilValue } from "recoil";
+import { solutionManagerRecoil } from "../solutionManager/solutionManagerRecoil";
+import { trustedKeys } from "../../utils/trustedRecord";
+import { parsePosition } from "../../puzzle/terms/Position";
 
 
 const y0Plane = new Plane(new Vector3(0, 1, 0), 0);
@@ -207,17 +211,17 @@ const roundCartXzAsHexInPlace = (p: Vector3) => {
 };
 
 export function HexGrid({
-    positions,
-    positionsMode,
     ...props
-}: {
-    positions: v2[],
-    positionsMode: "ban" | "allow",
-} & GroupProps) {
+}: GroupProps) {
+    const { problem } = useRecoilValue(solutionManagerRecoil).currentSolution;
     const size = 3000;
     const gridMatrial = useMemo(
-        () => createMaterial({ size, positions, positionsMode }),
-        [size, positions, positionsMode]);
+        () => createMaterial({
+            size,
+            positions: trustedKeys(problem.positions).map(parsePosition),
+            positionsMode: problem.positionsMode,
+        }),
+        [size, problem]);
     useEffect(() => () => gridMatrial.dispose(), [gridMatrial]);
 
     return <group {...props} >
