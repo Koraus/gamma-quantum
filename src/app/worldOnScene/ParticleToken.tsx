@@ -1,26 +1,19 @@
 import { ParticleState } from "../../puzzle/world";
-import { ParticleKind } from "../../puzzle/terms/ParticleKind";
 import { directionOf } from "../../reactionSandbox/ParticleText";
 import * as hax from "../../utils/hax";
 import { SubparticleMesh } from "./SubparticleMesh";
+import { subparticleColor } from "./subparticleColor";
+import { enumerateSubparticles } from "../../puzzle/reactions/enumerateProductCombinations";
 
-
-
-export const getParticleColors = (p: ParticleKind) =>
-    p.content === "gamma"
-        ? ["white"]
-        : [
-            ...new Array(p.content.red).fill("#ff4000"),
-            ...new Array(p.content.green).fill("#50ff00"),
-            ...new Array(p.content.blue).fill("#9000ff"),
-        ];
 
 export function ParticleToken({
     particle: p,
 }: {
     particle: ParticleState;
 }) {
-    const cs = getParticleColors(p);
+    const cs = enumerateSubparticles(p)
+        .map(sp => subparticleColor[sp])
+        .toArray();
     const subparticles = (() => {
         switch (cs.length) {
             case 1: return <>

@@ -229,7 +229,10 @@ export function HexGrid({
             roundCartXzAsHexInPlace(g.position);
             g.parent.worldToLocal(g.position);
         }}>
-            <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh
+                rotation={[-Math.PI / 2, 0, 0]}
+                position={[0, -0.01, 0]}
+            >
                 <circleGeometry args={[size / 2, 16]} />
                 <primitive
                     attach="material"

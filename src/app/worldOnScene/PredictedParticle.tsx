@@ -2,11 +2,12 @@ import { ThreeElements } from "@react-three/fiber";
 import { enumerateSubparticles } from "../../puzzle/reactions/enumerateProductCombinations";
 import { ParticleState } from "../../puzzle/world";
 import memoize from "memoizee";
-import { CylinderGeometry, MeshPhongMaterial } from "three";
+import { CylinderGeometry, MeshBasicMaterial } from "three";
+import { subparticleColor } from "./subparticleColor";
 
 const predictedSubparticleGeometry = new CylinderGeometry(0.01, 0.01, 1);
 const predictedSubparticleMaterial = memoize((color, opacity) =>
-    new MeshPhongMaterial({
+    new MeshBasicMaterial({
         color,
         transparent: true,
         opacity,
@@ -17,9 +18,9 @@ export function PredictedParticle({
 }: {
     p: ParticleState, relStep: number
 } & ThreeElements["mesh"]) {
-    return <>{[...enumerateSubparticles(p)].map((sp, j) => {
+    return <>{enumerateSubparticles(p).map((sp, j) => {
         const opacity = 1 - (relStep / 21);
-        const color = sp === "gamma" ? "white" : sp;
+        const color = subparticleColor[sp];
         return <mesh
             position={[0.1 * j, 0, -0.5]}
             rotation={[Math.PI / 2, 0, 0]}
@@ -32,8 +33,9 @@ export function PredictedParticle({
             <primitive
                 attach="material"
                 object={predictedSubparticleMaterial(color, opacity)}
+                key={`${color}/${opacity}`}
             />
         </mesh>;
-    })}
+    }).toArray()}
     </>;
 }
