@@ -212,6 +212,7 @@ export function InteractiveBoard() {
                 applyGhostCursor(hPos);
             }}
             onWheel={(e) => {
+                if (!e.shiftKey) { return; }
                 const step = (cursorTool.kind === "mirror" ? 1 : 2);
                 setCursorDirection(
                     cursorDirection + Math.sign(-e.deltaY) * step);

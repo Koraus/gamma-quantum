@@ -12,6 +12,8 @@ export function MainCameraControls() {
 
         const isShift = heldKeys["ShiftLeft"] || heldKeys["ShiftRight"];
 
+        cc.mouseButtons.wheel = isShift ? 0 : 8;
+
         const moveStep = 0.5 * cc.distance * (isShift ? 3 : 1) * delta;
         if (heldKeys["KeyW"]) { cc.forward(moveStep, false); }
         if (heldKeys["KeyS"]) { cc.forward(-moveStep, false); }
