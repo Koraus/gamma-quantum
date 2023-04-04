@@ -105,7 +105,7 @@ const createMaterial = ({
     };
 
     const m = new MeshPhysicalMaterial({
-        color: "#062440",
+        color: "#18446d",
         roughness: 1,
         metalness: 1,
         metalnessMap: setSampler(new CanvasTexture(createCanvas((ctx) => {
@@ -183,10 +183,12 @@ void main() {
     vec4 diffuseColor = vec4( diffuse, opacity );
 
     if (!canBuild) {
-        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.05), 0.08);
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.1), 0.4);
     } else {
-        if (hexFracDist > 0.7) {
-            diffuseColor.rgb *= (0.9 + hexFracDist * 0.3);
+        if (hexFracDist < 0.8) {
+            diffuseColor.rgb *= 0.7;
+        } else {
+            diffuseColor.rgb *= 0.1 + hexFracDist;
         }
     }
 `,
