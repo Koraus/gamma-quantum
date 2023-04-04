@@ -21,7 +21,7 @@ import { useWindowEvent } from "../../utils/useWindowEvent";
 const y0Plane = new Plane(new Vector3(0, 1, 0), 0);
 
 export function InteractiveBoard() {
-    const cursorTool = useRecoilValue(cursorToolRecoil);
+    const [cursorTool, setCursorTool] = useRecoilState(cursorToolRecoil);
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const setSolution = useSetSolution();
 
@@ -102,8 +102,34 @@ export function InteractiveBoard() {
                 hPointer.current.position,
                 hPointer.current.direction);
         }
-    });
+        if (e.code === "KeyQ") {
+            const h = hPointer.current.position;
+            const key = keyifyPosition(h);
+            const tool = solution.actors[key];
 
+            if (tool?.kind === "mirror") {
+                setCursorTool({ kind: "mirror" });
+            }
+            if (tool?.kind === "spawner") {
+                setCursorTool({
+                    kind: "spawner",
+                    output: tool.output,
+                });
+            }
+            if (tool?.kind === "consumer") {
+                setCursorTool({
+                    kind: "consumer",
+                    input: tool.input,
+                });
+            }
+            if (tool?.kind === "trap") {
+                setCursorTool({ kind: "trap" });
+            }
+            console.log("tool kind : " + tool?.kind);
+         
+        }
+    });
+    
     return <group>
         <DreiPlane
             args={[100, 100]}
