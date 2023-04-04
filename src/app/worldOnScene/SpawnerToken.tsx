@@ -10,6 +10,7 @@ export function SpawnerToken({
 }: {
     actor: SpawnerActor;
 } & ThreeElements["group"]) {
+    const color = "#6fc0f7";
     const r = 1 / Math.sqrt(3);
 
     return <group {...props}>
@@ -25,7 +26,7 @@ export function SpawnerToken({
                 <cylinderGeometry args={[r * 1.3, r, 6, 6, 1, true]} />
                 <meshBasicMaterial
                     side={DoubleSide}
-                    color={"#186090"}
+                    color={color}
                     transparent
                     opacity={0.3}
                     depthWrite={false}
@@ -45,7 +46,7 @@ export function SpawnerToken({
                 <cylinderGeometry args={[0, r * 0.8, 0.1, 6, 1, true]} />
                 <meshBasicMaterial
                     side={DoubleSide}
-                    color={"#186090"}
+                    color={color}
                     transparent
                     opacity={1}
                     depthWrite={false}
@@ -62,7 +63,7 @@ export function SpawnerToken({
             >
                 <ringGeometry args={[0.9 * r, r, 6]} />
                 <meshBasicMaterial
-                    color={"#186090"}
+                    color={color}
                 />
             </mesh>
             <mesh
@@ -70,7 +71,7 @@ export function SpawnerToken({
             >
                 <ringGeometry args={[0.9 * r, r, 6]} />
                 <meshBasicMaterial
-                    color={"#186090"}
+                    color={color}
                 />
             </mesh>
             <mesh
@@ -78,7 +79,7 @@ export function SpawnerToken({
             >
                 <ringGeometry args={[0.8 * r, 0.85 * r, 6]} />
                 <meshBasicMaterial
-                    color={"#186090"}
+                    color={color}
                 />
             </mesh>
             <mesh
@@ -88,7 +89,7 @@ export function SpawnerToken({
             >
                 <circleGeometry args={[r * 0.3, 3]} />
                 <meshBasicMaterial
-                    color={"#186090"}
+                    color={color}
                 />
             </mesh>
             {enumerateSubparticles(actor.output).map((sp, i) => {

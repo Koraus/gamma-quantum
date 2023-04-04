@@ -13,8 +13,10 @@ import { parsePosition } from "../../puzzle/terms/Position";
 
 const y0Plane = new Plane(new Vector3(0, 1, 0), 0);
 
-const createCanvas = (draw: (ctx: CanvasRenderingContext2D) => void) => {
-    const resolution = 64;
+const createCanvas = (
+    draw: (ctx: CanvasRenderingContext2D) => void,
+    resolution = 64,
+) => {
     const c = document.createElement("canvas");
     c.height = resolution;
     c.width = c.height * Math.sqrt(3);
@@ -103,7 +105,7 @@ const createMaterial = ({
     };
 
     const m = new MeshPhysicalMaterial({
-        color: "#030d20",
+        color: "#062440",
         roughness: 1,
         metalness: 1,
         metalnessMap: setSampler(new CanvasTexture(createCanvas((ctx) => {
@@ -122,7 +124,7 @@ const createMaterial = ({
             ctx.strokeStyle = "#fafafa";
             strokeHexGridTile(ctx);
         }))),
-        emissiveIntensity: 0.005,
+        emissiveIntensity: 0.1,
         emissive: "white",
         emissiveMap: setSampler(new CanvasTexture(createCanvas((ctx) => {
             ctx.fillStyle = "#000000";
@@ -131,7 +133,7 @@ const createMaterial = ({
             ctx.lineWidth = 1;
             ctx.strokeStyle = "#ffffff";
             strokeHexGridTile(ctx);
-        }))),
+        }, 128))),
 
         // fake texture to trgigger procedural normalMap usage
         normalMap: new DataTexture(),

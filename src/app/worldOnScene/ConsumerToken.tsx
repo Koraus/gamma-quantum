@@ -10,7 +10,7 @@ export function ConsumerToken({
 }: {
     actor: Extract<Actor, { kind: "consumer" }>;
 } & ThreeElements["group"]) {
-    const color = "#581080";
+    const color = "#c66af7";
     const r = 1 / Math.sqrt(3);
 
     return <group {...props}>
