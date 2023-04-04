@@ -124,7 +124,7 @@ export function WorldOnScene() {
                         [0, 0.1 + j * 0.2, 0])}
                     onClick={(ev) => {
                         ev.stopPropagation();
-                        setCellContent(ps.map(p => p.p));
+                        setCellContent(ps.filter(p => p.prev).map(p => p.p));
                     }}
                 >
                     <ParticleToken
