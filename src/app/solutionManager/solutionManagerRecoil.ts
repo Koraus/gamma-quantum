@@ -7,12 +7,16 @@ import { onChangeAtomEffect } from "../../utils/onChangeAtomEffect";
 import * as solutions from "./hardcodedSoultions";
 import { SetStateAction } from "react";
 import { puzzleId } from "../../puzzle/terms/puzzleId";
+import { _tutorial1 } from "../../puzzle/problems";
 
 
 const solutionManagerRecoilDefault = {
     // single current solution, loaded from saved or created empty
     // being edited by player at the moment
-    currentSolution: solutions.fourSpawnersParallel,
+    currentSolution: {
+        problem: _tutorial1,
+        actors: {},
+    } as SolutionDraft,
 
     // all solutions (draft and complete)
     // the player explicitely decided to save
