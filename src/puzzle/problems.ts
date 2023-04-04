@@ -20,20 +20,20 @@ export const _tutorial1: Problem = {
     },
     positionsMode: "allow",
     actors: {
-        [keyifyPosition([4, -4])]: {
+        [keyifyPosition([4, -2])]: {
             kind: "spawner",
             output: { content: { red: 1, green: 0, blue: 0 } },
             direction: 2,
         },
-        [keyifyPosition([0, -4])]: {
+        [keyifyPosition([-2, -2])]: {
             kind: "mirror",
             direction: 5,
         },
-        [keyifyPosition([4, 0])]: {
+        [keyifyPosition([-4, 2])]: {
             kind: "mirror",
-            direction: 9,
+            direction: 3,
         },
-        [keyifyPosition([-1, 5])]: {
+        [keyifyPosition([2, 2])]: {
             kind: "consumer",
             input: { content: { red: 1, green: 0, blue: 0 } },
         },
