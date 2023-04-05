@@ -165,24 +165,24 @@ export function WorldOnScene() {
                 >
                     <mesh rotation={[0, Math.PI / 4, 0]}>
                         <boxGeometry args={[0.5, 0.01, 0.1]} />
-                        <meshPhongMaterial color={"grey"} />
+                        <meshPhongMaterial color={"#FF6F1E"} />
                     </mesh>
                     <mesh rotation={[0, -Math.PI / 4, 0]}>
                         <boxGeometry args={[0.5, 0.01, 0.1]} />
-                        <meshPhongMaterial color={"grey"} />
+                        <meshPhongMaterial color={"#FF6F1E"} />
                     </mesh>
                     <mesh
                         rotation={[0, -Math.PI / 6, 0]}
                         position={[0, 0.05, 0]}
                         renderOrder={-1}
-                    >
-                        <cylinderGeometry
-                            args={[0, r * 0.8, 0.1, 6, 1, true]} />
+                    ></mesh>
+                    <mesh rotation={[0, Math.PI / 4, 0]}>
+                        <boxGeometry args={[0.5, 10, 0.1]} />
                         <meshBasicMaterial
                             side={DoubleSide}
                             color={"#FF6F1E"}
                             transparent
-                            opacity={1}
+                            opacity={0.3}
                             depthWrite={false}
                         >
                             <GradientTexture
@@ -192,28 +192,8 @@ export function WorldOnScene() {
                             />
                         </meshBasicMaterial>
                     </mesh>
-                    <mesh
-                        rotation={[-Math.PI / 2, 0, 0]}
-                    >
-                        <ringGeometry args={[0.9 * r, r, 6]} />
-                        <meshBasicMaterial
-                            color={"#FF6F1E"}
-                        />
-                    </mesh>
-                    <mesh
-                        rotation={[-Math.PI / 2, 0, 0]}
-                    >
-                        <ringGeometry args={[0.9 * r, r, 6]} />
-                        <meshBasicMaterial
-                            color={"#FF6F1E"}
-                        />
-                    </mesh>
-                    <mesh
-                        rotation={[0, -Math.PI / 6, 0]}
-                        position={[0, 3, 0]}
-                        renderOrder={-2}
-                    >
-                        <cylinderGeometry args={[r * 1.3, r, 6, 6, 1, true]} />
+                    <mesh rotation={[0, -Math.PI / 4, 0]}>
+                        <boxGeometry args={[0.5, 10, 0.1]} />
                         <meshBasicMaterial
                             side={DoubleSide}
                             color={"#FF6F1E"}
