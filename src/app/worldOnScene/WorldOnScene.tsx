@@ -3,7 +3,7 @@ import { toFlatCart } from "../../utils/hax";
 import * as _ from "lodash";
 import { ParticleToken } from "./ParticleToken";
 import { nowPlaytime, playActionRecoil } from "../PlaybackPanel";
-import { Vector3 } from "three";
+import { DoubleSide, Vector3 } from "three";
 import { GroupSync } from "../../utils/GroupSync";
 import { easeBackIn, easeBackOut } from "d3-ease";
 import { SpawnerToken } from "./SpawnerToken";
@@ -17,6 +17,7 @@ import { directionOf } from "../../reactionSandbox/ParticleText";
 import { worldAtStep } from "../../puzzle/world";
 import { PredictedParticle } from "./PredictedParticle";
 import { tuple } from "../../utils/tuple";
+import { GradientTexture } from "@react-three/drei";
 
 
 export const lerp = (a: number, b: number, t: number) => a + t * (b - a);
@@ -38,7 +39,7 @@ export function WorldOnScene() {
         if (!prev && p.isRemoved) { return; }
         return { i, prev, p };
     }).filter(<T,>(x: T): x is NonNullable<T> => !!x);
-
+    const r = 1 / Math.sqrt(3);
     const actors = [
         ...trustedEntries(world.init.actors),
         ...trustedEntries(world.init.problem.actors),
@@ -49,7 +50,7 @@ export function WorldOnScene() {
     return <>
         {Array.from({ length: 20 }, (_, i) => {
             const w1 = worldAtStep(
-                world.init, 
+                world.init,
                 i + getStepAtPlaytime(world.step));
             if (w1.action !== "move") { return null; }
             return w1
@@ -124,7 +125,7 @@ export function WorldOnScene() {
                         [0, 0.1 + j * 0.2, 0])}
                     onClick={(ev) => {
                         ev.stopPropagation();
-                        setCellContent(ps.map(p => p.p));
+                        setCellContent(ps.filter(p => p.prev).map(p => p.p));
                     }}
                 >
                     <ParticleToken
@@ -164,11 +165,48 @@ export function WorldOnScene() {
                 >
                     <mesh rotation={[0, Math.PI / 4, 0]}>
                         <boxGeometry args={[0.5, 0.01, 0.1]} />
-                        <meshPhongMaterial color={"grey"} />
+                        <meshPhongMaterial color={"#FF6F1E"} />
                     </mesh>
                     <mesh rotation={[0, -Math.PI / 4, 0]}>
                         <boxGeometry args={[0.5, 0.01, 0.1]} />
-                        <meshPhongMaterial color={"grey"} />
+                        <meshPhongMaterial color={"#FF6F1E"} />
+                    </mesh>
+                    <mesh
+                        rotation={[0, -Math.PI / 6, 0]}
+                        position={[0, 0.05, 0]}
+                        renderOrder={-1}
+                    ></mesh>
+                    <mesh rotation={[0, Math.PI / 4, 0]}>
+                        <boxGeometry args={[0.5, 10, 0.1]} />
+                        <meshBasicMaterial
+                            side={DoubleSide}
+                            color={"#FF6F1E"}
+                            transparent
+                            opacity={0.3}
+                            depthWrite={false}
+                        >
+                            <GradientTexture
+                                attach={"alphaMap"}
+                                stops={[0, 1]}
+                                colors={["black", "white", "white"]}
+                            />
+                        </meshBasicMaterial>
+                    </mesh>
+                    <mesh rotation={[0, -Math.PI / 4, 0]}>
+                        <boxGeometry args={[0.5, 10, 0.1]} />
+                        <meshBasicMaterial
+                            side={DoubleSide}
+                            color={"#FF6F1E"}
+                            transparent
+                            opacity={0.3}
+                            depthWrite={false}
+                        >
+                            <GradientTexture
+                                attach={"alphaMap"}
+                                stops={[0, 1]}
+                                colors={["black", "white", "white"]}
+                            />
+                        </meshBasicMaterial>
                     </mesh>
                 </group>;
             }

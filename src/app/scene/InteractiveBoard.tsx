@@ -21,7 +21,7 @@ import { useWindowEvent } from "../../utils/useWindowEvent";
 const y0Plane = new Plane(new Vector3(0, 1, 0), 0);
 
 export function InteractiveBoard() {
-    const cursorTool = useRecoilValue(cursorToolRecoil);
+    const [cursorTool, setCursorTool] = useRecoilState(cursorToolRecoil);
     const solution = useRecoilValue(solutionManagerRecoil).currentSolution;
     const setSolution = useSetSolution();
 
@@ -102,6 +102,15 @@ export function InteractiveBoard() {
                 hPointer.current.position,
                 hPointer.current.direction);
         }
+    });
+
+    useWindowEvent("keydown", (e) => {
+        if (e.code !== "KeyQ") { return; }
+        const h = hPointer.current.position;
+        const key = keyifyPosition(h);
+        const actor = solution.actors[key] ?? solution.problem.actors[key];
+        if (!actor) { return; }
+        setCursorTool(actor);
     });
 
     return <group>
