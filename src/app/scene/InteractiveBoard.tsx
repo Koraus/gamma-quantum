@@ -102,34 +102,17 @@ export function InteractiveBoard() {
                 hPointer.current.position,
                 hPointer.current.direction);
         }
-        if (e.code === "KeyQ") {
-            const h = hPointer.current.position;
-            const key = keyifyPosition(h);
-            const tool = solution.actors[key];
-
-            if (tool?.kind === "mirror") {
-                setCursorTool({ kind: "mirror" });
-            }
-            if (tool?.kind === "spawner") {
-                setCursorTool({
-                    kind: "spawner",
-                    output: tool.output,
-                });
-            }
-            if (tool?.kind === "consumer") {
-                setCursorTool({
-                    kind: "consumer",
-                    input: tool.input,
-                });
-            }
-            if (tool?.kind === "trap") {
-                setCursorTool({ kind: "trap" });
-            }
-            console.log("tool kind : " + tool?.kind);
-         
-        }
     });
-    
+
+    useWindowEvent("keydown", (e) => {
+        if (e.code !== "KeyQ") { return; }
+        const h = hPointer.current.position;
+        const key = keyifyPosition(h);
+        const actor = solution.actors[key] ?? solution.problem.actors[key];
+        if (!actor) { return; }
+        setCursorTool(actor);
+    });
+
     return <group>
         <DreiPlane
             args={[100, 100]}
