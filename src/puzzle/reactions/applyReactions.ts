@@ -8,6 +8,7 @@ import { eqParticleKind } from "../terms/ParticleKind";
 import { v2 } from "../../utils/v";
 import update from "immutability-helper";
 import memoize from "memoizee";
+import { tuple } from "../../utils/tuple";
 
 const resolveReactionInCell = memoize((reagents: Particle[]) => {
     const reagentsEnergy = particlesEnergy(reagents);
@@ -38,13 +39,21 @@ const asUpdated = (reagents: ParticleState[], products: Particle[]) => {
         if (i >= 0) {
             const r = reagents[i];
             reagents.splice(i, 1);
-            return r;
+            return tuple(r, r);
         }
-        return {
+        const i1 = reagents.findIndex(r => eqParticleKind(r, p));
+        if (i1 >= 0) {
+            const r = reagents[i1];
+            reagents.splice(i1, 1);
+            return tuple(update(r, {
+                velocity: { $set: p.velocity },
+            }), r);
+        }
+        return tuple({
             ...p,
             position: reagents[0].position,
             isRemoved: false,
-        };
+        }, undefined);
     });
 };
 
@@ -55,15 +64,18 @@ export function applyReactionsInPlace(particles: ParticleState[]) {
     ).flatMap(reagents =>
         asUpdated(reagents, resolveReactionInCell(reagents)));
 
-    for (const p of newParticles) {
-        if (particles.includes(p)) { continue; }
-        particles.push(p);
-    }
-
     for (const p of particles) {
-        if (newParticles.includes(p)) { continue; }
+        if (newParticles.map(([, r]) => r).includes(p)) { continue; }
         particles[particles.indexOf(p)] = update(p, {
             isRemoved: { $set: true },
         });
+    }
+
+    for (const [p, r] of newParticles) {
+        if (r) {
+            particles[particles.indexOf(r)] = p;
+        } else {
+            particles.push(p);
+        }
     }
 }
