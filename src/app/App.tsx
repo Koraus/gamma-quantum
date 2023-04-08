@@ -16,6 +16,7 @@ import { useGrabFocusFromBody } from "../utils/useGrabFocusFromBody";
 import { useRecoilValue } from "recoil";
 import { cellContentRecoil } from "./scene/cellContentRecoil";
 import { NoToneMapping } from "three";
+import { puzzleId } from "../puzzle/terms/puzzleId";
 
 const focusMeOnce = (el: HTMLElement | null) => el?.focus();
 
@@ -185,13 +186,15 @@ export function App() {
                     right: 0,
                     bottom: 0,
                     textAlign: "right",
-                    fontSize: "2vmin",
+                    fontSize: "1.4vmin",
                     lineHeight: "90%",
                 }}>
                     {appVersion.split("+")[0]}<br />
                     <span css={{ fontSize: "0.8em" }}>
                         {appVersion.split("+")[1]}
                     </span>
+                    <br />
+                    {puzzleId}
                 </div>
 
 
