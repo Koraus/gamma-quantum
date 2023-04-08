@@ -20,10 +20,12 @@ export const particleCount = (p: ReadonlyDeep<ParticleKind>) =>
 export const _particleMass = (p_content: ParticleKind["content"]) => {
     if (p_content === "gamma") { return 0; }
     switch (_particleCount(p_content)) {
-        case 1: return 1;
-        case 2: return 1;
-        case 3: return 2;
+        case 1: return 2;
+        case 2: return 3;
+        case 3: return 5;
         case 4: return 5;
+        case 5: return 8;
+        case 6: return 13;
     }
     return 999999;
 };

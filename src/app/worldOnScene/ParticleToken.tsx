@@ -15,27 +15,18 @@ export function ParticleToken({
         .map(sp => subparticleColor[sp])
         .toArray();
     const subparticles = (() => {
-        switch (cs.length) {
-            case 1: return <>
-                <SubparticleMesh position={[0, 0, 0]} color={cs[0]} />
-            </>;
-            case 2: return <>
-                <SubparticleMesh position={[0.07, 0, 0]} color={cs[0]} />
-                <SubparticleMesh position={[-0.07, 0, 0]} color={cs[1]} />
-            </>;
-            case 3: return <>
-                <SubparticleMesh position={[0.07, 0, 0]} color={cs[0]} />
-                <SubparticleMesh position={[-0.02, 0, 0.05]} color={cs[1]} />
-                <SubparticleMesh position={[-0.02, 0, -0.05]} color={cs[2]} />
-            </>;
-            case 4: return <>
-                <SubparticleMesh position={[0.07, 0, 0]} color={cs[0]} />
-                <SubparticleMesh position={[-0.07, 0, 0]} color={cs[1]} />
-                <SubparticleMesh position={[0, 0, 0.07]} color={cs[2]} />
-                <SubparticleMesh position={[0, 0, -0.07]} color={cs[3]} />
-            </>;
-            default: throw "not supproted";
+        if (cs.length === 1) {
+            return <SubparticleMesh position={[0, 0, 0]} color={cs[0]} />;
         }
+        return <>{cs.map((c, i, { length }) => {
+            const { sin, cos, PI } = Math;
+            const r = 0.07;
+            const a = i / length * PI * 2;
+            return <SubparticleMesh
+                key={i}
+                position={[r * sin(a), 0, -r * cos(a)]}
+                color={c} />;
+        })}</>;
     })();
     return <group>
         <mesh  >

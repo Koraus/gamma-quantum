@@ -68,7 +68,7 @@ export function ReagentEditor({
                         css={{ width: "30px" }}
                         type="number"
                         min="0"
-                        max="4"
+                        max="6"
                         value={particle.content.red}
                         onChange={(ev) => setParticle(update(particle, {
                             content: {
@@ -83,7 +83,7 @@ export function ReagentEditor({
                         css={{ width: "30px" }}
                         type="number"
                         min="0"
-                        max="4"
+                        max="6"
                         value={particle.content.green}
                         onChange={(ev) => setParticle(update(particle, {
                             content: {
@@ -98,7 +98,7 @@ export function ReagentEditor({
                         css={{ width: "30px" }}
                         type="number"
                         min="0"
-                        max="4"
+                        max="6"
                         value={particle.content.blue}
                         onChange={(ev) => setParticle(update(particle, {
                             content: {

@@ -163,23 +163,21 @@ export const _tutorial4: Problem = {
 export const sandbox: Problem = {
     puzzleId,
     spawners: {
-        [keyifyParticleKind({ content: "gamma" })]: 4,
-        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 2, green: 0, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 3, green: 0, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 4, green: 0, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 1, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 2, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 3, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 4, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 0, blue: 1 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 0, blue: 2 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 0, blue: 3 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 0, blue: 4 } })]: 4,
-        [keyifyParticleKind({ content: { red: 1, green: 1, blue: 0 } })]: 4,
-        [keyifyParticleKind({ content: { red: 0, green: 1, blue: 1 } })]: 4,
-        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 1 } })]: 4,
-        [keyifyParticleKind({ content: { red: 1, green: 1, blue: 1 } })]: 4,
+        [keyifyParticleKind({ content: "gamma" })]: 100,
+        ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [
+            keyifyParticleKind({ content: { red: i + 1, green: 0, blue: 0 } }),
+            100])),
+        ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [
+            keyifyParticleKind({ content: { red: 0, green: i + 1, blue: 0 } }),
+            100])),
+        ...Object.fromEntries(Array.from({ length: 6 }, (_, i) => [
+            keyifyParticleKind({ content: { red: 0, green: 0, blue: i + 1 } }),
+            100])),
+        [keyifyParticleKind({ content: { red: 1, green: 1, blue: 0 } })]: 100,
+        [keyifyParticleKind({ content: { red: 0, green: 1, blue: 1 } })]: 100,
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 1 } })]: 100,
+        [keyifyParticleKind({ content: { red: 1, green: 1, blue: 1 } })]: 100,
+        [keyifyParticleKind({ content: { red: 2, green: 2, blue: 2 } })]: 100,
     },
     consumers: {
 
