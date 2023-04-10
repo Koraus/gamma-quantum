@@ -119,6 +119,47 @@ export const _tutorial3: Problem = {
 export const _tutorial4: Problem = {
     puzzleId,
     spawners: {
+    },
+    consumers: {
+    },
+    demand: {
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 3,
+        [keyifyParticleKind({ content: { red: 0, green: 2, blue: 0 } })]: 3,
+    },
+    positions: {
+        ...Object.fromEntries(
+            hax.disc(2)[Symbol.iterator]()
+                .map(h => [keyifyPosition(h), true])),
+    },
+    positionsMode: "allow",
+    actors: {
+        [keyifyPosition([3, -4])]: {
+            kind: "spawner",
+            output: { content: { red: 0, green: 2, blue: 0 } },
+            direction: 1,
+        },
+        [keyifyPosition([1, -4])]: {
+            kind: "spawner",
+            output: { content: { red: 1, green: 0, blue: 0 } },
+            direction: 0,
+        },
+        [keyifyPosition([-1, 4])]: {
+            kind: "consumer",
+            input: { content: { red: 0, green: 2, blue: 0 } },
+            direction: 0,
+        },
+        [keyifyPosition([-3, 4])]: {
+            kind: "consumer",
+            input: { content: { red: 1, green: 0, blue: 0 } },
+            direction: 0,
+        },
+    },
+};
+
+
+export const _tutorial5: Problem = {
+    puzzleId,
+    spawners: {
         [keyifyParticleKind({ content: { red: 0, green: 1, blue: 0 } })]: 1,
     },
     consumers: {
