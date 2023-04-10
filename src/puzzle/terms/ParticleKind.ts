@@ -43,11 +43,11 @@ export const keyifyParticleContent = (
     if (x === "gamma") { return "\"gamma\""; }
     const { red, green, blue } = x;
     if (red % 1 !== 0) { _throw("red not integer"); }
-    if (red < 0) { _throw("red not positive"); }
+    if (red < 0) { _throw("red not zero or positive"); }
     if (green % 1 !== 0) { _throw("green not integer"); }
-    if (green < 0) { _throw("green not positive"); }
+    if (green < 0) { _throw("green not zero or positive"); }
     if (blue % 1 !== 0) { _throw("blue not integer"); }
-    if (blue < 0) { _throw("blue not positive"); }
+    if (blue < 0) { _throw("blue not zero or positive"); }
     if (red + green + blue === 0) { _throw("all zeros"); }
     return `{"red":${red},"green":${green},"blue":${blue}}`;
 };
