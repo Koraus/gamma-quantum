@@ -201,6 +201,49 @@ export const _tutorial5: Problem = {
     },
 };
 
+export const _levelOne: Problem = {
+    puzzleId,
+    spawners: {
+    },
+    consumers: {
+    },
+    demand: {
+        [keyifyParticleKind({ content: { red: 1, green: 0, blue: 0 } })]: 3,
+        [keyifyParticleKind({ content: { red: 0, green: 2, blue: 0 } })]: 3,
+    },
+    positions: {
+        ...Object.fromEntries(
+            hax.disc(2)[Symbol.iterator]()
+                .map(h => [keyifyPosition(h), true])),
+    },
+    positionsMode: "allow",
+    actors: {
+        [keyifyPosition([-1, 2])]: {
+            kind: "spawner",
+            output: { content: { red: 0, green: 1, blue: 0 } },
+            direction: 3,
+        },
+        [keyifyPosition([1, 1])]: {
+            kind: "spawner",
+            output: { content: { red: 0, green: 1, blue: 0 } },
+            direction: 3,
+        },
+        [keyifyPosition([0, 2])]: {
+            kind: "spawner",
+            output: { content: { red: 1, green: 0, blue: 0 } },
+            direction: 3,
+        },
+        [keyifyPosition([-2, 1])]: {
+            kind: "consumer",
+            input: { content: { red: 0, green: 2, blue: 0 } },
+        },
+        [keyifyPosition([-1, -0])]: {
+            kind: "consumer",
+            input: { content: { red: 1, green: 0, blue: 0 } },
+        },
+    },
+};
+
 export const sandbox: Problem = {
     puzzleId,
     spawners: {
