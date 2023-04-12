@@ -12,7 +12,7 @@ const predictedSubparticleMaterial = memoizee((color, opacity) =>
         opacity,
     }));
 
-export function Spring({
+export function SpringParticle({
     p, relStep,
 }: {
     p: ParticleState, relStep: number,

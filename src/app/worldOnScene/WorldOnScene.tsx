@@ -18,7 +18,7 @@ import { worldAtStep } from "../../puzzle/world";
 import { PredictedParticle } from "./PredictedParticle";
 import { tuple } from "../../utils/tuple";
 import { TrapToken } from "./TrapToken";
-import { Spring } from "./Spring";
+import { SpringParticle } from "./SpringParticle";
 
 
 export const lerp = (a: number, b: number, t: number) => a + t * (b - a);
@@ -68,7 +68,7 @@ export function WorldOnScene() {
                         ]}
                     >
                         {/* <PredictedParticle p={p} relStep={i} /> */}
-                        <Spring p={p}  relStep={i}/>
+                        <SpringParticle p={p}  relStep={i}/>
                     </group>;
                 });
         })}
